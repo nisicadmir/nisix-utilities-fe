@@ -1,0 +1,134 @@
+<div class="app-wrapper">
+  <div class="flex flex-col items-center">
+    <h2 class="">Chosen timezone</h2>
+    <mat-form-field>
+      <input
+        #input
+        type="text"
+        matInput
+        [formControl]="timezoneControl"
+        [matAutocomplete]="auto"
+        (input)="filter()"
+        (focus)="focus()"
+      />
+    </mat-form-field>
+    <mat-autocomplete #auto="matAutocomplete">
+      @for (option of filteredOptions; track option) {
+      <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-autocomplete>
+    <span>Offset to GMT: {{ offset }}, in milliseconds: {{ offset * 1000 * 60 }}</span>
+  </div>
+
+  <hr />
+
+  <div class="flex flex-col items-center">
+    <h2>Convert from milliseconds to date</h2>
+    <form [formGroup]="formGroup">
+      <mat-form-field>
+        <input matInput type="number" formControlName="time" />
+      </mat-form-field>
+      <button mat-raised-button color="primary" [disabled]="!formGroup.valid" (click)="translateFromMillisToTime()">
+        Translate
+      </button>
+    </form>
+
+    <p>GMT: {{ dataGMT }}</p>
+    <p>Chosen timezone: {{ dataLocal }}</p>
+  </div>
+
+  <hr />
+
+  <div class="flex flex-col items-center">
+    <h2>Convert from date to milliseconds</h2>
+    <form [formGroup]="formGroupFrmDateToMillis">
+      <mat-form-field style="width: 100px">
+        <mat-label>year</mat-label>
+        <input matInput type="number" formControlName="year" />
+      </mat-form-field>
+      <mat-form-field style="width: 100px">
+        <mat-label>month</mat-label>
+        <input matInput type="number" formControlName="month" />
+      </mat-form-field>
+      <mat-form-field style="width: 100px">
+        <mat-label>day</mat-label>
+        <input matInput type="number" formControlName="day" />
+      </mat-form-field>
+      <mat-form-field style="width: 100px">
+        <mat-label>hour</mat-label>
+        <input matInput type="number" formControlName="hour" />
+      </mat-form-field>
+      <mat-form-field style="width: 100px">
+        <mat-label>minute</mat-label>
+        <input matInput type="number" formControlName="minute" />
+      </mat-form-field>
+      <mat-form-field style="width: 100px">
+        <mat-label>second</mat-label>
+        <input matInput type="number" formControlName="second" />
+      </mat-form-field>
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="!formGroupFrmDateToMillis.valid"
+        (click)="translateFromDateToMillis()"
+      >
+        Translate
+      </button>
+    </form>
+    <p>From date to milliseconds in GMT: {{ dataFromDateToMillisGMT }}</p>
+    <p>From date to milliseconds in chosen timezone: {{ dataFromDateToMillis }}</p>
+  </div>
+
+  <hr />
+
+  <div class="flex flex-col items-center">
+    <h2>Convert from milliseconds to date object</h2>
+    <form [formGroup]="formGroupFromMillisToObject">
+      <mat-form-field>
+        <input matInput type="number" formControlName="time" />
+      </mat-form-field>
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="!formGroupFromMillisToObject.valid"
+        (click)="translateFromMillisToObject()"
+      >
+        Translate
+      </button>
+    </form>
+    <p>{{ dataFromMillisToObject | json }}</p>
+  </div>
+
+  <hr />
+
+  <div class="flex flex-col items-center">
+    <h2>Convert from date object to milliseconds</h2>
+    <form [formGroup]="formGroupFromObjectToMillis">
+      <mat-form-field style="width: 100px">
+        <mat-label>seconds</mat-label>
+        <input matInput type="number" formControlName="seconds" />
+      </mat-form-field>
+      <mat-form-field style="width: 100px">
+        <mat-label>minutes</mat-label>
+        <input matInput type="number" formControlName="minutes" />
+      </mat-form-field>
+      <mat-form-field style="width: 100px">
+        <mat-label>hours</mat-label>
+        <input matInput type="number" formControlName="hours" />
+      </mat-form-field>
+      <mat-form-field style="width: 100px">
+        <mat-label>days</mat-label>
+        <input matInput type="number" formControlName="days" />
+      </mat-form-field>
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="!formGroupFromObjectToMillis.valid"
+        (click)="translateFromObjectToMillis()"
+      >
+        Translate
+      </button>
+    </form>
+    <p>{{ dataFromObjectToMillis }}</p>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+version: '2.3'
+
+services:
+  # ############################
+  # EXTERNAL SERVICES
+  # ############################
+  frontend:
+    container_name: frontend
+    image: frontend-time-converter
+    restart: always
+    ports:
+      - 4201:4201
