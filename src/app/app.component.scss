@@ -8,6 +8,7 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type='number'] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 button {
@@ -16,4 +17,8 @@ button {
 
 hr {
   margin: 10px 0;
+}
+
+h2 {
+  margin-bottom: 10px !important;
 }
