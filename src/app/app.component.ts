@@ -32,6 +32,9 @@ export class AppComponent {
   public formGroupFromMillisToObject: FormGroup;
   public formGroupFromObjectToMillis: FormGroup;
 
+  public currentTimeInGMT = '';
+  public currentTimeInChosenTimezone = '';
+
   public dataGMT = '';
   public dataLocal = '';
   public offset: number = 0;
@@ -77,14 +80,20 @@ export class AppComponent {
       this.offset = DateTime.fromMillis(Date.now(), { zone }).offset;
     }
     setInterval(() => {
-      const zone = this.timezoneControl.value;
-      if (zone) {
-        this.offset = DateTime.fromMillis(Date.now(), { zone }).offset;
-      }
+      this.intervalMethod();
     }, 500);
 
     this.translateFromMillisToTime();
     this.translateFromDateToMillis();
+  }
+
+  private intervalMethod() {
+    const zone = this.timezoneControl.value;
+    if (zone) {
+      this.offset = DateTime.fromMillis(Date.now(), { zone }).offset;
+      this.currentTimeInGMT = DateTime.now().toUTC().toFormat('ccc, dd LLL yyyy HH:mm:ss');
+      this.currentTimeInChosenTimezone = DateTime.now().setZone(zone).toFormat('ccc, dd LLL yyyy HH:mm:ss');
+    }
   }
 
   public translateFromMillisToTime() {

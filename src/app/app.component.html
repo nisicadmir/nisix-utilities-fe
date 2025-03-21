@@ -1,5 +1,16 @@
-<div class="app-wrapper">
-  <div style="padding-top: 10px" class="flex flex-col items-center">
+<div class="app-wrapper" style="padding-top: 10px">
+  <div class="flex flex-col items-center">
+    <div>
+      Current time in GMT: <span style="font-weight: 500">{{ currentTimeInGMT }}</span>
+    </div>
+    <div>
+      Current time in chosen timezone: <span style="font-weight: 500">{{ currentTimeInChosenTimezone }}</span>
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="flex flex-col items-center">
     <h2 class="">Chosen timezone</h2>
     <mat-form-field>
       <input
