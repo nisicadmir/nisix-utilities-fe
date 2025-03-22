@@ -5,6 +5,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { DateTime, Settings, Duration, DurationObjectUnits } from 'luxon';
 import { TIMEZONES } from './timezones';
@@ -21,6 +22,7 @@ import { TIMEZONES } from './timezones';
     MatButtonModule,
     MatAutocompleteModule,
     JsonPipe,
+    MatSnackBarModule,
   ],
 })
 export class AppComponent {
@@ -38,18 +40,18 @@ export class AppComponent {
   public dataGMT = '';
   public dataLocal = '';
   public offset: number = 0;
-  public dataFromDateToMillis: number | null = null;
-  public dataFromDateToMillisGMT: number | null = null;
+  public dataFromDateToMillis: number = 0;
+  public dataFromDateToMillisGMT: number = 0;
   public dataFromMillisToObject: DurationObjectUnits | null = Duration.fromMillis(0)
     .shiftTo('days', 'hours', 'minutes', 'seconds')
     .toObject();
-  public dataFromObjectToMillis: number | null = null;
+  public dataFromObjectToMillis: number = 0;
 
   public timezones = TIMEZONES;
   public filteredOptions: string[] = TIMEZONES;
   public timezoneControl = new FormControl<string>(Settings.defaultZone.name);
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder, private snackBar: MatSnackBar) {
     this.formGroup = this.formBuilder.group({
       time: [Date.now(), Validators.required],
     });
@@ -142,6 +144,13 @@ export class AppComponent {
     const hour = this.formGroupFromObjectToMillis.get('hours')?.value || 0;
     const day = this.formGroupFromObjectToMillis.get('days')?.value || 0;
     this.dataFromObjectToMillis = second * 1000 + minute * 60 * 1000 + hour * 60 * 60 * 1000 + day * 24 * 60 * 60 * 1000;
+  }
+
+  public copyToClipboard(text: string | number) {
+    navigator.clipboard.writeText(text.toString());
+    this.snackBar.open('Copied to clipboard', 'Close', {
+      duration: 3000,
+    });
   }
 
   filter(): void {

@@ -28,7 +28,11 @@
       <mat-option [value]="option">{{ option }}</mat-option>
       }
     </mat-autocomplete>
-    <span>Offset to GMT: {{ offset }}, in milliseconds: {{ offset * 1000 * 60 }}</span>
+    <p>
+      Offset to GMT: <span (click)="copyToClipboard(offset)" style="font-weight: 600">{{ offset }}</span
+      >, in milliseconds:
+      <span (click)="copyToClipboard(offset * 1000 * 60)" style="font-weight: 600">{{ offset * 1000 * 60 }}</span>
+    </p>
   </div>
 
   <hr />
@@ -44,8 +48,12 @@
       </button>
     </form>
 
-    <p>GMT: {{ dataGMT }}</p>
-    <p>Chosen timezone: {{ dataLocal }}</p>
+    <p>
+      GMT: <span (click)="copyToClipboard(dataGMT)" style="font-weight: 600">{{ dataGMT }}</span>
+    </p>
+    <p>
+      Chosen timezone: <span (click)="copyToClipboard(dataLocal)" style="font-weight: 600">{{ dataLocal }}</span>
+    </p>
   </div>
 
   <hr />
@@ -86,8 +94,14 @@
         Translate
       </button>
     </form>
-    <p>From date to milliseconds in GMT: {{ dataFromDateToMillisGMT }}</p>
-    <p>From date to milliseconds in chosen timezone: {{ dataFromDateToMillis }}</p>
+    <p>
+      From date to milliseconds in GMT:
+      <span (click)="copyToClipboard(dataFromDateToMillisGMT)" style="font-weight: 600">{{ dataFromDateToMillisGMT }}</span>
+    </p>
+    <p>
+      From date to milliseconds in chosen timezone:
+      <span (click)="copyToClipboard(dataFromDateToMillis)" style="font-weight: 600">{{ dataFromDateToMillis }}</span>
+    </p>
   </div>
 
   <hr />
@@ -140,6 +154,9 @@
         Translate
       </button>
     </form>
-    <p>{{ dataFromObjectToMillis }}</p>
+    <p>
+      From date object to milliseconds:
+      <span (click)="copyToClipboard(dataFromObjectToMillis)" style="font-weight: 600">{{ dataFromObjectToMillis }}</span>
+    </p>
   </div>
 </div>
