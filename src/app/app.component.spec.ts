@@ -14,16 +14,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have the 'time-converter' title`, () => {
+  it(`should have the 'nisix-utils' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('time-converter');
+    expect(app.currentTimeInGMT).toContain('GMT');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, time-converter');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, nisix-utils');
   });
 });
