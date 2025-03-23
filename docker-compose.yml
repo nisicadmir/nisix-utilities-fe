@@ -6,7 +6,7 @@ services:
   # ############################
   frontend:
     container_name: frontend
-    image: frontend-nisix-utils
+    image: frontend-nisix-utilities
     restart: always
     ports:
       - 4201:4201

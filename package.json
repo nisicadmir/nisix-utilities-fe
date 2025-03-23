@@ -1,12 +1,12 @@
 {
-  "name": "nisix-utils",
+  "name": "nisix-utilities",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "image:build": "npm run build && DOCKER_BUILDKIT=1 docker build --platform amd64 -t frontend-nisix-utils .",
+    "image:build": "npm run build && DOCKER_BUILDKIT=1 docker build --platform amd64 -t frontend-nisix-utilities .",
     "image:deploy": "docker-compose down && docker-compose up -d",
     "test": "ng test"
   },

@@ -14,7 +14,7 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have the 'nisix-utils' title`, () => {
+  it(`should have the 'nisix-utilities' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
   });
@@ -23,6 +23,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, nisix-utils');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, nisix-utilities');
   });
 });
