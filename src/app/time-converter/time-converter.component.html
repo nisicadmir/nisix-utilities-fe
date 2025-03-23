@@ -1,1 +1,162 @@
-<p>time-converter works!</p>
+<div class="app-wrapper" style="padding-top: 10px">
+  <div class="flex flex-col items-center">
+    <div>
+      Current time in GMT: <span style="font-weight: 600">{{ currentTimeInGMT }}</span>
+    </div>
+    <div>
+      Current time in chosen timezone: <span style="font-weight: 600">{{ currentTimeInChosenTimezone }}</span>
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="flex flex-col items-center">
+    <h2 class="">Chosen timezone</h2>
+    <mat-form-field>
+      <input
+        #input
+        type="text"
+        matInput
+        [formControl]="timezoneControl"
+        [matAutocomplete]="auto"
+        (input)="filter()"
+        (focus)="focus()"
+      />
+    </mat-form-field>
+    <mat-autocomplete #auto="matAutocomplete">
+      @for (option of filteredOptions; track option) {
+      <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-autocomplete>
+    <p>
+      Offset to GMT: <span (click)="copyToClipboard(offset)" style="font-weight: 600">{{ offset }}</span
+      >, in milliseconds:
+      <span (click)="copyToClipboard(offset * 1000 * 60)" style="font-weight: 600">{{ offset * 1000 * 60 }}</span>
+    </p>
+  </div>
+
+  <hr />
+
+  <div class="flex flex-col items-center">
+    <h2>Convert from milliseconds to date</h2>
+    <form [formGroup]="formGroup">
+      <mat-form-field>
+        <input matInput type="number" formControlName="time" />
+      </mat-form-field>
+      <button mat-raised-button color="primary" [disabled]="!formGroup.valid" (click)="translateFromMillisToTime()">
+        Translate
+      </button>
+    </form>
+
+    <p>
+      GMT: <span (click)="copyToClipboard(dataGMT)" style="font-weight: 600">{{ dataGMT }}</span>
+    </p>
+    <p>
+      Chosen timezone: <span (click)="copyToClipboard(dataLocal)" style="font-weight: 600">{{ dataLocal }}</span>
+    </p>
+  </div>
+
+  <hr />
+
+  <div class="flex flex-col items-center">
+    <h2>Convert from date to milliseconds</h2>
+    <form [formGroup]="formGroupFrmDateToMillis">
+      <mat-form-field style="width: 100px">
+        <mat-label>year</mat-label>
+        <input matInput type="number" formControlName="year" />
+      </mat-form-field>
+      <mat-form-field style="width: 100px">
+        <mat-label>month</mat-label>
+        <input matInput type="number" formControlName="month" />
+      </mat-form-field>
+      <mat-form-field style="width: 100px">
+        <mat-label>day</mat-label>
+        <input matInput type="number" formControlName="day" />
+      </mat-form-field>
+      <mat-form-field style="width: 100px">
+        <mat-label>hour</mat-label>
+        <input matInput type="number" formControlName="hour" />
+      </mat-form-field>
+      <mat-form-field style="width: 100px">
+        <mat-label>minute</mat-label>
+        <input matInput type="number" formControlName="minute" />
+      </mat-form-field>
+      <mat-form-field style="width: 100px">
+        <mat-label>second</mat-label>
+        <input matInput type="number" formControlName="second" />
+      </mat-form-field>
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="!formGroupFrmDateToMillis.valid"
+        (click)="translateFromDateToMillis()"
+      >
+        Translate
+      </button>
+    </form>
+    <p>
+      From date to milliseconds in GMT:
+      <span (click)="copyToClipboard(dataFromDateToMillisGMT)" style="font-weight: 600">{{ dataFromDateToMillisGMT }}</span>
+    </p>
+    <p>
+      From date to milliseconds in chosen timezone:
+      <span (click)="copyToClipboard(dataFromDateToMillis)" style="font-weight: 600">{{ dataFromDateToMillis }}</span>
+    </p>
+  </div>
+
+  <hr />
+
+  <div class="flex flex-col items-center">
+    <h2>Convert from milliseconds to date object</h2>
+    <form [formGroup]="formGroupFromMillisToObject">
+      <mat-form-field>
+        <input matInput type="number" formControlName="time" />
+      </mat-form-field>
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="!formGroupFromMillisToObject.valid"
+        (click)="translateFromMillisToObject()"
+      >
+        Translate
+      </button>
+    </form>
+    <p>{{ dataFromMillisToObject | json }}</p>
+  </div>
+
+  <hr />
+
+  <div class="flex flex-col items-center">
+    <h2>Convert from date object to milliseconds</h2>
+    <form [formGroup]="formGroupFromObjectToMillis">
+      <mat-form-field style="width: 100px">
+        <mat-label>days</mat-label>
+        <input matInput type="number" formControlName="days" />
+      </mat-form-field>
+      <mat-form-field style="width: 100px">
+        <mat-label>hours</mat-label>
+        <input matInput type="number" formControlName="hours" />
+      </mat-form-field>
+      <mat-form-field style="width: 100px">
+        <mat-label>minutes</mat-label>
+        <input matInput type="number" formControlName="minutes" />
+      </mat-form-field>
+      <mat-form-field style="width: 100px">
+        <mat-label>seconds</mat-label>
+        <input matInput type="number" formControlName="seconds" />
+      </mat-form-field>
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="!formGroupFromObjectToMillis.valid"
+        (click)="translateFromObjectToMillis()"
+      >
+        Translate
+      </button>
+    </form>
+    <p>
+      From date object to milliseconds:
+      <span (click)="copyToClipboard(dataFromObjectToMillis)" style="font-weight: 600">{{ dataFromObjectToMillis }}</span>
+    </p>
+  </div>
+</div>

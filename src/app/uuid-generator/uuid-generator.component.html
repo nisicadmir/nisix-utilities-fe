@@ -1,0 +1,24 @@
+<div class="uuid-generator-container">
+  <button mat-raised-button color="primary" (click)="generateUuid()">
+    <mat-icon>refresh</mat-icon>
+    Generate UUID
+  </button>
+  <div>
+    <h1>
+      V1:
+      <span>
+        {{ uuidv1 }}
+      </span>
+    </h1>
+    <mat-icon (click)="copyToClipboard(uuidv1)">content_copy</mat-icon>
+  </div>
+  <div>
+    <h1>
+      V4:
+      <span>
+        {{ uuidv4 }}
+      </span>
+    </h1>
+    <mat-icon (click)="copyToClipboard(uuidv4)">content_copy</mat-icon>
+  </div>
+</div>

@@ -17,7 +17,6 @@ describe('AppComponent', () => {
   it(`should have the 'nisix-utils' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.currentTimeInGMT).toContain('GMT');
   });
 
   it('should render title', () => {

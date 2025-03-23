@@ -1,0 +1,29 @@
+.uuid-generator-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+
+  button {
+    margin-bottom: 40px;
+  }
+
+  div {
+    min-width: 550px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+
+    h1 {
+      margin: 0;
+    }
+  }
+}
+mat-icon {
+  cursor: pointer;
+  margin-left: 20px;
+}
