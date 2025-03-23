@@ -10,6 +10,8 @@ export class UtilService {
     navigator.clipboard.writeText(text.toString());
     this.snackBar.open('Copied to clipboard', 'Close', {
       duration: 3000,
+      horizontalPosition: 'right',
+      verticalPosition: 'bottom',
     });
   }
 }

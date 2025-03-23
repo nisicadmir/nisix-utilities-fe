@@ -29,9 +29,9 @@
       }
     </mat-autocomplete>
     <p>
-      Offset to GMT: <span (click)="copyToClipboard(offset)" style="font-weight: 600">{{ offset }}</span
+      Offset to GMT: <span style="font-weight: 600">{{ offset }}</span
       >, in milliseconds:
-      <span (click)="copyToClipboard(offset * 1000 * 60)" style="font-weight: 600">{{ offset * 1000 * 60 }}</span>
+      <span style="font-weight: 600">{{ offset * 1000 * 60 }}</span>
     </p>
   </div>
 
@@ -48,12 +48,18 @@
       </button>
     </form>
 
-    <p>
-      GMT: <span (click)="copyToClipboard(dataGMT)" style="font-weight: 600">{{ dataGMT }}</span>
-    </p>
-    <p>
-      Chosen timezone: <span (click)="copyToClipboard(dataLocal)" style="font-weight: 600">{{ dataLocal }}</span>
-    </p>
+    <div style="display: flex; align-items: center; gap: 10px">
+      <p>
+        GMT: <span style="font-weight: 600">{{ dataGMT }}</span>
+      </p>
+      <mat-icon (click)="copyToClipboard(dataGMT)">content_copy</mat-icon>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px">
+      <p>
+        Chosen timezone: <span style="font-weight: 600">{{ dataLocal }}</span>
+      </p>
+      <mat-icon (click)="copyToClipboard(dataLocal)">content_copy</mat-icon>
+    </div>
   </div>
 
   <hr />
@@ -94,14 +100,20 @@
         Translate
       </button>
     </form>
-    <p>
-      From date to milliseconds in GMT:
-      <span (click)="copyToClipboard(dataFromDateToMillisGMT)" style="font-weight: 600">{{ dataFromDateToMillisGMT }}</span>
-    </p>
-    <p>
-      From date to milliseconds in chosen timezone:
-      <span (click)="copyToClipboard(dataFromDateToMillis)" style="font-weight: 600">{{ dataFromDateToMillis }}</span>
-    </p>
+    <div style="display: flex; align-items: center; gap: 10px">
+      <p>
+        From date to milliseconds in GMT:
+        <span style="font-weight: 600">{{ dataFromDateToMillisGMT }}</span>
+      </p>
+      <mat-icon (click)="copyToClipboard(dataFromDateToMillisGMT)">content_copy</mat-icon>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px">
+      <p>
+        From date to milliseconds in chosen timezone:
+        <span style="font-weight: 600">{{ dataFromDateToMillis }}</span>
+      </p>
+      <mat-icon (click)="copyToClipboard(dataFromDateToMillis)">content_copy</mat-icon>
+    </div>
   </div>
 
   <hr />
@@ -154,9 +166,12 @@
         Translate
       </button>
     </form>
-    <p>
-      From date object to milliseconds:
-      <span (click)="copyToClipboard(dataFromObjectToMillis)" style="font-weight: 600">{{ dataFromObjectToMillis }}</span>
-    </p>
+    <div style="display: flex; align-items: center; gap: 10px">
+      <p>
+        From date object to milliseconds:
+        <span style="font-weight: 600">{{ dataFromObjectToMillis }}</span>
+      </p>
+      <mat-icon (click)="copyToClipboard(dataFromObjectToMillis)">content_copy</mat-icon>
+    </div>
   </div>
 </div>

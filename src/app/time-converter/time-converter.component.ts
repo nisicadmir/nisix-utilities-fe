@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
 
 import { DateTime, Settings, Duration, DurationObjectUnits } from 'luxon';
 import { TIMEZONES } from '../timezones';
@@ -21,6 +22,7 @@ import { UtilService } from '../util.service';
     MatAutocompleteModule,
     JsonPipe,
     MatSnackBarModule,
+    MatIconModule,
   ],
   templateUrl: './time-converter.component.html',
   styleUrl: './time-converter.component.scss',
