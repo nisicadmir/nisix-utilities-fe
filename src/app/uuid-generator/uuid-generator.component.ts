@@ -4,10 +4,10 @@ import { v1 as uuidv1 } from 'uuid';
 import { v4 as uuidv4 } from 'uuid';
 import { UtilService } from '../util.service';
 import { MatIconModule } from '@angular/material/icon';
-
+import { MenuComponent } from '../menu/menu.component';
 @Component({
   selector: 'app-uuid-generator',
-  imports: [MatButtonModule, MatIconModule],
+  imports: [MatButtonModule, MatIconModule, MenuComponent],
   templateUrl: './uuid-generator.component.html',
   styleUrl: './uuid-generator.component.scss',
 })

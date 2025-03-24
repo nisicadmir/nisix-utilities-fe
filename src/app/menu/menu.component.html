@@ -1,0 +1,11 @@
+<div class="hamburger-menu">
+  <button class="menu-toggle" (click)="toggleMenu($event)">
+    <span class="hamburger-icon">☰</span>
+  </button>
+
+  <div class="menu-items" [class.active]="isMenuOpen">
+    <a routerLink="/time-converter">Time Converter</a>
+    <a routerLink="/uuid-generator">UUID Generator</a>
+    <a routerLink="/password-generator">Password Generator</a>
+  </div>
+</div>
