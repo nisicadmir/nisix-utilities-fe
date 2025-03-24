@@ -32,6 +32,11 @@
                 "glob": "_redirects",
                 "input": "src/assets",
                 "output": "/"
+              },
+              {
+                "glob": "static.json",
+                "input": "src/assets",
+                "output": "/"
               }
             ],
             "styles": ["@angular/material/prebuilt-themes/indigo-pink.css", "src/styles.scss"],
