@@ -32,7 +32,7 @@ $dark-theme: mat.define-theme(
 .dark-theme {
   @include mat.all-component-colors($dark-theme);
   & {
-    background-color: black;
+    background-color: #131314;
   }
 
   p,
