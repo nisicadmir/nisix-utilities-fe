@@ -9,4 +9,11 @@
     <a routerLink="/password-generator">Password Generator</a>
     <a routerLink="/uuid-generator">UUID Generator</a>
   </div>
+  <button mat-icon-button (click)="toggleTheme()">
+    @if (isDarkTheme$ | async) {
+    <mat-icon>light_mode</mat-icon>
+    } @else {
+    <mat-icon>dark_mode</mat-icon>
+    }
+  </button>
 </div>

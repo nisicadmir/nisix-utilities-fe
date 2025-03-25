@@ -1,9 +1,49 @@
+@use '@angular/material' as mat;
+
 /* You can add global styles to this file, and also import other style files */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @import 'material-icons/iconfont/material-icons.css';
+
+// Define light and dark themes
+$light-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: light,
+    ),
+  )
+);
+
+$dark-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: dark,
+    ),
+  )
+);
+
+// Default to light theme
+.light-theme {
+  @include mat.all-component-colors($light-theme);
+}
+
+.dark-theme {
+  @include mat.all-component-colors($dark-theme);
+  & {
+    background-color: black;
+  }
+
+  p,
+  h1,
+  h2,
+  h3,
+  span,
+  mat-icon {
+    color: white;
+  }
+}
 
 html,
 body {
