@@ -35,6 +35,12 @@ $dark-theme: mat.define-theme(
     background-color: #131314;
   }
 
+  .dashboard-container-icon {
+    svg {
+      fill: white;
+    }
+  }
+
   p,
   h1,
   h2,
