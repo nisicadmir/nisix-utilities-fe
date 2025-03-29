@@ -1,0 +1,14 @@
+<app-menu></app-menu>
+<div class="game-container">
+  <canvas #gameCanvas width="600" height="400"></canvas>
+  <div class="controls">
+    <button mat-raised-button color="primary" (click)="startGame()" [disabled]="isGameStarted">Start Game</button>
+    @if (isGameStarted) {
+    <p>Game started. Complete the circuit to get the accuracy score.</p>
+    } @if (accuracy !== null) {
+    <div class="accuracy">
+      <p>Circle Accuracy: {{ accuracy }}%</p>
+    </div>
+    }
+  </div>
+</div>

@@ -3,11 +3,13 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { TimeConverterComponent } from './time-converter/time-converter.component';
 import { PasswordGeneratorComponent } from './password-generator/password-generator.component';
 import { UuidGeneratorComponent } from './uuid-generator/uuid-generator.component';
+import { CircutGameComponent } from './circut-game/circut-game.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardComponent },
   { path: 'time-converter', component: TimeConverterComponent },
   { path: 'password-generator', component: PasswordGeneratorComponent },
   { path: 'uuid-generator', component: UuidGeneratorComponent },
+  { path: 'circut-game', component: CircutGameComponent },
   { path: '**', redirectTo: '' },
 ];
