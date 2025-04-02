@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://www.nisix.net/assets/sitemap.xml
