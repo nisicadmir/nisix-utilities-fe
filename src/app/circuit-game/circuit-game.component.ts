@@ -3,12 +3,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MenuComponent } from '../menu/menu.component';
 
 @Component({
-  selector: 'app-circut-game',
-  templateUrl: './circut-game.component.html',
-  styleUrls: ['./circut-game.component.scss'],
+  selector: 'app-circuit-game',
+  templateUrl: './circuit-game.component.html',
+  styleUrls: ['./circuit-game.component.scss'],
   imports: [MatButtonModule, MenuComponent],
 })
-export class CircutGameComponent implements AfterViewInit {
+export class circuitGameComponent implements AfterViewInit {
   @ViewChild('gameCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
   private ctx!: CanvasRenderingContext2D;
   private isDrawing = false;
