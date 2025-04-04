@@ -88,7 +88,7 @@ export class TimeConverterComponent {
     }
     setInterval(() => {
       this.intervalMethod();
-    }, 500);
+    }, 1_000);
 
     this.translateFromMillisToTime();
     this.translateFromDateToMillis();
