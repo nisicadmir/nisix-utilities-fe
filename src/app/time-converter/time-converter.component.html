@@ -4,13 +4,22 @@
   <div class="flex flex-col items-center">
     <div>
       <p>
-        Current time in GMT: <span style="font-weight: 600">{{ currentTimeInGMT }}, {{ currentTimeInGMTInMillis }}</span>
+        Current time in GMT:
+        <span style="font-weight: 600" (click)="copyToClipboard(currentTimeInGMT)">{{ currentTimeInGMT }}</span
+        >,<span style="font-weight: 600" (click)="copyToClipboard(currentTimeInGMTInMillis)">
+          {{ currentTimeInGMTInMillis }}</span
+        >
       </p>
     </div>
     <div>
       <p>
         Current time in chosen timezone:
-        <span style="font-weight: 600">{{ currentTimeInChosenTimezone }}, {{ currentTimeInChosenTimezoneInMillis }}</span>
+        <span style="font-weight: 600" (click)="copyToClipboard(currentTimeInChosenTimezone)">{{
+          currentTimeInChosenTimezone
+        }}</span
+        >,<span style="font-weight: 600" (click)="copyToClipboard(currentTimeInChosenTimezoneInMillis)">
+          {{ currentTimeInChosenTimezoneInMillis }}</span
+        >
       </p>
     </div>
   </div>
