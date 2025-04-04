@@ -99,9 +99,9 @@ export class TimeConverterComponent {
     if (zone) {
       this.offset = DateTime.fromMillis(Date.now(), { zone }).offset;
       this.currentTimeInGMT = DateTime.now().toUTC().toFormat('ccc, dd LLL yyyy HH:mm:ss');
-      this.currentTimeInGMTInMillis = DateTime.now().set({ second: 0, millisecond: 0 }).toUTC().toMillis();
+      this.currentTimeInGMTInMillis = DateTime.now().set({ millisecond: 0 }).toUTC().toMillis();
       this.currentTimeInChosenTimezone = DateTime.now().setZone(zone).toFormat('ccc, dd LLL yyyy HH:mm:ss');
-      this.currentTimeInChosenTimezoneInMillis = DateTime.now().set({ second: 0, millisecond: 0 }).setZone(zone).toMillis();
+      this.currentTimeInChosenTimezoneInMillis = DateTime.now().set({ millisecond: 0 }).setZone(zone).toMillis();
     }
   }
 
