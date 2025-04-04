@@ -39,8 +39,9 @@ export class TimeConverterComponent {
   public formGroupFromObjectToMillis: FormGroup;
 
   public currentTimeInGMT = '';
+  public currentTimeInGMTInMillis = 0;
   public currentTimeInChosenTimezone = '';
-
+  public currentTimeInChosenTimezoneInMillis = 0;
   public dataGMT = '';
   public dataLocal = '';
   public offset: number = 0;
@@ -98,7 +99,9 @@ export class TimeConverterComponent {
     if (zone) {
       this.offset = DateTime.fromMillis(Date.now(), { zone }).offset;
       this.currentTimeInGMT = DateTime.now().toUTC().toFormat('ccc, dd LLL yyyy HH:mm:ss');
+      this.currentTimeInGMTInMillis = DateTime.now().toUTC().toMillis();
       this.currentTimeInChosenTimezone = DateTime.now().setZone(zone).toFormat('ccc, dd LLL yyyy HH:mm:ss');
+      this.currentTimeInChosenTimezoneInMillis = DateTime.now().setZone(zone).toMillis();
     }
   }
 

@@ -4,12 +4,13 @@
   <div class="flex flex-col items-center">
     <div>
       <p>
-        Current time in GMT: <span style="font-weight: 600">{{ currentTimeInGMT }}</span>
+        Current time in GMT: <span style="font-weight: 600">{{ currentTimeInGMT }}, {{ currentTimeInGMTInMillis }}</span>
       </p>
     </div>
     <div>
       <p>
-        Current time in chosen timezone: <span style="font-weight: 600">{{ currentTimeInChosenTimezone }}</span>
+        Current time in chosen timezone:
+        <span style="font-weight: 600">{{ currentTimeInChosenTimezone }}, {{ currentTimeInChosenTimezoneInMillis }}</span>
       </p>
     </div>
   </div>
@@ -35,7 +36,7 @@
       }
     </mat-autocomplete>
     <p>
-      Offset to GMT: <span style="font-weight: 600">{{ offset }}</span
+      Offset to GMT in minutes: <span style="font-weight: 600">{{ offset }}</span
       >, in milliseconds:
       <span style="font-weight: 600">{{ offset * 1000 * 60 }}</span>
     </p>
