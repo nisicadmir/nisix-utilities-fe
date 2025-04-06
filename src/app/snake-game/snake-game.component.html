@@ -1,0 +1,18 @@
+<app-menu></app-menu>
+<div class="game-container">
+  <div class="game-header">
+    <p class="score">Score: {{ score }}</p>
+  </div>
+
+  <canvas #gameCanvas class="game-canvas"></canvas>
+
+  <div class="game-controls">
+    @if (!isGameStarted) {
+    <button mat-raised-button color="primary" (click)="startGame()">
+      {{ gameOver ? 'Play Again' : 'Start Game' }}
+    </button>
+    } @if (gameOver) {
+    <p class="game-over">Game Over! Final Score: {{ score }}</p>
+    }
+  </div>
+</div>
