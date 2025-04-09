@@ -8,9 +8,7 @@
 
   <div class="game-controls">
     @if (!isGameStarted) {
-    <button mat-raised-button color="primary" (click)="startGame()">
-      {{ gameOver ? 'Play Again' : 'Start Game' }}
-    </button>
+    <p style="margin-bottom: 20px !important">Start a game by pressing right, up or down arrow.</p>
     } @if (gameOver) {
     <p class="game-over">Game Over! Final Score: {{ score }}</p>
     }

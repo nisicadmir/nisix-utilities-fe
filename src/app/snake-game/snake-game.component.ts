@@ -185,7 +185,33 @@ export class SnakeGameComponent implements AfterViewInit {
 
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (!this.isGameStarted) return;
+    const isArrowKey = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key);
+
+    // Start or restart the game if an arrow key is pressed
+    if (!this.isGameStarted && isArrowKey) {
+      this.startGame();
+      // Set initial direction based on the pressed key
+      switch (event.key) {
+        case 'ArrowUp':
+          this.direction = 'up';
+          break;
+        case 'ArrowDown':
+          this.direction = 'down';
+          break;
+        case 'ArrowLeft':
+          this.direction = 'left';
+          break;
+        case 'ArrowRight':
+          this.direction = 'right';
+          break;
+      }
+      return;
+    }
+
+    // Handle direction changes during gameplay
+    if (!this.isGameStarted) {
+      return;
+    }
 
     switch (event.key) {
       case 'ArrowUp':
