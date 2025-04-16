@@ -1,0 +1,22 @@
+.battleship-grid {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid #333;
+  width: fit-content;
+  margin: 20px auto;
+}
+
+.grid-row {
+  display: flex;
+}
+
+.grid-cell {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.grid-cell:hover {
+  background-color: #f0f0f0;
+}
