@@ -9,22 +9,35 @@ export const config: ScullyConfig = {
   defaultPostRenderers: [],
   routes: {
     '/': {
-      type: 'json',
+      type: 'default',
     },
     '/time-converter': {
-      type: 'json',
+      type: 'default',
     },
     '/uuid-generator': {
-      type: 'json',
+      type: 'default',
     },
     '/password-generator': {
-      type: 'json',
-    },
-    'snake-game': {
-      type: 'json',
+      type: 'default',
     },
     '/snake-game': {
-      type: 'json',
+      type: 'default',
     },
+  },
+  puppeteerLaunchOptions: {
+    args: [
+      '--disable-gpu',
+      '--renderer',
+      '--no-sandbox',
+      '--no-service-autorun',
+      '--no-experiments',
+      '--no-default-browser-check',
+      '--disable-dev-shm-usage',
+      '--disable-setuid-sandbox',
+      '--no-first-run',
+      '--no-zygote',
+      '--single-process',
+      '--disable-extensions',
+    ],
   },
 };
