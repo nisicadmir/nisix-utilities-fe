@@ -1,5 +1,5 @@
 # install
 
 ```
-ng generate app-shell
+ng add @angular/ssr
 ```
