@@ -23,6 +23,7 @@ interface GameInvite {
 })
 export class BattleshipGameComponent {
   public isGameCreated = false;
+  public playerId = '';
   public playerName = '';
   public playerPassword = '';
   public gameInviteId = '';
@@ -33,10 +34,6 @@ export class BattleshipGameComponent {
     name2: ['', [Validators.required]],
   });
   constructor(private httpClient: HttpClient, private formBuilder: FormBuilder, private utilService: UtilService) {}
-
-  public onCellClick(row: number, col: number): void {
-    console.log('onCellClick', row, col);
-  }
 
   public createGame(): void {
     const name1 = this.formGroup.value.name1;
@@ -57,8 +54,9 @@ export class BattleshipGameComponent {
         const player1 = response.player1;
         const gameInvite = response.gameInvite;
 
-        this.playerPassword = player1.password;
+        this.playerId = player1.id;
         this.playerName = player1.name;
+        this.playerPassword = player1.password;
 
         this.battleshipGameId = response.battleshipGameId;
         this.gameInviteId = gameInvite.id;

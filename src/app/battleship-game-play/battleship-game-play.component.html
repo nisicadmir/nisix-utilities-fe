@@ -1,3 +1,35 @@
 <app-menu> </app-menu>
+<div class="battleship-game-play-container">
+  <div class="battleship-game-play-col">
+    <p>opponent: {{ battleshipGameInfo?.opponentName }}</p>
+    <p>status: {{ battleshipGameInfo?.status }}</p>
+    <p>positions are set: {{ battleshipGameInfo?.positionsAreSet }}</p>
+    <p>opponent positions are set: {{ battleshipGameInfo?.opponentPositionsAreSet }}</p>
 
-<p>battleship-game-play works!</p>
+    <p>{{ gameIsReady ? 'Game is ready' : 'Game is not ready yet' }}</p>
+
+    @if (!battleshipGameInfo?.positionsAreSet) {
+    <button mat-raised-button color="primary" (click)="startSettingPositions()">Start setting positions</button>
+    } @if (battleshipGameInfo?.positionsAreSet) {
+    <button mat-raised-button color="primary" (click)="startGame()" [disabled]="!gameIsReady">Start game</button>
+    }
+  </div>
+
+  @if (isInSettingPositions) {
+  <div class="battleship-setting-container">
+    <h2>Setting positions</h2>
+    <p>Set positions for {{ currentShip }}, size: {{ currentShipSize }}</p>
+
+    <div class="battleship-grid">
+      <div class="grid-row" *ngFor="let row of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]">
+        <div
+          class="grid-cell"
+          *ngFor="let col of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"
+          [ngClass]="getCellClass(row, col)"
+          (click)="onCellClick(row, col)"
+        ></div>
+      </div>
+    </div>
+  </div>
+  }
+</div>
