@@ -1,8 +1,40 @@
+<app-menu> </app-menu>
 <div class="battleship-container">
-  <div class="battleship-grid">
+  <!-- <div class="battleship-grid">
     <div class="grid-row" *ngFor="let row of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]">
       <div class="grid-cell" *ngFor="let col of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]" (click)="onCellClick(row, col)"></div>
     </div>
+  </div> -->
+  @if (!isGameCreated) {
+  <form [formGroup]="formGroup" class="flex flex-col gap-4">
+    <mat-form-field>
+      <mat-label>Name 1</mat-label>
+      <input matInput formControlName="name1" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Name 2</mat-label>
+      <input matInput formControlName="name2" />
+    </mat-form-field>
+  </form>
+  <button mat-raised-button color="primary" (click)="createGame()">Create game</button>
+  } @else {
+  <h2 style="margin-bottom: 30px">Game is created</h2>
+  <h3>
+    Your username and password are '{{ playerName }}' and '{{ playerPassword }}'. Save your credentials in order to join the game.
+  </h3>
+  <div class="flex flex-col gap-4">
+    <h3 (click)="copyInvite()">
+      Copy invite by clicking on this text which will copy the url to your clipboard and send it to your opponent
+    </h3>
   </div>
-  <button mat-raised-button color="primary" (click)="startGame()">Start Game</button>
+  <button
+    style="margin-top: 20px"
+    mat-raised-button
+    color="primary"
+    [routerLink]="['/battleship-game-play', battleshipGameId]"
+    [queryParams]="{ playerName: playerName, playerPassword: playerPassword }"
+  >
+    Join game
+  </button>
+  }
 </div>

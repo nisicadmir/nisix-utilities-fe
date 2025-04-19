@@ -1,43 +1,74 @@
-import { Component } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { RouterModule } from '@angular/router';
+import { environment } from '../../environments/environment';
+import { UtilService } from '../util.service';
+import { Player } from '../models/player.model';
+import { MenuComponent } from '../menu/menu.component';
 
-/*
- * grid 10x10
- *
- * 1 Aircraft Carrier – 5 fields
- * 1 Battleship – 4 fields
- * 1 Submarine – 3 fields
- * 1 Cruiser – 3 fields
- * 1 Destroyer – 2 fields
- * ships cannot be added in diagonal
- * ships cannot touch eachother nor overlay
- *
- * start a game
- * get url and password for each player
- * everybody joins the game
- * adding battleships
- * start the game
- *
- * moves player 1
- * moves player 2
- *
- *
- */
+interface GameInvite {
+  id: string;
+}
+
 @Component({
   selector: 'app-battleship-game',
-  imports: [MatButtonModule, CommonModule],
+  imports: [MatButtonModule, CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, RouterModule, MenuComponent],
   templateUrl: './battleship-game.component.html',
   styleUrl: './battleship-game.component.scss',
 })
 export class BattleshipGameComponent {
-  constructor() {}
+  public isGameCreated = false;
+  public playerName = '';
+  public playerPassword = '';
+  public gameInviteId = '';
+  public battleshipGameId = '';
 
-  public startGame(): void {
-    console.log('startGame');
-  }
+  public formGroup = this.formBuilder.group({
+    name1: ['', [Validators.required]],
+    name2: ['', [Validators.required]],
+  });
+  constructor(private httpClient: HttpClient, private formBuilder: FormBuilder, private utilService: UtilService) {}
 
   public onCellClick(row: number, col: number): void {
     console.log('onCellClick', row, col);
+  }
+
+  public createGame(): void {
+    const name1 = this.formGroup.value.name1;
+    const name2 = this.formGroup.value.name2;
+    if (name1 === name2) {
+      alert('Names cannot be the same');
+      return;
+    }
+    this.httpClient
+      .post<{ player1: Player; battleshipGameId: string; gameInvite: GameInvite }>(
+        `${environment.apiUrl}/battleship-game/create`,
+        {
+          name1: this.formGroup.value.name1,
+          name2: this.formGroup.value.name2,
+        },
+      )
+      .subscribe((response) => {
+        const player1 = response.player1;
+        const gameInvite = response.gameInvite;
+
+        this.playerPassword = player1.password;
+        this.playerName = player1.name;
+
+        this.battleshipGameId = response.battleshipGameId;
+        this.gameInviteId = gameInvite.id;
+
+        this.isGameCreated = true;
+      });
+  }
+
+  public copyInvite(): void {
+    const url = `${environment.url}/game-invite-accept/${this.gameInviteId}`;
+    this.utilService.copyToClipboard(url);
   }
 }

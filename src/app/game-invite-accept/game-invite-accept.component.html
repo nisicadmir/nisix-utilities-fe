@@ -1,0 +1,16 @@
+<div class="game-invite-accept-container">
+  @if (playerName) {
+  <h1>Game invite accept</h1>
+  <p>Player name: {{ playerName }}</p>
+  <p>Player password: {{ playerPassword }}</p>
+  <button
+    style="margin-top: 20px"
+    [routerLink]="['/battleship-game-play', battleshipGameId]"
+    [queryParams]="{ playerName: playerName, playerPassword: playerPassword }"
+    mat-raised-button
+    color="primary"
+  >
+    Join game
+  </button>
+  }
+</div>

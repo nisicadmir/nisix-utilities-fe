@@ -6,6 +6,8 @@ import { UuidGeneratorComponent } from './uuid-generator/uuid-generator.componen
 import { circuitGameComponent } from './circuit-game/circuit-game.component';
 import { SnakeGameComponent } from './snake-game/snake-game.component';
 import { BattleshipGameComponent } from './battleship-game/battleship-game.component';
+import { GameInviteAcceptComponent } from './game-invite-accept/game-invite-accept.component';
+import { BattleshipGamePlayComponent } from './battleship-game-play/battleship-game-play.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -14,6 +16,8 @@ export const routes: Routes = [
   { path: 'uuid-generator', component: UuidGeneratorComponent },
   { path: 'circuit-game', component: circuitGameComponent },
   { path: 'snake-game', component: SnakeGameComponent },
+  { path: 'game-invite-accept/:id', component: GameInviteAcceptComponent },
   { path: 'battleship-game', component: BattleshipGameComponent },
+  { path: 'battleship-game-play/:id', component: BattleshipGamePlayComponent },
   { path: '**', redirectTo: '' },
 ];
