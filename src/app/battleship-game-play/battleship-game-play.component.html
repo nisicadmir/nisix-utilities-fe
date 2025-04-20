@@ -1,35 +1,33 @@
 <app-menu> </app-menu>
 <div class="battleship-game-play-container">
   <div class="battleship-game-play-col">
-    <p>opponent: {{ battleshipGameInfo?.opponentName }}</p>
-    <p>status: {{ battleshipGameInfo?.status }}</p>
-    <p>positions are set: {{ battleshipGameInfo?.positionsAreSet }}</p>
-    <p>opponent positions are set: {{ battleshipGameInfo?.opponentPositionsAreSet }}</p>
+    @if (battleshipGameInfo?.status === battleshipGameStatus.PENDING) {
+    <h1>Waiting for opponent to join...</h1>
+    }
+    <h2>Opponent name: {{ battleshipGameInfo?.opponentName }}</h2>
+    <h3>{{ battleshipGameInfo?.positionsAreSet ? 'Your positions are set' : 'Your positions are not set' }}</h3>
+    <h3>{{ battleshipGameInfo?.opponentPositionsAreSet ? 'Opponent positions are set' : 'Opponent positions are not set' }}</h3>
 
-    <p>{{ gameIsReady ? 'Game is ready' : 'Game is not ready yet' }}</p>
-
-    @if (!battleshipGameInfo?.positionsAreSet) {
+    @if (!battleshipGameInfo?.positionsAreSet && battleshipGameInfo?.status !== battleshipGameStatus.PENDING &&
+    !isInSettingPositions) {
     <button mat-raised-button color="primary" (click)="startSettingPositions()">Start setting positions</button>
-    } @if (battleshipGameInfo?.positionsAreSet) {
-    <button mat-raised-button color="primary" (click)="startGame()" [disabled]="!gameIsReady">Start game</button>
+    } @if (isInSettingPositions) {
+    <div class="battleship-setting-container">
+      <h2>Setting positions</h2>
+      <p>Set positions for {{ currentShip }}, size: {{ currentShipSize }}</p>
+
+      <div class="battleship-grid">
+        <div class="grid-row" *ngFor="let row of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]">
+          <div
+            class="grid-cell"
+            *ngFor="let col of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"
+            [ngClass]="getCellClass(row, col)"
+            (click)="onCellClick(row, col)"
+          ></div>
+        </div>
+      </div>
+      <button style="margin-top: 10px" mat-raised-button color="primary" (click)="clearPositions()">Clear positions</button>
+    </div>
     }
   </div>
-
-  @if (isInSettingPositions) {
-  <div class="battleship-setting-container">
-    <h2>Setting positions</h2>
-    <p>Set positions for {{ currentShip }}, size: {{ currentShipSize }}</p>
-
-    <div class="battleship-grid">
-      <div class="grid-row" *ngFor="let row of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]">
-        <div
-          class="grid-cell"
-          *ngFor="let col of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"
-          [ngClass]="getCellClass(row, col)"
-          (click)="onCellClick(row, col)"
-        ></div>
-      </div>
-    </div>
-  </div>
-  }
 </div>

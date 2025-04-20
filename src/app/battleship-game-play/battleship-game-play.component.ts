@@ -43,6 +43,7 @@ type ShipType = keyof IBattleshipGamePositions;
   styleUrl: './battleship-game-play.component.scss',
 })
 export class BattleshipGamePlayComponent {
+  battleshipGameStatus = BattleshipGameStatus;
   battleshipGameId = '';
   playerId = '';
   playerName = '';
@@ -119,8 +120,6 @@ export class BattleshipGamePlayComponent {
       });
   }
 
-  startGame() {}
-
   startSettingPositions() {
     this.resetGrid();
     this.currentShipIndex = 0;
@@ -141,6 +140,7 @@ export class BattleshipGamePlayComponent {
     };
     this.placementDirection = null;
     this.currentShipIndex = 0;
+    this.isInSettingPositions = false;
     this.setCurrentShip();
   }
 
@@ -242,6 +242,10 @@ export class BattleshipGamePlayComponent {
         }
       }
     });
+  }
+
+  clearPositions() {
+    this.resetGrid();
   }
 
   sendPositions() {
