@@ -1,10 +1,14 @@
-import { Component } from '@angular/core';
-import { MenuComponent } from '../menu/menu.component';
-import { ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { ActivatedRoute } from '@angular/router';
+
+import { environment } from '../../environments/environment';
+import { MenuComponent } from '../menu/menu.component';
+import { NotificationService } from '../notification.service';
 
 interface IBattleshipGamePositions {
   carrier: Array<{ x: number; y: number }>;
@@ -21,12 +25,31 @@ enum BattleshipGameStatus {
   FINISHED = 'finished',
 }
 
+interface IBattleshipGameMove {
+  x: number;
+  y: number;
+  hit: boolean;
+}
+
 interface IBattleshipGameInfo {
   status: BattleshipGameStatus;
-  positions: IBattleshipGamePositions;
+  playerIdTurn: string;
+
+  playerIdWinner?: string;
+  winnerMessage?: string;
+
+  opponentName: string;
+
   positionsAreSet: boolean;
   opponentPositionsAreSet: boolean;
-  opponentName: string;
+
+  positions: IBattleshipGamePositions;
+
+  moves: IBattleshipGameMove[];
+  opponentMoves: IBattleshipGameMove[];
+
+  shipsSank: string[];
+  opponentShipsSank: string[];
 }
 
 interface ShipInfo {
@@ -38,7 +61,7 @@ type ShipType = keyof IBattleshipGamePositions;
 
 @Component({
   selector: 'app-battleship-game-play',
-  imports: [MenuComponent, MatButtonModule, CommonModule],
+  imports: [MenuComponent, MatButtonModule, MatInputModule, CommonModule, FormsModule],
   templateUrl: './battleship-game-play.component.html',
   styleUrl: './battleship-game-play.component.scss',
 })
@@ -52,6 +75,7 @@ export class BattleshipGamePlayComponent {
   battleshipGameInfo: IBattleshipGameInfo | null = null;
 
   gameIsReady = false;
+  playerIdTurn = '';
 
   interval: ReturnType<typeof setInterval> | null = null;
 
@@ -80,11 +104,21 @@ export class BattleshipGamePlayComponent {
   };
 
   // Grid: 0 = empty, 1 = current ship part, 2 = previous ship part, 3 = adjacent
-  grid: number[][] = Array(10)
+  settingGrid: number[][] = Array(10)
     .fill(0)
     .map(() => Array(10).fill(0));
 
-  constructor(private route: ActivatedRoute, private httpClient: HttpClient) {
+  myGrid: number[][] = Array(10)
+    .fill(0)
+    .map(() => Array(10).fill(0));
+
+  opponentGrid: number[][] = Array(10)
+    .fill(0)
+    .map(() => Array(10).fill(0));
+
+  winnerMessage = '';
+
+  constructor(private route: ActivatedRoute, private httpClient: HttpClient, private notificationService: NotificationService) {
     this.route.params.subscribe((params) => {
       this.battleshipGameId = params['id'];
     });
@@ -107,19 +141,6 @@ export class BattleshipGamePlayComponent {
     }
   }
 
-  private getBattleshipInfo() {
-    this.httpClient
-      .post<IBattleshipGameInfo>(`${environment.apiUrl}/battleship-game/${this.battleshipGameId}/get-game-info`, {
-        playerId: this.playerId,
-        playerPassword: this.playerPassword,
-      })
-      .subscribe((response) => {
-        console.log(response);
-        this.battleshipGameInfo = response;
-        this.gameIsReady = this.battleshipGameInfo.positionsAreSet && this.battleshipGameInfo.opponentPositionsAreSet;
-      });
-  }
-
   startSettingPositions() {
     this.resetGrid();
     this.currentShipIndex = 0;
@@ -128,7 +149,7 @@ export class BattleshipGamePlayComponent {
   }
 
   resetGrid() {
-    this.grid = Array(10)
+    this.settingGrid = Array(10)
       .fill(0)
       .map(() => Array(10).fill(0));
     this.battleshipPositions = {
@@ -164,7 +185,7 @@ export class BattleshipGamePlayComponent {
 
     // --- Placement Logic ---
     currentPositions.push({ x: row, y: col });
-    this.grid[row][col] = 1; // Mark as part of the current ship
+    this.settingGrid[row][col] = 1; // Mark as part of the current ship
 
     // Determine direction after second dot
     if (currentPositions.length === 2) {
@@ -180,7 +201,7 @@ export class BattleshipGamePlayComponent {
 
   private isValidClick(row: number, col: number): boolean {
     // Basic checks: within grid and cell is empty
-    if (row < 0 || row >= 10 || col < 0 || col >= 10 || this.grid[row][col] !== 0) {
+    if (row < 0 || row >= 10 || col < 0 || col >= 10 || this.settingGrid[row][col] !== 0) {
       return false;
     }
 
@@ -214,7 +235,7 @@ export class BattleshipGamePlayComponent {
   private finalizeCurrentShip(): void {
     // Mark current ship parts as permanent (2)
     this.battleshipPositions[this.currentShip].forEach((pos) => {
-      this.grid[pos.x][pos.y] = 2;
+      this.settingGrid[pos.x][pos.y] = 2;
     });
 
     // Mark adjacent cells (3)
@@ -235,9 +256,9 @@ export class BattleshipGamePlayComponent {
     shipPositions.forEach((pos) => {
       for (let r = Math.max(0, pos.x - 1); r <= Math.min(9, pos.x + 1); r++) {
         for (let c = Math.max(0, pos.y - 1); c <= Math.min(9, pos.y + 1); c++) {
-          if (this.grid[r][c] === 0) {
+          if (this.settingGrid[r][c] === 0) {
             // Only mark empty cells
-            this.grid[r][c] = 3; // Mark as adjacent
+            this.settingGrid[r][c] = 3; // Mark as adjacent
           }
         }
       }
@@ -248,6 +269,34 @@ export class BattleshipGamePlayComponent {
     this.resetGrid();
   }
 
+  getCellClass(row: number, col: number, gridType: 'setting' | 'myGrid' | 'opponentGrid' = 'setting'): string {
+    const cellState =
+      gridType === 'setting'
+        ? this.settingGrid[row][col]
+        : gridType === 'myGrid'
+        ? this.myGrid[row][col]
+        : this.opponentGrid[row][col];
+
+    switch (cellState) {
+      case 1:
+        return 'ship-placing'; // Current ship being placed
+      case 2:
+        return 'ship-placed'; // Permanently placed ship
+      case 3:
+        return 'adjacent-to-ship'; // Adjacent/Blocked cell
+      case 4:
+        return 'hit'; // Hit cell
+      case 5:
+        return 'miss'; // Miss cell
+      default: // Empty cell (0)
+        if (this.isInSettingPositions && this.isValidClick(row, col)) {
+          return 'valid-placement';
+        }
+        return ''; // Just an empty cell
+    }
+  }
+
+  // --- http methods ---
   sendPositions() {
     // Prepare data for API: convert current positions object
     const finalPositions: Partial<IBattleshipGamePositions> = {};
@@ -257,8 +306,6 @@ export class BattleshipGamePlayComponent {
       }
     }
 
-    console.log('finalPositions', finalPositions);
-
     this.httpClient
       .post<any>(`${environment.apiUrl}/battleship-game/${this.battleshipGameId}/set-ship-positions`, {
         playerId: this.playerId,
@@ -267,7 +314,6 @@ export class BattleshipGamePlayComponent {
       })
       .subscribe({
         next: (response) => {
-          console.log('Positions set response:', response);
           this.getBattleshipInfo(); // Refresh game info
           this.isInSettingPositions = false;
         },
@@ -278,21 +324,92 @@ export class BattleshipGamePlayComponent {
       });
   }
 
-  getCellClass(row: number, col: number): string {
-    const cellState = this.grid[row][col];
-
-    switch (cellState) {
-      case 1:
-        return 'ship-placing'; // Current ship being placed
-      case 2:
-        return 'ship-placed'; // Permanently placed ship
-      case 3:
-        return 'adjacent-to-ship'; // Adjacent/Blocked cell
-      default: // Empty cell (0)
-        if (this.isInSettingPositions && this.isValidClick(row, col)) {
-          return 'valid-placement';
-        }
-        return ''; // Just an empty cell
+  makeMove(row: number, col: number) {
+    if (this.playerIdTurn !== this.playerId) {
+      this.notificationService.showNotification('It is not your turn');
+      return;
     }
+
+    this.httpClient
+      .post<{ message: string; shipSunk: string }>(`${environment.apiUrl}/battleship-game/${this.battleshipGameId}/make-move`, {
+        playerId: this.playerId,
+        playerPassword: this.playerPassword,
+        move: { x: row, y: col },
+      })
+      .subscribe({
+        next: (response) => {
+          this.getBattleshipInfo();
+          if (response.shipSunk) {
+            this.notificationService.showNotification(`You sank the ${response.shipSunk}`);
+          }
+        },
+        error: (error) => {
+          console.error('Error making move:', error);
+        },
+      });
   }
+
+  private getBattleshipInfo() {
+    this.httpClient
+      .post<IBattleshipGameInfo>(`${environment.apiUrl}/battleship-game/${this.battleshipGameId}/get-game-info`, {
+        playerId: this.playerId,
+        playerPassword: this.playerPassword,
+      })
+      .subscribe((response) => {
+        this.battleshipGameInfo = response;
+        this.gameIsReady = this.battleshipGameInfo.positionsAreSet && this.battleshipGameInfo.opponentPositionsAreSet;
+        this.playerIdTurn = this.battleshipGameInfo.playerIdTurn;
+
+        if (this.battleshipGameInfo.playerIdWinner && this.battleshipGameInfo.winnerMessage) {
+          // Do not send any more intervals.
+          if (this.interval) {
+            clearInterval(this.interval);
+          }
+        }
+
+        // Initialize or reset myGrid
+        this.myGrid = Array(10)
+          .fill(0)
+          .map(() => Array(10).fill(0));
+        this.opponentGrid = Array(10)
+          .fill(0)
+          .map(() => Array(10).fill(0));
+
+        // Populate myGrid based on received positions if they exist
+        if (this.battleshipGameInfo?.positions) {
+          for (const shipType in this.battleshipGameInfo.positions) {
+            if (this.battleshipGameInfo.positions.hasOwnProperty(shipType as ShipType)) {
+              const shipPositions = this.battleshipGameInfo.positions[shipType as ShipType];
+              shipPositions.forEach((pos) => {
+                if (pos.x >= 0 && pos.x < 10 && pos.y >= 0 && pos.y < 10) {
+                  this.myGrid[pos.x][pos.y] = 2; // Mark as ship part
+                }
+              });
+            }
+          }
+        }
+        this.battleshipGameInfo.moves.forEach((move) => {
+          this.opponentGrid[move.x][move.y] = move.hit ? 4 : 5;
+        });
+
+        this.battleshipGameInfo.opponentMoves.forEach((move) => {
+          this.myGrid[move.x][move.y] = move.hit ? 4 : 5;
+        });
+      });
+  }
+
+  sendWinnerMessage() {
+    this.httpClient
+      .post<any>(`${environment.apiUrl}/battleship-game/${this.battleshipGameId}/post-winner-message`, {
+        playerId: this.playerId,
+        playerPassword: this.playerPassword,
+        message: this.winnerMessage,
+      })
+      .subscribe({
+        next: (response) => {
+          this.battleshipGameInfo!.winnerMessage = this.winnerMessage;
+        },
+      });
+  }
+  // --- http methods ---
 }

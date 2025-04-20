@@ -1,10 +1,109 @@
 <app-menu> </app-menu>
 <div class="battleship-game-play-container">
+  <h2>Opponent name: {{ battleshipGameInfo?.opponentName }}</h2>
+  @if (battleshipGameInfo?.playerIdWinner) {
+  <h1>{{ battleshipGameInfo?.playerIdWinner === playerId ? 'You won!' : 'You lost!' }}</h1>
+  <!--  -->
+  @if (battleshipGameInfo?.playerIdWinner === playerId && !battleshipGameInfo?.winnerMessage) {
+  <mat-form-field style="width: 600px">
+    <input
+      matInput
+      type="text"
+      placeholder="Write a message as a winner and press enter to send it."
+      [(ngModel)]="winnerMessage"
+      (keydown.enter)="sendWinnerMessage()"
+    />
+  </mat-form-field>
+  }
+  <!--  -->
+  <h2>Message from winner: {{ battleshipGameInfo?.winnerMessage ? battleshipGameInfo?.winnerMessage : 'No message yet!' }}</h2>
+  }
+
+  <!--  -->
+  @if (gameIsReady) {
+  <!--  -->
+  @if (!battleshipGameInfo?.playerIdWinner){
+  <h2>{{ playerIdTurn === playerId ? 'Your turn' : 'Opponent turn' }}</h2>
+  }
+  <!--  -->
+
+  <div class="battleship-game-play-grids">
+    <!-- your grid -->
+    <div class="battleship-game-play-grid">
+      <h2>Your grid</h2>
+      <div [class.no-hover]="this.battleshipGameInfo?.playerIdWinner" class="battleship-grid no-hover">
+        <div class="grid-row" *ngFor="let row of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]">
+          <div
+            class="grid-cell"
+            *ngFor="let col of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"
+            [ngClass]="getCellClass(row, col, 'myGrid')"
+          ></div>
+        </div>
+      </div>
+
+      <div class="battleship-game-play-grid-info">
+        <p [class.is-sunk]="battleshipGameInfo?.shipsSank?.includes('carrier')">
+          Carrier: {{ battleshipGameInfo?.positions?.carrier?.length }}
+        </p>
+        <p [class.is-sunk]="battleshipGameInfo?.shipsSank?.includes('battleship')">
+          Battleship: {{ battleshipGameInfo?.positions?.battleship?.length }}
+        </p>
+        <p [class.is-sunk]="battleshipGameInfo?.shipsSank?.includes('cruiser')">
+          Cruiser: {{ battleshipGameInfo?.positions?.cruiser?.length }}
+        </p>
+        <p [class.is-sunk]="battleshipGameInfo?.shipsSank?.includes('submarine')">
+          Submarine: {{ battleshipGameInfo?.positions?.submarine?.length }}
+        </p>
+        <p [class.is-sunk]="battleshipGameInfo?.shipsSank?.includes('destroyer')">
+          Destroyer: {{ battleshipGameInfo?.positions?.destroyer?.length }}
+        </p>
+      </div>
+    </div>
+    <!--  -->
+
+    <!-- opponent  -->
+    <div class="battleship-game-play-grid">
+      <h2>Opponent grid</h2>
+      <div
+        [class.no-hover]="this.playerIdTurn !== this.playerId || this.battleshipGameInfo?.playerIdWinner"
+        class="battleship-grid"
+      >
+        <div class="grid-row" *ngFor="let row of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]">
+          <div
+            class="grid-cell"
+            *ngFor="let col of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"
+            [ngClass]="getCellClass(row, col, 'opponentGrid')"
+            (click)="makeMove(row, col)"
+          ></div>
+        </div>
+      </div>
+
+      <div class="battleship-game-play-grid-info">
+        <p [class.is-sunk]="battleshipGameInfo?.opponentShipsSank?.includes('carrier')">
+          Carrier: {{ battleshipGameInfo?.positions?.carrier?.length }}
+        </p>
+        <p [class.is-sunk]="battleshipGameInfo?.opponentShipsSank?.includes('battleship')">
+          Battleship: {{ battleshipGameInfo?.positions?.battleship?.length }}
+        </p>
+        <p [class.is-sunk]="battleshipGameInfo?.opponentShipsSank?.includes('cruiser')">
+          Cruiser: {{ battleshipGameInfo?.positions?.cruiser?.length }}
+        </p>
+        <p [class.is-sunk]="battleshipGameInfo?.opponentShipsSank?.includes('submarine')">
+          Submarine: {{ battleshipGameInfo?.positions?.submarine?.length }}
+        </p>
+        <p [class.is-sunk]="battleshipGameInfo?.opponentShipsSank?.includes('destroyer')">
+          Destroyer: {{ battleshipGameInfo?.positions?.destroyer?.length }}
+        </p>
+      </div>
+    </div>
+    <!--  -->
+  </div>
+
+  } @else {
   <div class="battleship-game-play-col">
     @if (battleshipGameInfo?.status === battleshipGameStatus.PENDING) {
     <h1>Waiting for opponent to join...</h1>
     }
-    <h2>Opponent name: {{ battleshipGameInfo?.opponentName }}</h2>
     <h3>{{ battleshipGameInfo?.positionsAreSet ? 'Your positions are set' : 'Your positions are not set' }}</h3>
     <h3>{{ battleshipGameInfo?.opponentPositionsAreSet ? 'Opponent positions are set' : 'Opponent positions are not set' }}</h3>
 
@@ -30,4 +129,5 @@
     </div>
     }
   </div>
+  }
 </div>
