@@ -68,9 +68,7 @@ export class BattleshipGamePlayComponent {
   currentShipIndex = 0;
   currentShip: ShipType = 'carrier';
   currentShipSize = 0;
-
-  // Track temporary positions during ship placement
-  tempShipPositions: Array<{ x: number; y: number }> = [];
+  placementDirection: 'horizontal' | 'vertical' | null = null;
 
   battleshipPositions: IBattleshipGamePositions = {
     carrier: [],
@@ -80,7 +78,7 @@ export class BattleshipGamePlayComponent {
     destroyer: [],
   };
 
-  // Grid representation for validation
+  // Grid: 0 = empty, 1 = current ship part, 2 = previous ship part, 3 = adjacent
   grid: number[][] = Array(10)
     .fill(0)
     .map(() => Array(10).fill(0));
@@ -96,6 +94,7 @@ export class BattleshipGamePlayComponent {
   }
 
   ngOnInit() {
+    this.getBattleshipInfo(); // Initial fetch
     this.interval = setInterval(() => {
       this.getBattleshipInfo();
     }, 5_000);
@@ -116,11 +115,7 @@ export class BattleshipGamePlayComponent {
       .subscribe((response) => {
         console.log(response);
         this.battleshipGameInfo = response;
-
-        // Check if both players are ready
-        if (this.battleshipGameInfo.positionsAreSet && this.battleshipGameInfo.opponentPositionsAreSet) {
-          this.gameIsReady = true;
-        }
+        this.gameIsReady = this.battleshipGameInfo.positionsAreSet && this.battleshipGameInfo.opponentPositionsAreSet;
       });
   }
 
@@ -129,19 +124,14 @@ export class BattleshipGamePlayComponent {
   startSettingPositions() {
     this.resetGrid();
     this.currentShipIndex = 0;
-    this.currentShip = this.ships[this.currentShipIndex].name;
-    this.currentShipSize = this.ships[this.currentShipIndex].size;
+    this.setCurrentShip();
     this.isInSettingPositions = true;
-    this.tempShipPositions = [];
   }
 
   resetGrid() {
-    // Reset grid to all zeros
     this.grid = Array(10)
       .fill(0)
       .map(() => Array(10).fill(0));
-
-    // Reset positions
     this.battleshipPositions = {
       carrier: [],
       battleship: [],
@@ -149,213 +139,156 @@ export class BattleshipGamePlayComponent {
       submarine: [],
       destroyer: [],
     };
+    this.placementDirection = null;
+    this.currentShipIndex = 0;
+    this.setCurrentShip();
+  }
+
+  private setCurrentShip() {
+    if (this.currentShipIndex < this.ships.length) {
+      const shipInfo = this.ships[this.currentShipIndex];
+      this.currentShip = shipInfo.name;
+      this.currentShipSize = shipInfo.size;
+    } else {
+      // Handle case where all ships might already be placed or index is out of bounds
+      this.isInSettingPositions = false;
+    }
   }
 
   public onCellClick(row: number, col: number): void {
-    if (!this.isInSettingPositions) return;
+    if (!this.isInSettingPositions || !this.isValidClick(row, col)) {
+      return;
+    }
 
-    if (this.canPlaceShip(row, col)) {
-      this.placeShip(row, col);
+    const currentPositions = this.battleshipPositions[this.currentShip];
 
-      // Move to next ship after placing current one
-      if (this.battleshipPositions[this.currentShip].length === this.currentShipSize) {
-        this.moveToNextShip();
-      }
+    // --- Placement Logic ---
+    currentPositions.push({ x: row, y: col });
+    this.grid[row][col] = 1; // Mark as part of the current ship
+
+    // Determine direction after second dot
+    if (currentPositions.length === 2) {
+      const firstDot = currentPositions[0];
+      this.placementDirection = row === firstDot.x ? 'horizontal' : 'vertical';
+    }
+
+    // Check for ship completion
+    if (currentPositions.length === this.currentShipSize) {
+      this.finalizeCurrentShip();
     }
   }
 
-  public canPlaceShip(row: number, col: number): boolean {
-    const shipPositions = this.battleshipPositions[this.currentShip];
-
-    // If this is the first cell of the ship
-    if (shipPositions.length === 0) {
-      return this.validateInitialPlacement(row, col);
-    }
-
-    // If this is the second cell, determine direction and validate
-    if (shipPositions.length === 1) {
-      const firstCell = shipPositions[0];
-
-      // Check if trying to place horizontally
-      if (row === firstCell.x && col === firstCell.y + 1) {
-        return this.validateInitialPlacement(row, col);
-      }
-
-      // Check if trying to place vertically
-      if (col === firstCell.y && row === firstCell.x + 1) {
-        return this.validateInitialPlacement(row, col);
-      }
-
-      return false; // Not adjacent in either direction
-    }
-
-    // For subsequent cells, follow the established direction
-    const lastCell = shipPositions[shipPositions.length - 1];
-    const secondLastCell = shipPositions[shipPositions.length - 2];
-
-    // Determine if placement is horizontal or vertical based on previous cells
-    const isHorizontal = lastCell.x === secondLastCell.x;
-
-    if (isHorizontal) {
-      // Must be in the same row and one column to the right
-      return row === lastCell.x && col === lastCell.y + 1 && this.validateInitialPlacement(row, col);
-    } else {
-      // Must be in the same column and one row down
-      return col === lastCell.y && row === lastCell.x + 1 && this.validateInitialPlacement(row, col);
-    }
-  }
-
-  private validateInitialPlacement(row: number, col: number): boolean {
-    // Check if coordinates are within grid
-    if (row < 0 || row >= 10 || col < 0 || col >= 10) {
+  private isValidClick(row: number, col: number): boolean {
+    // Basic checks: within grid and cell is empty
+    if (row < 0 || row >= 10 || col < 0 || col >= 10 || this.grid[row][col] !== 0) {
       return false;
     }
 
-    // Check if cell is already occupied
-    if (this.grid[row][col] !== 0) {
-      return false;
+    const currentPositions = this.battleshipPositions[this.currentShip];
+
+    // Check 1: First dot validation (just needs to be empty)
+    if (currentPositions.length === 0) {
+      return true; // Already checked grid[row][col] === 0
     }
 
-    // Check if ship would fit on the grid
-    const shipPositions = this.battleshipPositions[this.currentShip];
+    const lastDot = currentPositions[currentPositions.length - 1];
 
-    if (shipPositions.length >= 1) {
-      const firstCell = shipPositions[0];
-
-      // If we have at least two cells, determine direction
-      if (shipPositions.length >= 2) {
-        const secondCell = shipPositions[1];
-        const isHorizontal = firstCell.x === secondCell.x;
-
-        if (isHorizontal) {
-          // Check if the ship would extend beyond the grid horizontally
-          if (col >= 10 || col < 0) {
-            return false;
-          }
-
-          // Check that we don't exceed ship size horizontally
-          const minCol = Math.min(...shipPositions.map((p) => p.y), col);
-          const maxCol = Math.max(...shipPositions.map((p) => p.y), col);
-          if (maxCol - minCol + 1 > this.currentShipSize) {
-            return false;
-          }
-        } else {
-          // Check if the ship would extend beyond the grid vertically
-          if (row >= 10 || row < 0) {
-            return false;
-          }
-
-          // Check that we don't exceed ship size vertically
-          const minRow = Math.min(...shipPositions.map((p) => p.x), row);
-          const maxRow = Math.max(...shipPositions.map((p) => p.x), row);
-          if (maxRow - minRow + 1 > this.currentShipSize) {
-            return false;
-          }
-        }
-      } else {
-        // For the second cell, ensure ship would fit in both directions
-        // This is less restrictive because direction is not yet determined
-        const horizontalEnd = firstCell.y + this.currentShipSize - 1;
-        const verticalEnd = firstCell.x + this.currentShipSize - 1;
-
-        if (horizontalEnd >= 10 && verticalEnd >= 10) {
-          return false; // Ship won't fit in either direction
-        }
-      }
+    // Check 2: Second dot validation (must be adjacent to the first)
+    if (currentPositions.length === 1) {
+      const isAdjacent = Math.abs(row - lastDot.x) + Math.abs(col - lastDot.y) === 1;
+      return isAdjacent;
     }
 
-    // Check if ship would touch any other ship (including diagonally)
-    return !this.wouldTouchAnotherShip(row, col);
-  }
-
-  private wouldTouchAnotherShip(row: number, col: number): boolean {
-    // Check surrounding cells (including diagonals)
-    for (let r = Math.max(0, row - 1); r <= Math.min(9, row + 1); r++) {
-      for (let c = Math.max(0, col - 1); c <= Math.min(9, col + 1); c++) {
-        if (this.grid[r][c] !== 0) {
-          return true;
-        }
-      }
+    // Check 3: Subsequent dots validation (must follow direction)
+    if (this.placementDirection === 'horizontal') {
+      // Must be in same row, adjacent column
+      return row === lastDot.x && Math.abs(col - lastDot.y) === 1;
+    } else if (this.placementDirection === 'vertical') {
+      // Must be in same column, adjacent row
+      return col === lastDot.y && Math.abs(row - lastDot.x) === 1;
     }
-    return false;
+
+    return false; // Should not happen if direction is set
   }
 
-  private placeShip(row: number, col: number): void {
-    // Add position to ship
-    this.battleshipPositions[this.currentShip].push({ x: row, y: col });
+  private finalizeCurrentShip(): void {
+    // Mark current ship parts as permanent (2)
+    this.battleshipPositions[this.currentShip].forEach((pos) => {
+      this.grid[pos.x][pos.y] = 2;
+    });
 
-    // Mark as occupied in the grid (1 = occupied by ship)
-    this.grid[row][col] = 1;
-  }
+    // Mark adjacent cells (3)
+    this.markAdjacentCells(this.battleshipPositions[this.currentShip]);
 
-  private moveToNextShip(): void {
-    // Mark adjacent cells as unavailable (2 = adjacent to ship)
-    this.markAdjacentCells();
-
+    // Move to the next ship
     this.currentShipIndex++;
     if (this.currentShipIndex < this.ships.length) {
-      this.currentShip = this.ships[this.currentShipIndex].name;
-      this.currentShipSize = this.ships[this.currentShipIndex].size;
+      this.setCurrentShip();
+      this.placementDirection = null; // Reset direction for the new ship
     } else {
-      // All ships have been placed
-      this.finishShipPlacement();
+      // All ships placed
+      this.sendPositions(); // Send final positions to server
     }
   }
 
-  private markAdjacentCells(): void {
-    // Mark cells adjacent to the recently placed ship as unavailable
-    this.battleshipPositions[this.currentShip].forEach((pos) => {
+  private markAdjacentCells(shipPositions: Array<{ x: number; y: number }>): void {
+    shipPositions.forEach((pos) => {
       for (let r = Math.max(0, pos.x - 1); r <= Math.min(9, pos.x + 1); r++) {
         for (let c = Math.max(0, pos.y - 1); c <= Math.min(9, pos.y + 1); c++) {
-          // Only mark if it's not already a ship
           if (this.grid[r][c] === 0) {
-            this.grid[r][c] = 2;
+            // Only mark empty cells
+            this.grid[r][c] = 3; // Mark as adjacent
           }
         }
       }
     });
   }
 
-  private finishShipPlacement(): void {
-    this.isInSettingPositions = false;
-    this.setPositions();
-  }
-
-  setPositions() {
-    this.httpClient
-      .post<any>(`${environment.apiUrl}/battleship-game/${this.battleshipGameId}/set-positions`, {
-        playerId: this.playerId,
-        playerPassword: this.playerPassword,
-        positions: this.battleshipPositions,
-      })
-      .subscribe((response) => {
-        this.getBattleshipInfo();
-      });
-  }
-
-  // Get cell class based on its status
-  getCellClass(row: number, col: number): string {
-    if (this.isInSettingPositions) {
-      // If a ship is placed here
-      if (this.isShipPlaced(row, col)) {
-        return 'ship-placed';
-      }
-
-      // If this is adjacent to a ship
-      if (this.grid[row][col] === 2) {
-        return 'adjacent-to-ship';
-      }
-
-      // If user is in the process of placing and hovering
-      if (this.battleshipPositions[this.currentShip].length > 0 && this.canPlaceShip(row, col)) {
-        return 'valid-placement';
+  sendPositions() {
+    // Prepare data for API: convert current positions object
+    const finalPositions: Partial<IBattleshipGamePositions> = {};
+    for (const shipName in this.battleshipPositions) {
+      if (this.battleshipPositions.hasOwnProperty(shipName as ShipType)) {
+        finalPositions[shipName as ShipType] = [...this.battleshipPositions[shipName as ShipType]];
       }
     }
 
-    return '';
+    console.log('finalPositions', finalPositions);
+
+    this.httpClient
+      .post<any>(`${environment.apiUrl}/battleship-game/${this.battleshipGameId}/set-ship-positions`, {
+        playerId: this.playerId,
+        playerPassword: this.playerPassword,
+        positions: finalPositions,
+      })
+      .subscribe({
+        next: (response) => {
+          console.log('Positions set response:', response);
+          this.getBattleshipInfo(); // Refresh game info
+          this.isInSettingPositions = false;
+        },
+        error: (error) => {
+          console.error('Error setting positions:', error);
+        },
+        // complete: () => { console.log('Position setting complete'); } // Optional
+      });
   }
 
-  private isShipPlaced(row: number, col: number): boolean {
-    return this.grid[row][col] === 1;
+  getCellClass(row: number, col: number): string {
+    const cellState = this.grid[row][col];
+
+    switch (cellState) {
+      case 1:
+        return 'ship-placing'; // Current ship being placed
+      case 2:
+        return 'ship-placed'; // Permanently placed ship
+      case 3:
+        return 'adjacent-to-ship'; // Adjacent/Blocked cell
+      default: // Empty cell (0)
+        if (this.isInSettingPositions && this.isValidClick(row, col)) {
+          return 'valid-placement';
+        }
+        return ''; // Just an empty cell
+    }
   }
 }

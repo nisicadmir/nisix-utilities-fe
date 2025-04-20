@@ -15,6 +15,7 @@ export class GameInviteAcceptComponent {
   public gameInviteId = '';
   public battleshipGameId = '';
   public playerName = '';
+  public playerId = '';
   public playerPassword = '';
 
   constructor(private route: ActivatedRoute, private httpClient: HttpClient, private router: Router) {
@@ -31,6 +32,7 @@ export class GameInviteAcceptComponent {
       .subscribe(
         (response) => {
           this.battleshipGameId = response.battleshipGameId;
+          this.playerId = response.player.id;
           this.playerName = response.player.name;
           this.playerPassword = response.player.password;
         },

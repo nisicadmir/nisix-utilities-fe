@@ -41,7 +41,8 @@
 }
 
 .grid-cell.valid-placement {
-  background-color: rgba(0, 255, 0, 0.2);
+  background-color: rgba(0, 255, 0, 0.3);
+  border-color: #00cc00;
 }
 
 .grid-cell.invalid-placement {
@@ -49,10 +50,18 @@
   cursor: not-allowed;
 }
 
+.grid-cell.ship-placing {
+  background-color: #add8e6;
+  border-color: #87ceeb;
+}
+
 .grid-cell.ship-placed {
   background-color: #007bff;
+  border-color: #0056b3;
 }
 
 .grid-cell.adjacent-to-ship {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(200, 200, 200, 0.5);
+  cursor: not-allowed;
+  border-color: #ccc;
 }
