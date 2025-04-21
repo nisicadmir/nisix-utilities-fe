@@ -6,11 +6,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class NotificationService {
   constructor(private snackBar: MatSnackBar) {}
 
-  public showNotification(message: string) {
-    this.snackBar.open(message, 'Close', {
+  public showNotification(
+    message: string,
+    horizontalPosition: 'center' | 'left' | 'right' = 'center',
+    verticalPosition: 'top' | 'bottom' = 'bottom',
+  ) {
+    this.snackBar.open(message, undefined, {
       duration: 3000,
-      horizontalPosition: 'center',
-      verticalPosition: 'bottom',
+      horizontalPosition: horizontalPosition,
+      verticalPosition: verticalPosition,
     });
   }
 }

@@ -338,7 +338,7 @@ export class BattleshipGamePlayComponent {
         next: (response) => {
           this.getBattleshipInfo();
           if (response.shipSunk) {
-            this.notificationService.showNotification(`You sank the ${response.shipSunk}`);
+            this.notificationService.showNotification(`You sank the ${response.shipSunk}`, 'center', 'top');
           }
         },
         error: (error) => {
