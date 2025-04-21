@@ -119,10 +119,8 @@ export class BattleshipGamePlayComponent {
   winnerMessage = '';
 
   constructor(private route: ActivatedRoute, private httpClient: HttpClient, private notificationService: NotificationService) {
-    this.route.params.subscribe((params) => {
-      this.battleshipGameId = params['id'];
-    });
     this.route.queryParams.subscribe((params) => {
+      this.battleshipGameId = params['battleshipGameId'];
       this.playerId = params['playerId'];
       this.playerPassword = params['playerPassword'];
     });

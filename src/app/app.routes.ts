@@ -18,6 +18,6 @@ export const routes: Routes = [
   { path: 'snake-game', component: SnakeGameComponent },
   { path: 'game-invite-accept/:id', component: GameInviteAcceptComponent },
   { path: 'battleship-game', component: BattleshipGameComponent },
-  { path: 'battleship-game-play/:id', component: BattleshipGamePlayComponent },
+  { path: 'battleship-game-play', component: BattleshipGamePlayComponent },
   { path: '**', redirectTo: '' },
 ];

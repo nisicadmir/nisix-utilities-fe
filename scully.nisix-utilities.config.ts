@@ -23,6 +23,12 @@ export const config: ScullyConfig = {
     '/snake-game': {
       type: 'default',
     },
+    '/battleship-game': {
+      type: 'default',
+    },
+    '/battleship-game-play': {
+      type: 'default',
+    },
   },
   puppeteerLaunchOptions: {
     args: [

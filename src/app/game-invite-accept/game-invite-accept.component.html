@@ -5,8 +5,8 @@
   <p>Player password: {{ playerPassword }}</p>
   <button
     style="margin-top: 20px"
-    [routerLink]="['/battleship-game-play', battleshipGameId]"
-    [queryParams]="{ playerId: playerId, playerPassword: playerPassword }"
+    [routerLink]="['/battleship-game-play']"
+    [queryParams]="{ battleshipGameId: battleshipGameId, playerId: playerId, playerPassword: playerPassword }"
     mat-raised-button
     color="primary"
   >
