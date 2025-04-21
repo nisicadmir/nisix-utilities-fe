@@ -1,4 +1,4 @@
 export const environment = {
   url: 'https://www.nisix.net',
-  apiUrl: 'https://www.nisix.net/api/v1',
+  apiUrl: 'https://nisix-utilities-be.onrender.com/api/v1',
 };
