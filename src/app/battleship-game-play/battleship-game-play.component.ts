@@ -9,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { MenuComponent } from '../menu/menu.component';
 import { NotificationService } from '../notification.service';
+import { LoaderService } from '../_modules/loader/loader.service';
 
 interface IBattleshipGamePositions {
   carrier: Array<{ x: number; y: number }>;
@@ -118,7 +119,12 @@ export class BattleshipGamePlayComponent {
 
   winnerMessage = '';
 
-  constructor(private route: ActivatedRoute, private httpClient: HttpClient, private notificationService: NotificationService) {
+  constructor(
+    private route: ActivatedRoute,
+    private httpClient: HttpClient,
+    private notificationService: NotificationService,
+    private loaderService: LoaderService,
+  ) {
     this.route.queryParams.subscribe((params) => {
       this.battleshipGameId = params['battleshipGameId'];
       this.playerId = params['playerId'];
@@ -318,6 +324,9 @@ export class BattleshipGamePlayComponent {
         error: (error) => {
           console.error('Error setting positions:', error);
         },
+        complete: () => {
+          this.loaderService.hide();
+        },
         // complete: () => { console.log('Position setting complete'); } // Optional
       });
   }
@@ -327,6 +336,8 @@ export class BattleshipGamePlayComponent {
       this.notificationService.showNotification('It is not your turn');
       return;
     }
+
+    this.loaderService.show();
 
     this.httpClient
       .post<{ message: string; shipSunk: string }>(`${environment.apiUrl}/battleship-game/${this.battleshipGameId}/make-move`, {
@@ -343,6 +354,9 @@ export class BattleshipGamePlayComponent {
         },
         error: (error) => {
           console.error('Error making move:', error);
+        },
+        complete: () => {
+          this.loaderService.hide();
         },
       });
   }
