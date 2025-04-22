@@ -10,6 +10,7 @@ import { environment } from '../../environments/environment';
 import { UtilService } from '../util.service';
 import { Player } from '../models/player.model';
 import { MenuComponent } from '../menu/menu.component';
+import { LoaderService } from '../_modules/loader/loader.service';
 
 interface GameInvite {
   id: string;
@@ -33,7 +34,12 @@ export class BattleshipGameComponent {
     name1: ['', [Validators.required]],
     name2: ['', [Validators.required]],
   });
-  constructor(private httpClient: HttpClient, private formBuilder: FormBuilder, private utilService: UtilService) {}
+  constructor(
+    private httpClient: HttpClient,
+    private formBuilder: FormBuilder,
+    private utilService: UtilService,
+    private loaderService: LoaderService,
+  ) {}
 
   public createGame(): void {
     const name1 = this.formGroup.value.name1;
@@ -42,6 +48,7 @@ export class BattleshipGameComponent {
       alert('Names cannot be the same');
       return;
     }
+    this.loaderService.show();
     this.httpClient
       .post<{ player1: Player; battleshipGameId: string; gameInvite: GameInvite }>(
         `${environment.apiUrl}/battleship-game/create`,
@@ -50,18 +57,26 @@ export class BattleshipGameComponent {
           name2: this.formGroup.value.name2,
         },
       )
-      .subscribe((response) => {
-        const player1 = response.player1;
-        const gameInvite = response.gameInvite;
+      .subscribe({
+        next: (response) => {
+          const player1 = response.player1;
+          const gameInvite = response.gameInvite;
 
-        this.playerId = player1.id;
-        this.playerName = player1.name;
-        this.playerPassword = player1.password;
+          this.playerId = player1.id;
+          this.playerName = player1.name;
+          this.playerPassword = player1.password;
 
-        this.battleshipGameId = response.battleshipGameId;
-        this.gameInviteId = gameInvite.id;
+          this.battleshipGameId = response.battleshipGameId;
+          this.gameInviteId = gameInvite.id;
 
-        this.isGameCreated = true;
+          this.isGameCreated = true;
+        },
+        error: (error) => {
+          console.error(error);
+        },
+        complete: () => {
+          this.loaderService.hide();
+        },
       });
   }
 
