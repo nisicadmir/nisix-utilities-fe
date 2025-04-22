@@ -1,8 +1,9 @@
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ThemeService } from './theme.service';
-import { AsyncPipe } from '@angular/common';
 import { LoaderComponent } from './_modules/loader/loader.component';
+import { ThemeService } from './theme.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

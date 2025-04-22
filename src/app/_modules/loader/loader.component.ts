@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, effect, OnInit, signal } from '@angular/core';
 import { LoaderService } from './loader.service';
 
 @Component({
@@ -6,12 +6,12 @@ import { LoaderService } from './loader.service';
   templateUrl: './loader.component.html',
   styleUrls: ['./loader.component.scss'],
 })
-export class LoaderComponent implements OnInit {
+export class LoaderComponent {
   isLoading = signal<boolean>(false);
 
-  constructor(private loaderService: LoaderService) {}
-
-  ngOnInit() {
-    this.isLoading.set(this.loaderService.isLoading());
+  constructor(private loaderService: LoaderService) {
+    effect(() => {
+      this.isLoading.set(this.loaderService.isLoading());
+    });
   }
 }
