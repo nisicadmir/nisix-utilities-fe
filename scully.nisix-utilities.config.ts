@@ -32,6 +32,9 @@ export const config: ScullyConfig = {
     '/battleship-game-play': {
       type: 'default',
     },
+    '/game-invite-accept': {
+      type: 'default',
+    },
   },
   puppeteerLaunchOptions: {
     args: [

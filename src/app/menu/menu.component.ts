@@ -1,20 +1,24 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnDestroy } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { ThemeService } from '../theme.service';
-import { MatIconModule } from '@angular/material/icon';
-import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-menu',
-  imports: [RouterModule, MatIconModule, AsyncPipe],
+  imports: [RouterModule, MatIconModule],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss',
 })
 export class MenuComponent {
   isMenuOpen = false;
-  isDarkTheme$ = this.themeService.isDarkTheme$;
-
+  isDarkTheme = false;
   constructor(private themeService: ThemeService) {}
+
+  ngOnInit() {
+    this.themeService.isDarkTheme$.subscribe((isDark) => {
+      this.isDarkTheme = isDark;
+    });
+  }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {

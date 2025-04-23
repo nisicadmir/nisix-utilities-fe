@@ -1,6 +1,6 @@
 <div class="game-invite-accept-container">
   @if (playerName) {
-  <h1>Game invite accept</h1>
+  <h1>Game invite accepted</h1>
   <p>Player name: {{ playerName }}</p>
   <p>Player password: {{ playerPassword }}</p>
   <button
@@ -12,5 +12,7 @@
   >
     Join game
   </button>
+  } @else {
+  <button mat-raised-button color="primary" (click)="acceptGameInvite()">Accept the game invite</button>
   }
 </div>

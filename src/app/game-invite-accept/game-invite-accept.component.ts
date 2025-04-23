@@ -19,26 +19,25 @@ export class GameInviteAcceptComponent {
   public playerPassword = '';
 
   constructor(private route: ActivatedRoute, private httpClient: HttpClient, private router: Router) {
-    this.gameInviteId = this.route.snapshot.params['id'];
-  }
-
-  ngOnInit(): void {
-    this.acceptGameInvite();
+    this.gameInviteId = this.route.snapshot.queryParams['id'];
   }
 
   public acceptGameInvite(): void {
     this.httpClient
       .post<{ battleshipGameId: string; player: Player }>(`${environment.apiUrl}/game-invite/accept/${this.gameInviteId}`, {})
-      .subscribe(
-        (response) => {
+      .subscribe({
+        next: (response) => {
           this.battleshipGameId = response.battleshipGameId;
           this.playerId = response.player.id;
           this.playerName = response.player.name;
           this.playerPassword = response.player.password;
         },
-        (error) => {
-          this.router.navigate(['/battleship-game']);
+        error: (error) => {
+          // this.router.navigate(['/battleship-game']);
         },
-      );
+        complete: () => {
+          // this.router.navigate(['/battleship-game']);
+        },
+      });
   }
 }
