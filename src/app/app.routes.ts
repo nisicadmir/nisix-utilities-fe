@@ -8,10 +8,11 @@ import { SnakeGameComponent } from './snake-game/snake-game.component';
 import { BattleshipGameComponent } from './battleship-game/battleship-game.component';
 import { GameInviteAcceptComponent } from './game-invite-accept/game-invite-accept.component';
 import { BattleshipGamePlayComponent } from './battleship-game-play/battleship-game-play.component';
-
+import { TimeConverterSeoComponent } from './time-converter-seo/time-converter-seo.component';
 export const routes: Routes = [
   { path: '', component: DashboardComponent },
   { path: 'time-converter', component: TimeConverterComponent },
+  { path: 'time-converter-seo', component: TimeConverterSeoComponent },
   { path: 'password-generator', component: PasswordGeneratorComponent },
   { path: 'uuid-generator', component: UuidGeneratorComponent },
   { path: 'circuit-game', component: circuitGameComponent },

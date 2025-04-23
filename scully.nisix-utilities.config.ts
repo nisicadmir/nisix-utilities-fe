@@ -14,6 +14,9 @@ export const config: ScullyConfig = {
     '/time-converter': {
       type: 'default',
     },
+    '/time-converter-seo': {
+      type: 'default',
+    },
     '/uuid-generator': {
       type: 'default',
     },
