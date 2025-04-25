@@ -73,6 +73,7 @@ export class BattleshipGameComponent {
         },
         error: (error) => {
           console.error(error);
+          this.loaderService.hide();
         },
         complete: () => {
           this.loaderService.hide();

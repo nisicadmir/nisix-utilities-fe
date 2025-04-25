@@ -354,6 +354,7 @@ export class BattleshipGamePlayComponent {
         },
         error: (error) => {
           console.error('Error making move:', error);
+          this.loaderService.hide();
         },
         complete: () => {
           this.loaderService.hide();
