@@ -340,13 +340,23 @@ export class BattleshipGamePlayComponent {
     this.loaderService.show();
 
     this.httpClient
-      .post<{ message: string; shipSunk: string }>(`${environment.apiUrl}/battleship-game/${this.battleshipGameId}/make-move`, {
+      .post<{
+        message: string;
+        shipSunk: string;
+        move: {
+          moveX: number;
+          moveY: number;
+          isHit: boolean;
+        };
+      }>(`${environment.apiUrl}/battleship-game/${this.battleshipGameId}/make-move`, {
         playerId: this.playerId,
         playerPassword: this.playerPassword,
         move: { x: row, y: col },
       })
       .subscribe({
         next: (response) => {
+          const moveType = response.move.isHit ? 4 : 5;
+          this.opponentGrid[response.move.moveX][response.move.moveY] = moveType;
           this.getBattleshipInfo();
           if (response.shipSunk) {
             this.notificationService.showNotification(`You sank the ${response.shipSunk}`, 'center', 'top');
