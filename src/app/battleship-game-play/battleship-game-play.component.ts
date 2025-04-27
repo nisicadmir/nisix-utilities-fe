@@ -289,9 +289,9 @@ export class BattleshipGamePlayComponent {
       case 3:
         return 'adjacent-to-ship'; // Adjacent/Blocked cell
       case 4:
-        return 'hit'; // Hit cell
+        return 'hit no-hover'; // Hit cell
       case 5:
-        return 'miss'; // Miss cell
+        return 'miss no-hover'; // Miss cell
       default: // Empty cell (0)
         if (this.isInSettingPositions && this.isValidClick(row, col)) {
           return 'valid-placement';

@@ -31,7 +31,7 @@
     <!-- your grid -->
     <div class="battleship-game-play-grid">
       <h2>Your grid</h2>
-      <div [class.no-hover]="this.battleshipGameInfo?.playerIdWinner" class="battleship-grid no-hover">
+      <div class="battleship-grid no-hover">
         <div class="grid-row" *ngFor="let row of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]">
           <div
             class="grid-cell"

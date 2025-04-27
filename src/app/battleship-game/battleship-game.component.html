@@ -13,23 +13,23 @@
   </form>
   <button mat-raised-button color="primary" (click)="createGame()">Create game</button>
   } @else {
-  <h2 style="margin-bottom: 30px">Game is created</h2>
-  <h3>
-    Your username and password are '{{ playerName }}' and '{{ playerPassword }}'. Save your credentials in order to join the game.
-  </h3>
-  <div class="flex flex-col gap-4">
-    <h3 (click)="copyInvite()">
-      Copy invite by clicking on this text which will copy the url to your clipboard and send it to your opponent
-    </h3>
+  <h2 style="margin-bottom: 100px !important">Game is created</h2>
+  <div style="margin-bottom: 30px" class="flex flex-col gap-4 justify-center items-center">
+    <h3>Copy the invite link and send it to your opponent</h3>
+    <button style="margin-top: 10px; max-width: 150px" mat-raised-button color="primary" (click)="copyInvite()">
+      Copy invite
+    </button>
   </div>
-  <button
-    style="margin-top: 20px"
-    mat-raised-button
-    color="primary"
-    [routerLink]="['/battleship-game-play']"
-    [queryParams]="{ battleshipGameId: battleshipGameId, playerId: playerId, playerPassword: playerPassword }"
-  >
-    Join game
-  </button>
+  <div class="flex flex-col gap-4 justify-center items-center">
+    <button
+      style="margin-top: 10px; max-width: 150px"
+      mat-raised-button
+      color="primary"
+      [routerLink]="['/battleship-game-play']"
+      [queryParams]="{ battleshipGameId: battleshipGameId, playerId: playerId, playerPassword: playerPassword }"
+    >
+      Join game
+    </button>
+  </div>
   }
 </div>
