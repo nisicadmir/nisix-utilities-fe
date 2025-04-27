@@ -344,8 +344,8 @@ export class BattleshipGamePlayComponent {
         message: string;
         shipSunk: string;
         move: {
-          moveX: number;
-          moveY: number;
+          x: number;
+          y: number;
           isHit: boolean;
         };
       }>(`${environment.apiUrl}/battleship-game/${this.battleshipGameId}/make-move`, {
@@ -356,7 +356,7 @@ export class BattleshipGamePlayComponent {
       .subscribe({
         next: (response) => {
           const moveType = response.move.isHit ? 4 : 5;
-          this.opponentGrid[response.move.moveX][response.move.moveY] = moveType;
+          this.opponentGrid[response.move.x][response.move.y] = moveType;
           this.getBattleshipInfo();
           if (response.shipSunk) {
             this.notificationService.showNotification(`You sank the ${response.shipSunk}`, 'center', 'top');
