@@ -310,6 +310,8 @@ export class BattleshipGamePlayComponent {
       }
     }
 
+    this.loaderService.show();
+
     this.httpClient
       .post<any>(`${environment.apiUrl}/battleship-game/${this.battleshipGameId}/set-ship-positions`, {
         playerId: this.playerId,
@@ -320,9 +322,11 @@ export class BattleshipGamePlayComponent {
         next: (response) => {
           this.getBattleshipInfo(); // Refresh game info
           this.isInSettingPositions = false;
+          this.loaderService.hide();
         },
         error: (error) => {
           console.error('Error setting positions:', error);
+          this.loaderService.hide();
         },
         complete: () => {
           this.loaderService.hide();
