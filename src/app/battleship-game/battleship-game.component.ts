@@ -82,7 +82,7 @@ export class BattleshipGameComponent {
   }
 
   public copyInvite(): void {
-    const url = `${environment.url}/game-invite-accept?id=${this.gameInviteId}`;
+    const url = `${environment.url}/#/game-invite-accept?id=${this.gameInviteId}`;
     this.utilService.copyToClipboard(url);
   }
 }
