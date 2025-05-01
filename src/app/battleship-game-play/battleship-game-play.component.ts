@@ -321,6 +321,7 @@ export class BattleshipGamePlayComponent {
       .subscribe({
         next: (response) => {
           this.getBattleshipInfo(); // Refresh game info
+          this.battleshipGameInfo!.positionsAreSet = true;
           this.isInSettingPositions = false;
           this.loaderService.hide();
         },
