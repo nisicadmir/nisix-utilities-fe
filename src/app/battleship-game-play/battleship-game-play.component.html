@@ -107,7 +107,8 @@
     <h3>{{ battleshipGameInfo?.positionsAreSet ? 'Your positions are set' : 'Your positions are not set' }}</h3>
     <h3>{{ battleshipGameInfo?.opponentPositionsAreSet ? 'Opponent positions are set' : 'Opponent positions are not set' }}</h3>
 
-    @if (battleshipGameInfo && !battleshipGameInfo.positionsAreSet && !isInSettingPositions) {
+    @if (battleshipGameInfo && !battleshipGameInfo.positionsAreSet && !isInSettingPositions && battleshipGameInfo.status ===
+    battleshipGameStatus.PENDING_POSITIONS) {
     <button mat-raised-button color="primary" (click)="startSettingPositions()">Start setting positions</button>
     } @if (isInSettingPositions) {
     <div class="battleship-setting-container">
