@@ -5,29 +5,48 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpService } from '../http.service';
+import { environment } from 'src/environments/environment';
+import { UtilService } from '../util.service';
+import { LoaderService } from '../_modules/loader/loader.service';
+import { MenuComponent } from '../menu/menu.component';
 
 @Component({
   selector: 'app-secret-message-generate',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MenuComponent],
   templateUrl: './secret-message-generate.component.html',
   styleUrl: './secret-message-generate.component.scss',
 })
 export class SecretMessageGenerateComponent {
+  public urlLink = '';
   formGroup = new FormGroup({
     message: new FormControl('', [Validators.required]),
   });
 
-  constructor(private httpService: HttpService) {}
+  constructor(private httpService: HttpService, private utilService: UtilService, private loaderService: LoaderService) {}
 
   public generateSecretMessage() {
+    this.loaderService.show();
+
     if (this.formGroup.invalid) {
       return;
     }
 
-    this.httpService.post<{ message: string }>('secret-message/generate', this.formGroup.value).subscribe({
+    this.httpService.post<{ messageId: string }>('secret-message/generate', this.formGroup.value).subscribe({
       next: (response) => {
-        console.log(response);
+        const messageId = response.messageId;
+        this.copyMessageId();
+        this.urlLink = `${environment.url}/#/secret-message-read?messageId=${messageId}`;
+      },
+      error: (error) => {
+        console.error(error);
+      },
+      complete: () => {
+        this.loaderService.hide();
       },
     });
+  }
+
+  public copyMessageId(): void {
+    this.utilService.copyToClipboard(this.urlLink);
   }
 }
