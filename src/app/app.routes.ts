@@ -8,6 +8,8 @@ import { PasswordGeneratorComponent } from './password-generator/password-genera
 import { SnakeGameComponent } from './snake-game/snake-game.component';
 import { TimeConverterComponent } from './time-converter/time-converter.component';
 import { UuidGeneratorComponent } from './uuid-generator/uuid-generator.component';
+import { SecretMessageGenerateComponent } from './secret-message-generate/secret-message-generate.component';
+import { SecretMessageReadComponent } from './secret-message-read/secret-message-read.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -19,5 +21,7 @@ export const routes: Routes = [
   { path: 'game-invite-accept', component: GameInviteAcceptComponent },
   { path: 'battleship-game', component: BattleshipGameComponent },
   { path: 'battleship-game-play', component: BattleshipGamePlayComponent },
+  { path: 'secret-message', component: SecretMessageGenerateComponent },
+  { path: 'secret-message-read', component: SecretMessageReadComponent },
   { path: '**', redirectTo: '' },
 ];
