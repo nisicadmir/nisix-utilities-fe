@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,6 +10,7 @@ import { UtilService } from '../util.service';
 import { Player } from '../models/player.model';
 import { MenuComponent } from '../menu/menu.component';
 import { LoaderService } from '../_modules/loader/loader.service';
+import { HttpService } from '../http.service';
 
 interface GameInvite {
   id: string;
@@ -35,7 +35,7 @@ export class BattleshipGameComponent {
     name2: ['', [Validators.required]],
   });
   constructor(
-    private httpClient: HttpClient,
+    private httpService: HttpService,
     private formBuilder: FormBuilder,
     private utilService: UtilService,
     private loaderService: LoaderService,
@@ -49,14 +49,11 @@ export class BattleshipGameComponent {
       return;
     }
     this.loaderService.show();
-    this.httpClient
-      .post<{ player1: Player; battleshipGameId: string; gameInvite: GameInvite }>(
-        `${environment.apiUrl}/battleship-game/create`,
-        {
-          name1: this.formGroup.value.name1,
-          name2: this.formGroup.value.name2,
-        },
-      )
+    this.httpService
+      .post<{ player1: Player; battleshipGameId: string; gameInvite: GameInvite }>('battleship-game/create', {
+        name1: this.formGroup.value.name1,
+        name2: this.formGroup.value.name2,
+      })
       .subscribe({
         next: (response) => {
           const player1 = response.player1;

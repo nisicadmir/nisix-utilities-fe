@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,6 +9,7 @@ import { environment } from '../../environments/environment';
 import { MenuComponent } from '../menu/menu.component';
 import { NotificationService } from '../notification.service';
 import { LoaderService } from '../_modules/loader/loader.service';
+import { HttpService } from '../http.service';
 
 interface IBattleshipGamePositions {
   carrier: Array<{ x: number; y: number }>;
@@ -121,7 +121,7 @@ export class BattleshipGamePlayComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private httpClient: HttpClient,
+    private httpService: HttpService,
     private notificationService: NotificationService,
     private loaderService: LoaderService,
   ) {
@@ -312,8 +312,16 @@ export class BattleshipGamePlayComponent {
 
     this.loaderService.show();
 
-    this.httpClient
-      .post<any>(`${environment.apiUrl}/battleship-game/${this.battleshipGameId}/set-ship-positions`, {
+    this.httpService
+      .post<{
+        message: string;
+        shipSunk: string;
+        move: {
+          x: number;
+          y: number;
+          isHit: boolean;
+        };
+      }>(`battleship-game/${this.battleshipGameId}/set-ship-positions`, {
         playerId: this.playerId,
         playerPassword: this.playerPassword,
         positions: finalPositions,
@@ -344,7 +352,7 @@ export class BattleshipGamePlayComponent {
 
     this.loaderService.show();
 
-    this.httpClient
+    this.httpService
       .post<{
         message: string;
         shipSunk: string;
@@ -353,7 +361,7 @@ export class BattleshipGamePlayComponent {
           y: number;
           isHit: boolean;
         };
-      }>(`${environment.apiUrl}/battleship-game/${this.battleshipGameId}/make-move`, {
+      }>(`battleship-game/${this.battleshipGameId}/make-move`, {
         playerId: this.playerId,
         playerPassword: this.playerPassword,
         move: { x: row, y: col },
@@ -378,8 +386,8 @@ export class BattleshipGamePlayComponent {
   }
 
   private getBattleshipInfo() {
-    this.httpClient
-      .post<IBattleshipGameInfo>(`${environment.apiUrl}/battleship-game/${this.battleshipGameId}/get-game-info`, {
+    this.httpService
+      .post<IBattleshipGameInfo>(`battleship-game/${this.battleshipGameId}/get-game-info`, {
         playerId: this.playerId,
         playerPassword: this.playerPassword,
       })
@@ -427,8 +435,8 @@ export class BattleshipGamePlayComponent {
   }
 
   sendWinnerMessage() {
-    this.httpClient
-      .post<any>(`${environment.apiUrl}/battleship-game/${this.battleshipGameId}/post-winner-message`, {
+    this.httpService
+      .post<any>(`battleship-game/${this.battleshipGameId}/post-winner-message`, {
         playerId: this.playerId,
         playerPassword: this.playerPassword,
         message: this.winnerMessage,
