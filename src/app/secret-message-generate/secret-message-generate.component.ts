@@ -31,19 +31,25 @@ export class SecretMessageGenerateComponent {
       return;
     }
 
-    this.httpService.post<{ messageId: string }>('secret-message/generate', this.formGroup.value).subscribe({
-      next: (response) => {
-        const messageId = response.messageId;
-        this.copyMessageId();
-        this.urlLink = `${environment.url}/#/secret-message-read?messageId=${messageId}`;
-      },
-      error: (error) => {
-        console.error(error);
-      },
-      complete: () => {
-        this.loaderService.hide();
-      },
-    });
+    this.httpService
+      .post<{
+        messageId: string;
+        secretKey: string;
+      }>('secret-message/generate', this.formGroup.value)
+      .subscribe({
+        next: (response) => {
+          const messageId = response.messageId;
+          const secretKey = response.secretKey;
+          this.copyMessageId();
+          this.urlLink = `${environment.url}/#/secret-message-read?messageId=${messageId}&secretKey=${secretKey}`;
+        },
+        error: (error) => {
+          console.error(error);
+        },
+        complete: () => {
+          this.loaderService.hide();
+        },
+      });
   }
 
   public copyMessageId(): void {

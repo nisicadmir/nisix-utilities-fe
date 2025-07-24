@@ -13,6 +13,7 @@ import { MenuComponent } from '../menu/menu.component';
 export class SecretMessageReadComponent {
   public messageId = '';
   public message = '';
+  public secretKey = '';
 
   constructor(
     private httpService: HttpService,
@@ -21,13 +22,14 @@ export class SecretMessageReadComponent {
     private router: Router,
   ) {
     this.messageId = this.route.snapshot.queryParams['messageId'];
+    this.secretKey = this.route.snapshot.queryParams['secretKey'];
     this.readSecretMessage();
   }
 
   public readSecretMessage() {
     this.loaderService.show();
 
-    this.httpService.get<{ message: string }>(`secret-message/read/${this.messageId}`).subscribe({
+    this.httpService.get<{ message: string }>(`secret-message/read/${this.messageId}/${this.secretKey}`).subscribe({
       next: (response) => {
         this.message = response.message;
         this.loaderService.hide();
