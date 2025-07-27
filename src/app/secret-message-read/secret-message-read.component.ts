@@ -13,6 +13,7 @@ import { MenuComponent } from '../menu/menu.component';
 export class SecretMessageReadComponent {
   public messageId = '';
   public message = '';
+  public durationInSeconds: number = 0;
   public secretKey = '';
 
   constructor(
@@ -29,17 +30,30 @@ export class SecretMessageReadComponent {
   public readSecretMessage() {
     this.loaderService.show();
 
-    this.httpService.get<{ message: string }>(`secret-message/read/${this.messageId}/${this.secretKey}`).subscribe({
-      next: (response) => {
-        this.message = response.message;
-        this.loaderService.hide();
-      },
-      error: (error) => {
-        console.error(error);
-        this.loaderService.hide();
-        this.router.navigate(['/secret-message-generate']);
-      },
-      complete: () => {},
-    });
+    this.httpService
+      .get<{
+        message: string;
+        durationInSeconds: number;
+      }>(`secret-message/read/${this.messageId}/${this.secretKey}`)
+      .subscribe({
+        next: (response) => {
+          this.message = response.message;
+          this.durationInSeconds = response.durationInSeconds;
+
+          if (this.durationInSeconds > 0) {
+            setTimeout(() => {
+              this.router.navigate(['/secret-message-generate']);
+            }, this.durationInSeconds * 1_000);
+          }
+
+          this.loaderService.hide();
+        },
+        error: (error) => {
+          console.error(error);
+          this.loaderService.hide();
+          this.router.navigate(['/secret-message-generate']);
+        },
+        complete: () => {},
+      });
   }
 }

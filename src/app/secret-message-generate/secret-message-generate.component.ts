@@ -20,17 +20,18 @@ export class SecretMessageGenerateComponent {
   public urlLink = '';
   formGroup = new FormGroup({
     message: new FormControl('', [Validators.required]),
+    durationInSeconds: new FormControl(10, [Validators.required, Validators.min(1), Validators.max(90)]),
   });
 
   constructor(private httpService: HttpService, private utilService: UtilService, private loaderService: LoaderService) {}
 
   public generateSecretMessage() {
-    this.loaderService.show();
-
     if (this.formGroup.invalid) {
       return;
     }
 
+    this.loaderService.show();
+    console.log('formGroup.value', this.formGroup.value);
     this.httpService
       .post<{
         messageId: string;
