@@ -30,8 +30,8 @@
               "src/assets",
               "src/robots.txt",
               "src/ads.txt",
-              "_redirects",
-              "render.yaml"
+              "src/_redirects",
+              "src/render.yaml"
             ],
             "styles": ["@angular/material/prebuilt-themes/indigo-pink.css", "src/styles.scss"],
             "scripts": []

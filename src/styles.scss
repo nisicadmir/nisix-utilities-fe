@@ -23,6 +23,12 @@ $dark-theme: mat.define-theme(
 .light-theme {
   @include mat.all-component-colors($light-theme);
 
+  .dashboard-container-icon {
+    svg {
+      fill: black;
+    }
+  }
+
   canvas {
     background-color: #f5f5f5;
   }
