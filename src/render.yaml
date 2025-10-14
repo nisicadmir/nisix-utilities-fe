@@ -3,7 +3,7 @@ services:
     name: nisix-utilities
     runtime: static
     buildCommand: npm run build
-    staticPublishPath: ./dist/nisix-utilities
+    staticPublishPath: ./dist/nisix-utilities/browser
     routes:
       - type: rewrite
         source: /*
