@@ -29,7 +29,9 @@
               "src/favicon_3.jpg",
               "src/assets",
               "src/robots.txt",
-              "src/ads.txt"
+              "src/ads.txt",
+              "_redirects",
+              "render.yaml"
             ],
             "styles": ["@angular/material/prebuilt-themes/indigo-pink.css", "src/styles.scss"],
             "scripts": []
