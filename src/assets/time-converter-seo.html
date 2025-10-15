@@ -46,27 +46,17 @@
     </style>
   </head>
   <body class="mat-typography">
-    <!-- SEO-friendly headings that are visually hidden but accessible to screen readers -->
-    <div class="visually-hidden">
-      <h1>Time Converter - Convert Between Time Zones</h1>
-      <h2>Utility Tools - Free Online Tools Collection</h2>
-      <h2>Strong Password Generator - Create Secure Passwords Instantly</h2>
-      <h2>UUID Generator - Generate Unique Identifiers Instantly</h2>
-      <h2>Random Number - String Generators</h2>
-      <h2>Snake Game - Classic Browser Game</h2>
+    <!-- Loader -->
+    <div id="loader">
+      <p>Loading...</p>
     </div>
 
-    <ul>
-      <li>
-        <a href="https://www.nisix.net/time-converter">Time Converter</a>
-      </li>
-      <li>
-        <a href="https://www.nisix.net/password-generator">Password Generator</a>
-      </li>
-      <li>
-        <a href="https://www.nisix.net/uuid-generator">UUID generator</a>
-      </li>
-    </ul>
+    <script>
+      setTimeout(function () {
+        window.location.href = '/time-converter';
+      }, 3000);
+    </script>
+
     <app-root></app-root>
     <!-- Optional: Structured data for rich results -->
     <script type="application/ld+json">
