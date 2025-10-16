@@ -6,7 +6,9 @@ import { environment } from '../environments/environment';
 // Initialize Firebase
 const app = initializeApp(environment.firebase);
 
-// Initialize App Check only if site key is configured
+// Initialize App Check first, then Firestore
+let appCheckInitialized = false;
+
 if (environment.recaptchaSiteKey && environment.recaptchaSiteKey !== 'your-recaptcha-site-key') {
   console.log('Initializing Firebase App Check with reCAPTCHA v3...');
 
@@ -14,7 +16,7 @@ if (environment.recaptchaSiteKey && environment.recaptchaSiteKey !== 'your-recap
   if (!environment.production) {
     if (environment.appCheckDebugToken && environment.appCheckDebugToken.length > 0) {
       (<any>self).FIREBASE_APPCHECK_DEBUG_TOKEN = environment.appCheckDebugToken;
-      console.log('Using App Check debug token from environment');
+      console.log('Using App Check debug token from environment:', environment.appCheckDebugToken);
     } else {
       // Fall back to boolean true which causes the SDK to log a generated debug token
       (<any>self).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
@@ -27,6 +29,7 @@ if (environment.recaptchaSiteKey && environment.recaptchaSiteKey !== 'your-recap
       provider: new ReCaptchaV3Provider(environment.recaptchaSiteKey),
       isTokenAutoRefreshEnabled: true,
     });
+    appCheckInitialized = true;
     console.log('✅ Firebase App Check initialized successfully');
   } catch (error) {
     console.error('❌ Failed to initialize Firebase App Check:', error);
@@ -37,6 +40,7 @@ if (environment.recaptchaSiteKey && environment.recaptchaSiteKey !== 'your-recap
   console.warn('🔧 Follow APP_CHECK_SETUP.md to configure App Check properly');
 }
 
-// Initialize Firestore
+// Initialize Firestore after App Check
 export const db = getFirestore(app);
 console.log('✅ Firestore initialized successfully');
+console.log('App Check status:', appCheckInitialized ? '✅ Enabled' : '❌ Disabled');
