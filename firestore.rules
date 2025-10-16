@@ -1,10 +1,11 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow public read/write access to secret_messages collection
-    // This is intentional for the secret message sharing use case
+    // Require App Check verification for secret_messages collection
+    // This adds human verification while maintaining the public access model
     match /secret_messages/{messageId} {
-      allow read, write: if true;
+      allow read, write: if request.app_check != null && 
+        request.app_check.verified;
       
       // Allow automatic deletion of expired messages (auto-expire after 1 hour)
       allow delete: if resource.data.expiresAt < request.time;
