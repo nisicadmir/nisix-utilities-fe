@@ -2,7 +2,7 @@ export const environment = {
   production: false,
   url: 'http://localhost:4200',
   apiUrl: 'http://localhost:3000/api/v1',
-  recaptchaSiteKey: '6LdVlewrAAAAADlaRfyNS',
+  recaptchaSiteKey: '6LdVlewrAAAAADlaRfyNSZai0jZQkoFzMnV1k4hm',
   appCheckDebugToken: '',
   useAppCheckDebugToken: false,
   firebase: {
