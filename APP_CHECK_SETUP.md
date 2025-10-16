@@ -17,9 +17,9 @@ This guide will help you set up Firebase App Check with reCAPTCHA v3 for human v
    - Click "Get Started"
    - Select your web app: `nisix-utilities-fe`
 
-3. **Configure reCAPTCHA v3 Provider**
+3. **Configure reCAPTCHA Provider**
 
-   - Choose "reCAPTCHA v3" as the provider
+   - Choose "recaptcha" as the provider (this uses reCAPTCHA v3 for invisible verification)
    - Click "Next"
    - You'll be redirected to Google reCAPTCHA Admin Console
 
