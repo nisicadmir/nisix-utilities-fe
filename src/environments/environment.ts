@@ -5,6 +5,7 @@ export const environment = {
   recaptchaSiteKey: '6LfHg-wrAAAAACJhq6hACW1eng5Ypp4fOijC1yuw',
   // App Check debug token should be empty in production
   appCheckDebugToken: '',
+  useAppCheckDebugToken: false,
   firebase: {
     apiKey: 'AIzaSyA0RidfosBIpdFj-ueLk3FTbCq-TDY8u5U',
     authDomain: 'project-nisix.firebaseapp.com',

@@ -1,19 +1,19 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Require App Check verification for secret_messages collection
-    // This adds human verification while maintaining the public access model
+    
+    // Require App Check verification for the secret_messages collection
     match /secret_messages/{messageId} {
-      // Debug: Log App Check status for troubleshooting
-      allow read, write: if request.app_check != null && 
-        request.app_check.verified;
       
-      // Fallback: Allow if App Check is not enforced (for debugging)
-      // Remove this line once App Check is working properly
-      allow read, write: if request.app_check == null;
+      // Allow reads and writes ONLY IF a valid App Check token is present.
+      // This enforces that the request came from your legitimate app.
+      allow read, write: if request.app != null;
+      // allow read, write: if true;
       
       // Allow automatic deletion of expired messages (auto-expire after 1 hour)
       allow delete: if resource.data.expiresAt < request.time;
     }
+    
+    // NOTE: If you have other collections, you should add rules for them here.
   }
 }

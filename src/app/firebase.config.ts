@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
+import { getToken, initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 import { environment } from '../environments/environment';
 
 // Initialize Firebase
@@ -8,6 +8,7 @@ const app = initializeApp(environment.firebase);
 
 // Initialize App Check first, then Firestore
 let appCheckInitialized = false;
+console.log('recaptchaSiteKey', environment.recaptchaSiteKey);
 
 if (environment.recaptchaSiteKey && environment.recaptchaSiteKey !== 'your-recaptcha-site-key') {
   console.log('Initializing Firebase App Check with reCAPTCHA v3...');
@@ -19,18 +20,29 @@ if (environment.recaptchaSiteKey && environment.recaptchaSiteKey !== 'your-recap
       console.log('Using App Check debug token from environment:', environment.appCheckDebugToken);
     } else {
       // Fall back to boolean true which causes the SDK to log a generated debug token
-      (<any>self).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+      (<any>self).FIREBASE_APPCHECK_DEBUG_TOKEN = environment.useAppCheckDebugToken;
       console.log('App Check debug token will be auto-generated and logged to console');
     }
   }
 
   try {
-    initializeAppCheck(app, {
+    const appCheck = initializeAppCheck(app, {
       provider: new ReCaptchaV3Provider(environment.recaptchaSiteKey),
       isTokenAutoRefreshEnabled: true,
     });
     appCheckInitialized = true;
     console.log('✅ Firebase App Check initialized successfully');
+
+    // optional: get a token manually (for debugging)
+    getToken(appCheck, /* forceRefresh= */ false)
+      .then((tokenResult) => {
+        if (!environment.production) {
+          console.log('AppCheck token:', tokenResult.token);
+        }
+      })
+      .catch((err) => {
+        console.warn('AppCheck token error:', err);
+      });
   } catch (error) {
     console.error('❌ Failed to initialize Firebase App Check:', error);
     console.warn('🔧 Make sure App Check is enabled in Firebase Console and reCAPTCHA site key is correct');
