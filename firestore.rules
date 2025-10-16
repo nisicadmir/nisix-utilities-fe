@@ -6,7 +6,7 @@ service cloud.firestore {
     match /secret_messages/{messageId} {
       allow read, write: if true;
       
-      // Allow automatic deletion of expired messages
+      // Allow automatic deletion of expired messages (auto-expire after 1 hour)
       allow delete: if resource.data.expiresAt < request.time;
     }
   }

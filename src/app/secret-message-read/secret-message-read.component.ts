@@ -26,8 +26,6 @@ export class SecretMessageReadComponent {
   ) {
     this.messageId = this.route.snapshot.queryParams['messageId'];
     this.secretKey = this.route.snapshot.queryParams['secretKey'];
-    console.log('Reading message with ID:', this.messageId);
-    console.log('Secret key:', this.secretKey);
     this.readSecretMessage();
   }
 
@@ -35,25 +33,19 @@ export class SecretMessageReadComponent {
     this.loaderService.show();
 
     try {
-      console.log('Attempting to retrieve message with ID:', this.messageId);
-
       // Retrieve the encrypted message from Firestore
       const secretMessage = await this.firestoreService.getMessage(this.messageId);
 
-      console.log('Retrieved message:', secretMessage);
-
       if (!secretMessage) {
-        console.log('Message not found or expired');
         throw new Error('Message not found or expired');
       }
-
-      console.log('Decrypting message with key:', this.secretKey);
 
       // Decrypt the message using the secret key
       this.message = this.cryptoService.decryptMessage(secretMessage.encryptedMessage, this.secretKey);
       this.durationInSeconds = secretMessage.durationInSeconds;
 
-      console.log('Decrypted message:', this.message);
+      // Delete the message immediately after reading
+      await this.firestoreService.markAsReadAndDelete(this.messageId);
 
       // Set up auto-redirect after duration
       if (this.durationInSeconds > 0) {

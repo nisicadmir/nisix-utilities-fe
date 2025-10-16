@@ -7,7 +7,8 @@ export interface SecretMessage {
   encryptedMessage: string;
   durationInSeconds: number;
   createdAt: any;
-  expiresAt: Date;
+  expiresAt: Date; // Auto-expire after 1 hour if not read
+  readAt?: Date; // When the message was first read
 }
 
 @Injectable({
@@ -21,18 +22,16 @@ export class FirestoreService {
    */
   async storeMessage(encryptedMessage: string, durationInSeconds: number): Promise<{ messageId: string; secretKey: string }> {
     try {
-      const expiresAt = new Date(Date.now() + durationInSeconds * 1000);
-
-      console.log('Storing message with duration:', durationInSeconds, 'expires at:', expiresAt);
+      // Auto-expire after 1 hour if not read
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
       const docRef = await addDoc(collection(db, this.COLLECTION_NAME), {
         encryptedMessage,
         durationInSeconds,
         createdAt: serverTimestamp(),
         expiresAt,
+        readAt: null, // Not read yet
       });
-
-      console.log('Message stored with ID:', docRef.id);
 
       // Generate a random key for encryption/decryption
       const secretKey = this.generateRandomKey();
@@ -52,15 +51,11 @@ export class FirestoreService {
    */
   async getMessage(messageId: string): Promise<SecretMessage | null> {
     try {
-      console.log('FirestoreService: Getting message with ID:', messageId);
       const docRef = doc(db, this.COLLECTION_NAME, messageId);
       const docSnap = await getDoc(docRef);
 
-      console.log('FirestoreService: Document exists:', docSnap.exists());
-
       if (docSnap.exists()) {
         const data = docSnap.data();
-        console.log('FirestoreService: Raw data:', data);
 
         const message: SecretMessage = {
           id: docSnap.id,
@@ -68,27 +63,34 @@ export class FirestoreService {
           durationInSeconds: data['durationInSeconds'],
           createdAt: data['createdAt'],
           expiresAt: data['expiresAt'].toDate(),
+          readAt: data['readAt'] ? data['readAt'].toDate() : undefined,
         };
 
-        console.log('FirestoreService: Parsed message:', message);
-        console.log('FirestoreService: Current time:', new Date());
-        console.log('FirestoreService: Expires at:', message.expiresAt);
-
-        // Check if message has expired
+        // Check if message has auto-expired (1 hour limit)
         if (message.expiresAt < new Date()) {
-          console.log('FirestoreService: Message expired, deleting...');
           await this.deleteMessage(messageId);
           return null;
         }
 
-        console.log('FirestoreService: Message is valid, returning...');
         return message;
       } else {
-        console.log('FirestoreService: Document does not exist');
         return null;
       }
     } catch (error) {
-      console.error('FirestoreService: Error retrieving message:', error);
+      console.error('Error retrieving message:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Mark message as read and delete it immediately
+   */
+  async markAsReadAndDelete(messageId: string): Promise<void> {
+    try {
+      const docRef = doc(db, this.COLLECTION_NAME, messageId);
+      await deleteDoc(docRef);
+    } catch (error) {
+      console.error('Error marking message as read and deleting:', error);
       throw error;
     }
   }

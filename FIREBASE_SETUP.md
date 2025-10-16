@@ -70,5 +70,6 @@ firebase deploy --only firestore:rules
 
 - The security rules allow public read/write access intentionally for secret message sharing
 - Messages are encrypted client-side before storing
-- Expired messages are automatically cleaned up
+- Messages auto-expire after 1 hour if not read
+- Messages are deleted immediately after being read
 - No authentication required for this use case
