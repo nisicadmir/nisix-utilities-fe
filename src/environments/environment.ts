@@ -1,4 +1,5 @@
 export const environment = {
+  production: true,
   url: 'https://www.nisix.net',
   apiUrl: 'https://site--nisix-utilities-be--jxxml6l7wt9k.code.run/api/v1',
   recaptchaSiteKey: '6LfHg-wrAAAAACJhq6hACW1eng5Ypp4fOijC1yuw',
