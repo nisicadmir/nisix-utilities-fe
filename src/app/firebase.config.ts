@@ -3,7 +3,7 @@ import { getFirestore } from 'firebase/firestore';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 import { environment } from '../environments/environment';
 
-// (<any>self).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+(<any>self).FIREBASE_APPCHECK_DEBUG_TOKEN = environment.production ? false : true;
 // Initialize Firebase
 const app = initializeApp(environment.firebase);
 
