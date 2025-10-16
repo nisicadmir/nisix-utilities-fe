@@ -1,0 +1,13 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow public read/write access to secret_messages collection
+    // This is intentional for the secret message sharing use case
+    match /secret_messages/{messageId} {
+      allow read, write: if true;
+      
+      // Allow automatic deletion of expired messages
+      allow delete: if resource.data.expiresAt < request.time;
+    }
+  }
+}

@@ -4,11 +4,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { HttpService } from '../http.service';
 import { environment } from 'src/environments/environment';
 import { UtilService } from '../util.service';
 import { LoaderService } from '../_modules/loader/loader.service';
 import { MenuComponent } from '../menu/menu.component';
+import { FirestoreService } from '../firestore.service';
+import { CryptoService } from '../crypto.service';
 
 @Component({
   selector: 'app-secret-message-generate',
@@ -23,34 +24,43 @@ export class SecretMessageGenerateComponent {
     durationInSeconds: new FormControl(10, [Validators.required, Validators.min(1), Validators.max(90)]),
   });
 
-  constructor(private httpService: HttpService, private utilService: UtilService, private loaderService: LoaderService) {}
+  constructor(
+    private firestoreService: FirestoreService,
+    private cryptoService: CryptoService,
+    private utilService: UtilService,
+    private loaderService: LoaderService,
+  ) {}
 
-  public generateSecretMessage() {
+  public async generateSecretMessage() {
     if (this.formGroup.invalid) {
       return;
     }
 
     this.loaderService.show();
-    console.log('formGroup.value', this.formGroup.value);
-    this.httpService
-      .post<{
-        messageId: string;
-        secretKey: string;
-      }>('secret-message/generate', this.formGroup.value)
-      .subscribe({
-        next: (response) => {
-          const messageId = response.messageId;
-          const secretKey = response.secretKey;
-          this.copyMessageId();
-          this.urlLink = `${environment.url}/#/secret-message-read?messageId=${messageId}&secretKey=${secretKey}`;
-        },
-        error: (error) => {
-          console.error(error);
-        },
-        complete: () => {
-          this.loaderService.hide();
-        },
-      });
+
+    try {
+      const message = this.formGroup.value.message!;
+      const durationInSeconds = this.formGroup.value.durationInSeconds!;
+
+      // Generate random key for encryption
+      const secretKey = this.cryptoService.generateRandomKey();
+
+      // Encrypt the message
+      const encryptedMessage = this.cryptoService.encryptMessage(message, secretKey);
+
+      // Store in Firestore
+      const response = await this.firestoreService.storeMessage(encryptedMessage, durationInSeconds);
+
+      // Update URL with the actual messageId from Firestore
+      this.urlLink = `${environment.url}/secret-message-read?messageId=${response.messageId}&secretKey=${secretKey}`;
+
+      // Copy the link to clipboard
+      this.copyMessageId();
+    } catch (error) {
+      console.error('Error generating secret message:', error);
+    } finally {
+      this.loaderService.hide();
+    }
   }
 
   public copyMessageId(): void {

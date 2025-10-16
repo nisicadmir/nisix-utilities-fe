@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { HttpService } from '../http.service';
 import { LoaderService } from '../_modules/loader/loader.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MenuComponent } from '../menu/menu.component';
+import { FirestoreService } from '../firestore.service';
+import { CryptoService } from '../crypto.service';
 
 @Component({
   selector: 'app-secret-message-read',
@@ -17,43 +18,54 @@ export class SecretMessageReadComponent {
   public secretKey = '';
 
   constructor(
-    private httpService: HttpService,
+    private firestoreService: FirestoreService,
+    private cryptoService: CryptoService,
     private loaderService: LoaderService,
     private route: ActivatedRoute,
     private router: Router,
   ) {
     this.messageId = this.route.snapshot.queryParams['messageId'];
     this.secretKey = this.route.snapshot.queryParams['secretKey'];
+    console.log('Reading message with ID:', this.messageId);
+    console.log('Secret key:', this.secretKey);
     this.readSecretMessage();
   }
 
-  public readSecretMessage() {
+  public async readSecretMessage() {
     this.loaderService.show();
 
-    this.httpService
-      .get<{
-        message: string;
-        durationInSeconds: number;
-      }>(`secret-message/read/${this.messageId}/${this.secretKey}`)
-      .subscribe({
-        next: (response) => {
-          this.message = response.message;
-          this.durationInSeconds = response.durationInSeconds;
+    try {
+      console.log('Attempting to retrieve message with ID:', this.messageId);
 
-          if (this.durationInSeconds > 0) {
-            setTimeout(() => {
-              this.router.navigate(['/secret-message-generate']);
-            }, this.durationInSeconds * 1_000);
-          }
+      // Retrieve the encrypted message from Firestore
+      const secretMessage = await this.firestoreService.getMessage(this.messageId);
 
-          this.loaderService.hide();
-        },
-        error: (error) => {
-          console.error(error);
-          this.loaderService.hide();
+      console.log('Retrieved message:', secretMessage);
+
+      if (!secretMessage) {
+        console.log('Message not found or expired');
+        throw new Error('Message not found or expired');
+      }
+
+      console.log('Decrypting message with key:', this.secretKey);
+
+      // Decrypt the message using the secret key
+      this.message = this.cryptoService.decryptMessage(secretMessage.encryptedMessage, this.secretKey);
+      this.durationInSeconds = secretMessage.durationInSeconds;
+
+      console.log('Decrypted message:', this.message);
+
+      // Set up auto-redirect after duration
+      if (this.durationInSeconds > 0) {
+        setTimeout(() => {
           this.router.navigate(['/secret-message-generate']);
-        },
-        complete: () => {},
-      });
+        }, this.durationInSeconds * 1_000);
+      }
+    } catch (error) {
+      console.error('Error reading secret message:', error);
+      this.router.navigate(['/secret-message-generate']);
+    } finally {
+      this.loaderService.hide();
+    }
   }
 }
