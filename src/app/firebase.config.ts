@@ -10,9 +10,16 @@ const app = initializeApp(environment.firebase);
 if (environment.recaptchaSiteKey && environment.recaptchaSiteKey !== 'your-recaptcha-site-key') {
   console.log('Initializing Firebase App Check with reCAPTCHA v3...');
 
-  // Enable debug token for development
+  // Enable debug token for development. Use explicit token from environment if provided.
   if (!environment.production) {
-    (<any>self).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+    if (environment.appCheckDebugToken && environment.appCheckDebugToken.length > 0) {
+      (<any>self).FIREBASE_APPCHECK_DEBUG_TOKEN = environment.appCheckDebugToken;
+      console.log('Using App Check debug token from environment');
+    } else {
+      // Fall back to boolean true which causes the SDK to log a generated debug token
+      (<any>self).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+      console.log('App Check debug token will be auto-generated and logged to console');
+    }
   }
 
   try {
