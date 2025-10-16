@@ -4,10 +4,10 @@ import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 import { environment } from '../environments/environment';
 
 // Initialize Firebase
+
+console.log('Initializing App Check with site key:');
 const app = initializeApp(environment.firebase);
 
-// Initialize App Check with reCAPTCHA v3
-// Note: Replace 'your-recaptcha-site-key' with your actual reCAPTCHA v3 site key from Firebase Console
 initializeAppCheck(app, {
   provider: new ReCaptchaV3Provider(environment.recaptchaSiteKey),
   isTokenAutoRefreshEnabled: true,
