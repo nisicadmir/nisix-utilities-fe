@@ -1,0 +1,226 @@
+<div class="qr-generator-container">
+  <app-menu></app-menu>
+
+  <div class="content">
+    <h1>QR Code Generator</h1>
+    <p class="description">
+      Generate QR codes for various types of content including text, URLs, WiFi networks, contact cards, and more.
+    </p>
+
+    <div class="main-content">
+      <!-- Form Section -->
+      <div class="form-section">
+        <form [formGroup]="qrForm" (ngSubmit)="generateQRCode()">
+          <!-- QR Type Selection -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>QR Code Type</mat-label>
+            <mat-select formControlName="type">
+              @for (type of qrTypes; track type.value) {
+              <mat-option [value]="type.value">
+                {{ type.label }}
+              </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Plain Text / URL -->
+          @if (qrForm.get('type')?.value === 'text' || qrForm.get('type')?.value === 'url') {
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>{{ qrForm.get('type')?.value === 'url' ? 'URL' : 'Text' }}</mat-label>
+            <textarea matInput formControlName="text" rows="3" placeholder="Enter your text or URL here..."></textarea>
+          </mat-form-field>
+          }
+
+          <!-- WiFi Network -->
+          @if (qrForm.get('type')?.value === 'wifi') {
+          <div class="wifi-section">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Network Name (SSID)</mat-label>
+              <input matInput formControlName="ssid" placeholder="Enter WiFi network name" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Password</mat-label>
+              <input matInput formControlName="password" type="password" placeholder="Enter WiFi password" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Security Type</mat-label>
+              <mat-select formControlName="security">
+                <mat-option value="WPA">WPA/WPA2</mat-option>
+                <mat-option value="WEP">WEP</mat-option>
+                <mat-option value="nopass">No Password</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <div class="checkbox-container">
+              <mat-checkbox formControlName="hidden">Hidden Network</mat-checkbox>
+            </div>
+          </div>
+          }
+
+          <!-- Email -->
+          @if (qrForm.get('type')?.value === 'email') {
+          <div class="email-section">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Email Address</mat-label>
+              <input matInput formControlName="email" type="email" placeholder="recipient@example.com" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Subject (Optional)</mat-label>
+              <input matInput formControlName="subject" placeholder="Email subject" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Message (Optional)</mat-label>
+              <textarea matInput formControlName="body" rows="3" placeholder="Email message"></textarea>
+            </mat-form-field>
+          </div>
+          }
+
+          <!-- Phone -->
+          @if (qrForm.get('type')?.value === 'phone') {
+          <div>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Phone Number</mat-label>
+              <input matInput formControlName="phone" placeholder="+1234567890" />
+            </mat-form-field>
+          </div>
+          }
+
+          <!-- SMS -->
+          @if (qrForm.get('type')?.value === 'sms') {
+          <div class="sms-section">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Phone Number</mat-label>
+              <input matInput formControlName="smsPhone" placeholder="+1234567890" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Message</mat-label>
+              <textarea matInput formControlName="smsMessage" rows="3" placeholder="Enter your message"></textarea>
+            </mat-form-field>
+          </div>
+          }
+
+          <!-- vCard -->
+          @if (qrForm.get('type')?.value === 'vcard') {
+          <div class="vcard-section">
+            <div class="row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>First Name</mat-label>
+                <input matInput formControlName="firstName" placeholder="John" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Last Name</mat-label>
+                <input matInput formControlName="lastName" placeholder="Doe" />
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Organization</mat-label>
+              <input matInput formControlName="organization" placeholder="Company Name" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Job Title</mat-label>
+              <input matInput formControlName="title" placeholder="Job Title" />
+            </mat-form-field>
+
+            <div class="row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Work Phone</mat-label>
+                <input matInput formControlName="phoneWork" placeholder="+1234567890" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Mobile Phone</mat-label>
+                <input matInput formControlName="phoneMobile" placeholder="+1234567890" />
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="emailWork" type="email" placeholder="email@example.com" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Website</mat-label>
+              <input matInput formControlName="website" placeholder="https://example.com" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Address</mat-label>
+              <input matInput formControlName="address" placeholder="123 Main Street" />
+            </mat-form-field>
+
+            <div class="row">
+              <mat-form-field appearance="outline" class="third-width">
+                <mat-label>City</mat-label>
+                <input matInput formControlName="city" placeholder="City" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="third-width">
+                <mat-label>State</mat-label>
+                <input matInput formControlName="state" placeholder="State" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="third-width">
+                <mat-label>ZIP Code</mat-label>
+                <input matInput formControlName="zip" placeholder="12345" />
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Country</mat-label>
+              <input matInput formControlName="country" placeholder="Country" />
+            </mat-form-field>
+          </div>
+          }
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button mat-raised-button color="primary" type="submit" [disabled]="isGenerating">
+              <mat-icon>qr_code</mat-icon>
+              {{ isGenerating ? 'Generating...' : 'Generate QR Code' }}
+            </button>
+
+            <button mat-stroked-button type="button" (click)="clearForm()">
+              <mat-icon>clear</mat-icon>
+              Clear
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- QR Code Display Section -->
+      <div class="qr-display-section">
+        <div class="qr-canvas-container">
+          <canvas #qrCanvas width="300" height="300"></canvas>
+          @if (!qrCodeDataUrl) {
+          <div class="placeholder">
+            <mat-icon>qr_code</mat-icon>
+            <p>Your QR code will appear here</p>
+          </div>
+          }
+        </div>
+
+        @if (qrCodeDataUrl) {
+        <div class="qr-actions">
+          <button mat-raised-button color="accent" (click)="downloadQRCode()">
+            <mat-icon>download</mat-icon>
+            Download PNG
+          </button>
+
+          <button mat-stroked-button (click)="copyQRCodeData()">
+            <mat-icon>content_copy</mat-icon>
+            Copy Data URL
+          </button>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

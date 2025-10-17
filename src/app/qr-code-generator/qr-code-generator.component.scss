@@ -1,0 +1,239 @@
+.qr-generator-container {
+  min-height: 100vh;
+  background: var(--background-color);
+  color: var(--text-color);
+}
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+}
+
+.description {
+  text-align: center;
+  margin-bottom: 30px;
+  opacity: 0.8;
+  font-size: 16px;
+}
+
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+.form-section {
+  background: var(--card-background);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.qr-display-section {
+  background: var(--card-background);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.half-width {
+  width: calc(50% - 8px);
+  margin-bottom: 16px;
+}
+
+.third-width {
+  width: calc(33.333% - 11px);
+  margin-bottom: 16px;
+}
+
+.row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+
+    .half-width,
+    .third-width {
+      width: 100%;
+    }
+  }
+}
+
+.checkbox-container {
+  margin-bottom: 16px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+
+  button {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+    }
+  }
+}
+
+.qr-canvas-container {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
+  border: 2px dashed var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  background: var(--background-color);
+}
+
+canvas {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: var(--text-color);
+  opacity: 0.6;
+  pointer-events: none;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 10px;
+    opacity: 0.5;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+.qr-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  button {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+    }
+  }
+}
+
+// WiFi section specific styles
+.wifi-section {
+  .half-width {
+    margin-right: 16px;
+  }
+}
+
+// Email section specific styles
+.email-section {
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+}
+
+// SMS section specific styles
+.sms-section {
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+}
+
+// vCard section specific styles
+.vcard-section {
+  .row {
+    margin-bottom: 0;
+  }
+}
+
+// Form field styling
+mat-form-field {
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+}
+
+// Button styling
+button {
+  mat-icon {
+    margin-right: 8px;
+  }
+}
+
+// Loading state
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+// Dark theme adjustments
+:host-context(.dark-theme) {
+  .qr-canvas-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .placeholder {
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+// Light theme adjustments
+:host-context(.light-theme) {
+  .qr-canvas-container {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.2);
+  }
+
+  .placeholder {
+    color: rgba(0, 0, 0, 0.6);
+  }
+}
