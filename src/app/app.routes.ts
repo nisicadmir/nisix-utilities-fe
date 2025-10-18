@@ -8,6 +8,7 @@ import { HashGeneratorComponent } from './hash-generator/hash-generator.componen
 import { PasswordGeneratorComponent } from './password-generator/password-generator.component';
 import { QrCodeGeneratorComponent } from './qr-code-generator/qr-code-generator.component';
 import { SnakeGameComponent } from './snake-game/snake-game.component';
+import { TextCounterComponent } from './text-counter/text-counter.component';
 import { TimeConverterComponent } from './time-converter/time-converter.component';
 import { UuidGeneratorComponent } from './uuid-generator/uuid-generator.component';
 import { SecretMessageGenerateComponent } from './secret-message-generate/secret-message-generate.component';
@@ -18,6 +19,7 @@ export const routes: Routes = [
   { path: 'time-converter', component: TimeConverterComponent },
   { path: 'password-generator', component: PasswordGeneratorComponent },
   { path: 'hash-generator', component: HashGeneratorComponent },
+  { path: 'text-counter', component: TextCounterComponent },
   { path: 'qr-code-generator', component: QrCodeGeneratorComponent },
   { path: 'uuid-generator', component: UuidGeneratorComponent },
   { path: 'circuit-game', component: circuitGameComponent },
