@@ -1,15 +1,14 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MenuComponent } from '../menu/menu.component';
-import { UtilService } from '../util.service';
 import * as CryptoJS from 'crypto-js';
+import { MenuComponent } from '../menu/menu.component';
 import { ThemeService } from '../theme.service';
-import { AsyncPipe } from '@angular/common';
+import { UtilService } from '../util.service';
 
 @Component({
   selector: 'app-hash-generator',
@@ -21,7 +20,6 @@ import { AsyncPipe } from '@angular/common';
     MatButtonModule,
     MatIconModule,
     MatSelectModule,
-    AsyncPipe,
   ],
   templateUrl: './hash-generator.component.html',
   styleUrl: './hash-generator.component.scss',
