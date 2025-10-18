@@ -1,11 +1,6 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
-import { environment } from './environments/environment';
-
-// Make environment variables available globally for index.html scripts
-(window as any).googleAnalyticsId = environment.googleAnalyticsId;
-(window as any).googleAdsId = environment.googleAdsId;
 
 // Initialize Firebase and App Check early
 import './app/firebase.config';

@@ -84,40 +84,5 @@
         "browserRequirements": "Requires JavaScript"
       }
     </script>
-
-    <!-- Google Analytics - only load if googleAnalyticsId is set -->
-    <script>
-      // Check if Google Analytics ID is available
-      if (window['googleAnalyticsId'] && window['googleAnalyticsId'].trim() !== '') {
-        // Load Google Analytics script
-        var script = document.createElement('script');
-        script.async = true;
-        script.src = 'https://www.googletagmanager.com/gtag/js?id=' + window['googleAnalyticsId'];
-        document.head.appendChild(script);
-
-        // Initialize Google Analytics
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-          dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-        gtag('config', window['googleAnalyticsId']);
-        window.gtag = gtag;
-      }
-    </script>
-
-    <!-- Google AdSense - only load if googleAdsId is set -->
-    <script>
-      // Check if Google AdSense ID is available
-      if (window['googleAdsId'] && window['googleAdsId'].trim() !== '') {
-        // Load Google AdSense script
-        var adsScript = document.createElement('script');
-        adsScript.async = true;
-        adsScript.defer = true;
-        adsScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + window['googleAdsId'];
-        adsScript.crossOrigin = 'anonymous';
-        document.head.appendChild(adsScript);
-      }
-    </script>
   </body>
 </html>
