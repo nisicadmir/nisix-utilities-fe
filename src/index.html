@@ -35,18 +35,6 @@
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/assets/sitemap.xml" />
     <link rel="icon" type="image/jpg" href="favicon_3.jpg" />
 
-    <!-- reCAPTCHA script for Firebase App Check -->
-    <script>
-      // Load reCAPTCHA script if site key is available
-      if (window.recaptchaSiteKey && window.recaptchaSiteKey.trim() !== '') {
-        var recaptchaScript = document.createElement('script');
-        recaptchaScript.src = 'https://www.google.com/recaptcha/api.js?render=' + window.recaptchaSiteKey;
-        recaptchaScript.async = true;
-        recaptchaScript.defer = true;
-        document.head.appendChild(recaptchaScript);
-      }
-    </script>
-
     <style>
       .visually-hidden {
         position: absolute;
