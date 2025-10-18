@@ -1,0 +1,81 @@
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MenuComponent } from '../menu/menu.component';
+import { UtilService } from '../util.service';
+import * as CryptoJS from 'crypto-js';
+
+@Component({
+  selector: 'app-hash-generator',
+  imports: [
+    MenuComponent,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSelectModule,
+  ],
+  templateUrl: './hash-generator.component.html',
+  styleUrl: './hash-generator.component.scss',
+})
+export class HashGeneratorComponent {
+  formGroupFrmHashGenerator: FormGroup;
+  generatedHashes: { [key: string]: string } = {};
+
+  hashAlgorithms = [
+    { value: 'md5', label: 'MD5' },
+    { value: 'sha1', label: 'SHA1' },
+    { value: 'sha256', label: 'SHA256' },
+    { value: 'sha512', label: 'SHA512' },
+  ];
+
+  constructor(private formBuilder: FormBuilder, private utilService: UtilService) {
+    this.formGroupFrmHashGenerator = this.formBuilder.group({
+      inputText: ['', [Validators.required]],
+      selectedAlgorithm: ['all', [Validators.required]],
+    });
+  }
+
+  public generateHashes(): void {
+    const inputText = this.formGroupFrmHashGenerator.value.inputText;
+    const selectedAlgorithm = this.formGroupFrmHashGenerator.value.selectedAlgorithm;
+
+    this.generatedHashes = {};
+
+    if (selectedAlgorithm === 'all') {
+      this.hashAlgorithms.forEach((algorithm) => {
+        this.generatedHashes[algorithm.value] = this.generateHash(inputText, algorithm.value);
+      });
+    } else {
+      this.generatedHashes[selectedAlgorithm] = this.generateHash(inputText, selectedAlgorithm);
+    }
+  }
+
+  private generateHash(text: string, algorithm: string): string {
+    switch (algorithm) {
+      case 'md5':
+        return CryptoJS.MD5(text).toString();
+      case 'sha1':
+        return CryptoJS.SHA1(text).toString();
+      case 'sha256':
+        return CryptoJS.SHA256(text).toString();
+      case 'sha512':
+        return CryptoJS.SHA512(text).toString();
+      default:
+        return '';
+    }
+  }
+
+  public copyToClipboard(text: string | number) {
+    this.utilService.copyToClipboard(text);
+  }
+
+  public get hasGeneratedHashes(): boolean {
+    return Object.keys(this.generatedHashes).length > 0;
+  }
+}

@@ -1,0 +1,40 @@
+<app-menu></app-menu>
+<div class="hash-generator-container">
+  <div>
+    <form [formGroup]="formGroupFrmHashGenerator">
+      <mat-form-field style="width: 100%">
+        <mat-label>Text to Hash</mat-label>
+        <textarea matInput formControlName="inputText" rows="4" placeholder="Enter text to generate hash..."></textarea>
+      </mat-form-field>
+
+      <mat-form-field style="width: 200px">
+        <mat-label>Algorithm</mat-label>
+        <mat-select formControlName="selectedAlgorithm">
+          <mat-option value="all">All Algorithms</mat-option>
+          @for (algorithm of hashAlgorithms; track algorithm.value) {
+          <mat-option [value]="algorithm.value">{{ algorithm.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" [disabled]="!formGroupFrmHashGenerator.valid" (click)="generateHashes()">
+        <mat-icon>refresh</mat-icon>
+        Generate Hash
+      </button>
+    </form>
+
+    @if (hasGeneratedHashes) {
+    <div class="hash-results">
+      @for (algorithm of hashAlgorithms; track algorithm.value) { @if (generatedHashes[algorithm.value]) {
+      <div class="hash-result-item">
+        <h3>{{ algorithm.label }}:</h3>
+        <div class="hash-value-container">
+          <span class="hash-value">{{ generatedHashes[algorithm.value] }}</span>
+          <mat-icon (click)="copyToClipboard(generatedHashes[algorithm.value])" class="copy-icon">content_copy</mat-icon>
+        </div>
+      </div>
+      } }
+    </div>
+    }
+  </div>
+</div>

@@ -4,6 +4,7 @@ import { BattleshipGameComponent } from './battleship-game/battleship-game.compo
 import { circuitGameComponent } from './circuit-game/circuit-game.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { GameInviteAcceptComponent } from './game-invite-accept/game-invite-accept.component';
+import { HashGeneratorComponent } from './hash-generator/hash-generator.component';
 import { PasswordGeneratorComponent } from './password-generator/password-generator.component';
 import { QrCodeGeneratorComponent } from './qr-code-generator/qr-code-generator.component';
 import { SnakeGameComponent } from './snake-game/snake-game.component';
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: '', component: DashboardComponent },
   { path: 'time-converter', component: TimeConverterComponent },
   { path: 'password-generator', component: PasswordGeneratorComponent },
+  { path: 'hash-generator', component: HashGeneratorComponent },
   { path: 'qr-code-generator', component: QrCodeGeneratorComponent },
   { path: 'uuid-generator', component: UuidGeneratorComponent },
   { path: 'circuit-game', component: circuitGameComponent },
