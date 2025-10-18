@@ -1,21 +1,24 @@
 <app-menu></app-menu>
-<div class="game-container">
-  <div class="header-section">
-    <h1 class="page-title">Snake Game</h1>
-    <h3 class="page-description">Classic snake game - eat food to grow and avoid hitting walls or yourself</h3>
-  </div>
 
-  <div style="margin-top: 20px" class="game-header">
-    <p class="score">Score: {{ score }}</p>
-  </div>
+<div class="content-container">
+  <div class="game-container content-container-inner">
+    <div class="header-section">
+      <h1 class="page-title">Snake Game</h1>
+      <h3 class="page-description">Classic snake game - eat food to grow and avoid hitting walls or yourself</h3>
+    </div>
 
-  <canvas #gameCanvas class="game-canvas"></canvas>
+    <div style="margin-top: 20px" class="game-header">
+      <p class="score">Score: {{ score }}</p>
+    </div>
 
-  <div class="game-controls">
-    @if (!isGameStarted) {
-    <p style="margin-bottom: 20px !important">Start a game by pressing right, up or down arrow.</p>
-    } @if (gameOver) {
-    <p class="game-over">Game Over! Final Score: {{ score }}</p>
-    }
+    <canvas #gameCanvas class="game-canvas"></canvas>
+
+    <div class="game-controls">
+      @if (!isGameStarted) {
+      <p style="margin-bottom: 20px !important">Start a game by pressing right, up or down arrow.</p>
+      } @if (gameOver) {
+      <p class="game-over">Game Over! Final Score: {{ score }}</p>
+      }
+    </div>
   </div>
 </div>

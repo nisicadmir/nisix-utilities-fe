@@ -32,7 +32,7 @@
       @if (hasGeneratedHashes) {
       <div class="hash-results">
         @for (algorithm of hashAlgorithms; track algorithm.value) { @if (generatedHashes[algorithm.value]) {
-        <div class="hash-result-item">
+        <div class="result-item">
           <h3>{{ algorithm.label }}:</h3>
           <div class="hash-value-container">
             <span class="hash-value">{{ generatedHashes[algorithm.value] }}</span>

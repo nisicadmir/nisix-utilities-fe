@@ -1,26 +1,33 @@
 <app-menu></app-menu>
-<div class="uuid-generator-container">
-  <div class="header-section">
-    <h1 class="page-title">UUID Generator</h1>
-    <h3 class="page-description">Generate unique identifiers using UUID v1 and v4 algorithms</h3>
-  </div>
 
-  <div class="content-section">
-    <button mat-raised-button color="primary" (click)="generateUuid()">
-      <mat-icon>refresh</mat-icon>
-      Generate
-    </button>
-
-    <div class="uuid-item">
-      <h1>V1:</h1>
-      <span>{{ uuidv1 }}</span>
-      <mat-icon (click)="copyToClipboard(uuidv1)">content_copy</mat-icon>
+<div class="content-container">
+  <div class="uuid-generator-container content-container-inner">
+    <div class="header-section">
+      <h1 class="page-title">UUID Generator</h1>
+      <h3 class="page-description">Generate unique identifiers using UUID v1 and v4 algorithms</h3>
     </div>
 
-    <div class="uuid-item">
-      <h1>V4:</h1>
-      <span>{{ uuidv4 }}</span>
-      <mat-icon (click)="copyToClipboard(uuidv4)">content_copy</mat-icon>
+    <div class="content-section">
+      <button mat-raised-button color="primary" (click)="generateUuid()">
+        <mat-icon>refresh</mat-icon>
+        Generate
+      </button>
+
+      <div class="result-item">
+        <h3>V1:</h3>
+        <div class="hash-value-container">
+          <span class="hash-value">{{ uuidv1 }}</span>
+          <mat-icon (click)="copyToClipboard(uuidv1)" class="copy-icon">content_copy</mat-icon>
+        </div>
+      </div>
+
+      <div class="result-item">
+        <h3>V4:</h3>
+        <div class="hash-value-container">
+          <span class="hash-value">{{ uuidv4 }}</span>
+          <mat-icon (click)="copyToClipboard(uuidv4)" class="copy-icon">content_copy</mat-icon>
+        </div>
+      </div>
     </div>
   </div>
 </div>

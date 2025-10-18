@@ -185,6 +185,78 @@ h3 {
   }
 }
 
+// General styles for result items (hash generator, UUID generator, etc.)
+.result-item {
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  margin-bottom: 20px;
+
+  h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .hash-value-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .hash-value {
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      word-break: break-all;
+      flex: 1;
+      background-color: #fff;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      color: #333;
+    }
+
+    .copy-icon {
+      cursor: pointer;
+      color: #666;
+      transition: color 0.2s;
+
+      &:hover {
+        color: #1976d2;
+      }
+    }
+  }
+}
+
+// Dark theme styles for result items
+.dark-theme {
+  .result-item {
+    background-color: #2a2a2a;
+    border-color: #555;
+
+    h3 {
+      color: #e0e0e0;
+    }
+
+    .hash-value-container {
+      .hash-value {
+        background-color: #1e1e1e;
+        border-color: #555;
+        color: #e0e0e0;
+      }
+
+      .copy-icon {
+        color: #ccc;
+
+        &:hover {
+          color: #42a5f5;
+        }
+      }
+    }
+  }
+}
+
 /* Add styles for the circuit game canvas */
 .game-container {
   display: flex;
