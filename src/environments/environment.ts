@@ -2,6 +2,8 @@ export const environment = {
   production: true,
   url: 'https://www.nisix.net',
   apiUrl: 'https://site--nisix-utilities-be--jxxml6l7wt9k.code.run/api/v1',
+  googleAnalyticsId: 'G-D1NCYZQ9C0',
+  googleAdsId: 'ca-pub-3809147852495324',
   recaptchaSiteKey: '6LfHg-wrAAAAACJhq6hACW1eng5Ypp4fOijC1yuw',
   // App Check debug token should be empty in production
   appCheckDebugToken: '',
