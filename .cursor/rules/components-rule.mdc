@@ -1,0 +1,102 @@
+---
+alwaysApply: true
+---
+
+# Angular Material Components Rule
+
+Always use Angular Material components instead of custom HTML elements or other UI libraries when building Angular applications.
+
+## Required Components
+
+### Form Controls
+
+- Use `mat-form-field` instead of `<div>` containers for form inputs
+- Use `mat-input` instead of `<input>` elements
+- Use `mat-select` instead of `<select>` elements
+- Use `mat-checkbox` instead of `<input type="checkbox">`
+- Use `mat-radio-group` and `mat-radio-button` instead of `<input type="radio">`
+- Use `mat-slide-toggle` instead of custom toggle switches
+- Use `mat-slider` instead of `<input type="range">`
+
+### Buttons
+
+- Use `mat-button`, `mat-raised-button`, `mat-flat-button`, `mat-stroked-button`, or `mat-icon-button` instead of `<button>` elements
+- Use `mat-fab` or `mat-mini-fab` for floating action buttons
+
+### Navigation
+
+- Use `mat-toolbar` instead of `<header>` elements
+- Use `mat-sidenav` instead of custom sidebar components
+- Use `mat-tab-group` and `mat-tab` instead of custom tab implementations
+- Use `mat-menu` instead of custom dropdown menus
+- Use `mat-tooltip` instead of custom tooltips
+
+### Data Display
+
+- Use `mat-table` instead of `<table>` elements
+- Use `mat-list` and `mat-list-item` instead of `<ul>` and `<li>` elements
+- Use `mat-chip` and `mat-chip-list` instead of custom tags/badges
+- Use `mat-progress-bar` or `mat-progress-spinner` instead of custom loading indicators
+- Use `mat-icon` instead of custom icon implementations
+
+### Feedback
+
+- Use `mat-snack-bar` instead of custom toast notifications
+- Use `mat-dialog` instead of custom modal dialogs
+
+## Import Requirements
+
+Always import the necessary Angular Material modules in your component:
+
+```typescript
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+// ... other required modules
+```
+
+## Examples
+
+### ❌ Don't use custom elements:
+
+```html
+<button>Click me</button>
+<input type="text" placeholder="Enter text" />
+<select>
+  <option>Option 1</option>
+</select>
+```
+
+### ✅ Use Angular Material components:
+
+```html
+<button mat-raised-button>Click me</button>
+<mat-form-field>
+  <mat-label>Enter text</mat-label>
+  <input matInput placeholder="Enter text" />
+</mat-form-field>
+<mat-select>
+  <mat-option>Option 1</mat-option>
+</mat-select>
+```
+
+## Benefits
+
+- Consistent design system across the application
+- Built-in accessibility features
+- Automatic theme support (light/dark mode)
+- Better mobile responsiveness
+- Reduced custom CSS maintenance
+- Professional appearance out of the box
+
+## Exceptions
+
+Only use custom HTML elements when:
+
+- Angular Material doesn't provide a suitable component
+- You need very specific custom functionality not available in Material
+- Performance requirements demand native HTML elements
+
+Always prefer Angular Material components over custom implementations.
