@@ -20,25 +20,25 @@
 .main-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 40px;
+  gap: 15px;
   align-items: start;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 30px;
+    gap: 10px;
   }
 }
 
 .form-section {
   background: var(--card-background);
-  padding: 30px;
+  padding: 15px;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .qr-display-section {
   background: var(--card-background);
-  padding: 30px;
+  padding: 15px;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;

@@ -187,9 +187,10 @@
             <div class="action-buttons">
               <button mat-raised-button color="primary" type="submit" [disabled]="isGenerating">
                 <mat-icon>qr_code</mat-icon>
-                {{ isGenerating ? 'Generating...' : 'Generate QR Code' }}
+                {{ isGenerating ? 'Generating...' : 'Generate' }}
               </button>
-
+            </div>
+            <div class="action-buttons">
               <button mat-stroked-button type="button" (click)="clearForm()">
                 <mat-icon>clear</mat-icon>
                 Clear
