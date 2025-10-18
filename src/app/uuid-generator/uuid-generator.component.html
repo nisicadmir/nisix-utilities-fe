@@ -1,25 +1,26 @@
 <app-menu></app-menu>
 <div class="uuid-generator-container">
-  <button mat-raised-button color="primary" (click)="generateUuid()">
-    <mat-icon>refresh</mat-icon>
-    Generate
-  </button>
-  <div>
-    <h1>
-      V1:
-      <span>
-        {{ uuidv1 }}
-      </span>
-    </h1>
-    <mat-icon (click)="copyToClipboard(uuidv1)">content_copy</mat-icon>
+  <div class="header-section">
+    <h1 class="page-title">UUID Generator</h1>
+    <h3 class="page-description">Generate unique identifiers using UUID v1 and v4 algorithms</h3>
   </div>
-  <div>
-    <h1>
-      V4:
-      <span>
-        {{ uuidv4 }}
-      </span>
-    </h1>
-    <mat-icon (click)="copyToClipboard(uuidv4)">content_copy</mat-icon>
+
+  <div class="content-section">
+    <button mat-raised-button color="primary" (click)="generateUuid()">
+      <mat-icon>refresh</mat-icon>
+      Generate
+    </button>
+
+    <div class="uuid-item">
+      <h1>V1:</h1>
+      <span>{{ uuidv1 }}</span>
+      <mat-icon (click)="copyToClipboard(uuidv1)">content_copy</mat-icon>
+    </div>
+
+    <div class="uuid-item">
+      <h1>V4:</h1>
+      <span>{{ uuidv4 }}</span>
+      <mat-icon (click)="copyToClipboard(uuidv4)">content_copy</mat-icon>
+    </div>
   </div>
 </div>

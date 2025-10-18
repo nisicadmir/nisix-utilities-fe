@@ -1,5 +1,10 @@
 <app-menu></app-menu>
 <div class="game-container">
+  <div class="header-section">
+    <h1 class="page-title">Circuit Game</h1>
+    <h3 class="page-description">Test your precision by drawing perfect circles and completing circuits</h3>
+  </div>
+
   <canvas #gameCanvas width="600" height="400"></canvas>
   <div class="controls">
     <button mat-raised-button color="primary" (click)="startGame()" [disabled]="isGameStarted">Start Game</button>

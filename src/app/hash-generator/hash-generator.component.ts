@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -8,6 +8,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MenuComponent } from '../menu/menu.component';
 import { UtilService } from '../util.service';
 import * as CryptoJS from 'crypto-js';
+import { ThemeService } from '../theme.service';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-hash-generator',
@@ -19,6 +21,7 @@ import * as CryptoJS from 'crypto-js';
     MatButtonModule,
     MatIconModule,
     MatSelectModule,
+    AsyncPipe,
   ],
   templateUrl: './hash-generator.component.html',
   styleUrl: './hash-generator.component.scss',
@@ -27,6 +30,8 @@ export class HashGeneratorComponent {
   formGroupFrmHashGenerator: FormGroup;
   generatedHashes: { [key: string]: string } = {};
 
+  isDarkTheme$ = this.themeService.isDarkTheme$;
+
   hashAlgorithms = [
     { value: 'md5', label: 'MD5' },
     { value: 'sha1', label: 'SHA1' },
@@ -34,7 +39,7 @@ export class HashGeneratorComponent {
     { value: 'sha512', label: 'SHA512' },
   ];
 
-  constructor(private formBuilder: FormBuilder, private utilService: UtilService) {
+  constructor(private formBuilder: FormBuilder, private utilService: UtilService, private themeService: ThemeService) {
     this.formGroupFrmHashGenerator = this.formBuilder.group({
       inputText: ['', [Validators.required]],
       selectedAlgorithm: ['all', [Validators.required]],

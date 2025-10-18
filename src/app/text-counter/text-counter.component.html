@@ -1,88 +1,87 @@
 <app-menu></app-menu>
-<div class="text-counter-container">
-  <div class="header-section">
-    <h1 class="page-title">
-      <mat-icon class="title-icon">text_fields</mat-icon>
-      Text Counter
-    </h1>
-    <p class="page-subtitle">Analyze your text with real-time character and word counting</p>
-  </div>
-
-  <div class="input-section">
-    <form [formGroup]="formGroupFrmTextCounter">
-      <mat-form-field appearance="outline" style="width: 100%">
-        <mat-label>Enter your text here</mat-label>
-        <textarea
-          matInput
-          formControlName="textInput"
-          rows="8"
-          placeholder="Paste or type your text here to see character and word counts..."
-          class="text-input"
-        >
-        </textarea>
-      </mat-form-field>
-    </form>
-  </div>
-
-  <div class="count-results">
-    <div class="count-item character-count">
-      <div class="count-icon">
-        <mat-icon>text_format</mat-icon>
-      </div>
-      <div class="count-content">
-        <h3>Total Characters</h3>
-        <div class="count-value">{{ characterCount | number }}</div>
-        <p class="count-description">Including spaces and punctuation</p>
-      </div>
+<div class="content-container">
+  <div class="text-counter-container content-container-inner">
+    <div class="header-section">
+      <h1 class="page-title">Text Counter</h1>
+      <h3 class="page-description">Analyze your text with real-time character and word counting</h3>
     </div>
 
-    <div class="count-item character-no-spaces">
-      <div class="count-icon">
-        <mat-icon>format_size</mat-icon>
-      </div>
-      <div class="count-content">
-        <h3>Characters (No Spaces)</h3>
-        <div class="count-value">{{ characterCountWithoutSpaces | number }}</div>
-        <p class="count-description">Excluding whitespace</p>
-      </div>
+    <div class="input-section">
+      <form [formGroup]="formGroupFrmTextCounter">
+        <mat-form-field appearance="outline" style="width: 100%">
+          <mat-label>Enter your text here</mat-label>
+          <textarea
+            matInput
+            formControlName="textInput"
+            rows="8"
+            placeholder="Paste or type your text here to see character and word counts..."
+            class="text-input"
+          >
+          </textarea>
+        </mat-form-field>
+      </form>
     </div>
 
-    <div class="count-item word-count">
-      <div class="count-icon">
-        <mat-icon>library_books</mat-icon>
-      </div>
-      <div class="count-content">
-        <h3>Word Count</h3>
-        <div class="count-value">{{ wordCount | number }}</div>
-        <p class="count-description">Individual words</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="stats-section" *ngIf="characterCount > 0">
-    <mat-card class="stats-card">
-      <mat-card-header>
-        <mat-card-title>
-          <mat-icon>analytics</mat-icon>
-          Text Statistics
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="stats-grid">
-          <div class="stat-item">
-            <span class="stat-label">Average word length:</span>
-            <span class="stat-value">{{ getAverageWordLength() | number : '1.1-1' }} characters</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">Reading time:</span>
-            <span class="stat-value">{{ getReadingTime() }} minutes</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">Space ratio:</span>
-            <span class="stat-value">{{ getSpaceRatio() | percent : '1.1-1' }}</span>
-          </div>
+    <div class="count-results">
+      <div class="count-item character-count">
+        <div class="count-icon">
+          <mat-icon>text_format</mat-icon>
         </div>
-      </mat-card-content>
-    </mat-card>
+        <div class="count-content">
+          <h3>Total Characters</h3>
+          <div class="count-value">{{ characterCount | number }}</div>
+          <p class="count-description">Including spaces and punctuation</p>
+        </div>
+      </div>
+
+      <div class="count-item character-no-spaces">
+        <div class="count-icon">
+          <mat-icon>format_size</mat-icon>
+        </div>
+        <div class="count-content">
+          <h3>Characters (No Spaces)</h3>
+          <div class="count-value">{{ characterCountWithoutSpaces | number }}</div>
+          <p class="count-description">Excluding whitespace</p>
+        </div>
+      </div>
+
+      <div class="count-item word-count">
+        <div class="count-icon">
+          <mat-icon>library_books</mat-icon>
+        </div>
+        <div class="count-content">
+          <h3>Word Count</h3>
+          <div class="count-value">{{ wordCount | number }}</div>
+          <p class="count-description">Individual words</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-section" *ngIf="characterCount > 0">
+      <mat-card class="stats-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>analytics</mat-icon>
+            Text Statistics
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-label">Average word length:</span>
+              <span class="stat-value">{{ getAverageWordLength() | number : '1.1-1' }} characters</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Reading time:</span>
+              <span class="stat-value">{{ getReadingTime() }} minutes</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Space ratio:</span>
+              <span class="stat-value">{{ getSpaceRatio() | percent : '1.1-1' }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
   </div>
 </div>

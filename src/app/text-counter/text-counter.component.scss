@@ -3,35 +3,6 @@
   max-width: 1000px;
   margin: 0 auto;
 
-  .header-section {
-    text-align: center;
-    margin-bottom: 40px;
-
-    .page-title {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin: 0 0 8px 0;
-      font-size: 2.5rem;
-      font-weight: 300;
-      color: #1976d2;
-
-      .title-icon {
-        font-size: 2.5rem;
-        width: 2.5rem;
-        height: 2.5rem;
-      }
-    }
-
-    .page-subtitle {
-      margin: 0;
-      font-size: 1.1rem;
-      color: #666;
-      font-weight: 400;
-    }
-  }
-
   .input-section {
     margin-bottom: 40px;
 
@@ -192,16 +163,6 @@
 // Dark mode styles
 :host-context(.dark-theme) {
   .text-counter-container {
-    .header-section {
-      .page-title {
-        color: #42a5f5;
-      }
-
-      .page-subtitle {
-        color: #ccc;
-      }
-    }
-
     .count-results {
       .count-item {
         background: linear-gradient(135deg, #2a2a2a 0%, #1e1e1e 100%);
@@ -270,24 +231,6 @@
 @media (max-width: 768px) {
   .text-counter-container {
     padding: 15px;
-
-    .header-section {
-      margin-bottom: 30px;
-
-      .page-title {
-        font-size: 2rem;
-
-        .title-icon {
-          font-size: 2rem;
-          width: 2rem;
-          height: 2rem;
-        }
-      }
-
-      .page-subtitle {
-        font-size: 1rem;
-      }
-    }
 
     .input-section {
       margin-bottom: 30px;
