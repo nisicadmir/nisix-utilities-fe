@@ -118,9 +118,11 @@ export class QrCodeGeneratorComponent {
         break;
     }
 
-    // Update validity
+    // Update validity only for non-type controls to avoid recursion
     Object.keys(this.qrForm.controls).forEach((key) => {
-      this.qrForm.get(key)?.updateValueAndValidity();
+      if (key !== 'type') {
+        this.qrForm.get(key)?.updateValueAndValidity();
+      }
     });
   }
 
