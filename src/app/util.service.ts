@@ -14,4 +14,12 @@ export class UtilService {
       verticalPosition: 'bottom',
     });
   }
+
+  public showError(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      horizontalPosition: 'right',
+      verticalPosition: 'bottom',
+    });
+  }
 }

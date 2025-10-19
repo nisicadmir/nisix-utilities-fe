@@ -1,1 +1,95 @@
-<p>base64-utility works!</p>
+<app-menu></app-menu>
+<div class="content-container">
+  <div class="base64-utility-container content-container-inner">
+    <div class="header-section">
+      <h1 class="page-title">Base64 Utility</h1>
+      <h3 class="page-description">Encode and decode text using Base64 encoding</h3>
+    </div>
+
+    <mat-tab-group>
+      <!-- Encoder Tab -->
+      <mat-tab label="Encode to Base64">
+        <div class="tab-content">
+          <form [formGroup]="formGroupFrmBase64Encoder">
+            <mat-form-field style="width: 100%">
+              <mat-label>Text to Encode</mat-label>
+              <textarea
+                matInput
+                formControlName="textToEncode"
+                rows="6"
+                placeholder="Enter text to encode to Base64..."
+              ></textarea>
+            </mat-form-field>
+
+            <div class="button-row">
+              <button mat-raised-button color="primary" [disabled]="!formGroupFrmBase64Encoder.valid" (click)="encodeToBase64()">
+                <mat-icon>lock</mat-icon>
+                Encode to Base64
+              </button>
+              <button mat-stroked-button (click)="clearEncoder()">
+                <mat-icon>clear</mat-icon>
+                Clear
+              </button>
+            </div>
+          </form>
+
+          @if (hasEncodedResult) {
+          <div class="result-section">
+            <div class="results-header">
+              <h3>Encoded Result:</h3>
+              <button mat-icon-button (click)="copyToClipboard(encodedResult)" matTooltip="Copy encoded text">
+                <mat-icon>content_copy</mat-icon>
+              </button>
+            </div>
+            <div class="result-content">
+              <textarea readonly [value]="encodedResult" rows="4" class="result-textarea"></textarea>
+            </div>
+          </div>
+          }
+        </div>
+      </mat-tab>
+
+      <!-- Decoder Tab -->
+      <mat-tab label="Decode from Base64">
+        <div class="tab-content">
+          <form [formGroup]="formGroupFrmBase64Decoder">
+            <mat-form-field style="width: 100%">
+              <mat-label>Base64 Text to Decode</mat-label>
+              <textarea matInput formControlName="textToDecode" rows="6" placeholder="Enter Base64 text to decode..."></textarea>
+            </mat-form-field>
+
+            <div class="button-row">
+              <button
+                mat-raised-button
+                color="primary"
+                [disabled]="!formGroupFrmBase64Decoder.valid"
+                (click)="decodeFromBase64()"
+              >
+                <mat-icon>lock_open</mat-icon>
+                Decode from Base64
+              </button>
+              <button mat-stroked-button (click)="clearDecoder()">
+                <mat-icon>clear</mat-icon>
+                Clear
+              </button>
+            </div>
+          </form>
+
+          @if (hasDecodedResult) {
+          <div class="result-section">
+            <div class="results-header">
+              <h3>Decoded Result:</h3>
+              <button mat-icon-button (click)="copyToClipboard(decodedResult)" matTooltip="Copy decoded text">
+                <mat-icon>content_copy</mat-icon>
+              </button>
+            </div>
+            <div class="result-content">
+              <textarea readonly [value]="decodedResult" rows="4" class="result-textarea"></textarea>
+            </div>
+          </div>
+          }
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

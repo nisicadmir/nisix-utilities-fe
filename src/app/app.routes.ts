@@ -13,6 +13,8 @@ import { TimeConverterComponent } from './time-converter/time-converter.componen
 import { UuidGeneratorComponent } from './uuid-generator/uuid-generator.component';
 import { SecretMessageGenerateComponent } from './secret-message-generate/secret-message-generate.component';
 import { SecretMessageReadComponent } from './secret-message-read/secret-message-read.component';
+import { RandomNumberGeneratorComponent } from './random-number-generator/random-number-generator.component';
+import { Base64UtilityComponent } from './base64-utility/base64-utility.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -29,5 +31,7 @@ export const routes: Routes = [
   { path: 'battleship-game-play', component: BattleshipGamePlayComponent },
   { path: 'secret-message', component: SecretMessageGenerateComponent },
   { path: 'secret-message-read', component: SecretMessageReadComponent },
+  { path: 'random-number-generator', component: RandomNumberGeneratorComponent },
+  { path: 'base64-utility', component: Base64UtilityComponent },
   { path: '**', redirectTo: '' },
 ];
