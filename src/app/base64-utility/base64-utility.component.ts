@@ -31,6 +31,12 @@ export class Base64UtilityComponent {
   hasEncodedResult: boolean = false;
   hasDecodedResult: boolean = false;
 
+  // Image encoding properties
+  selectedFile: File | null = null;
+  imagePreview: string = '';
+  imageBase64Result: string = '';
+  hasImageResult: boolean = false;
+
   constructor(private formBuilder: FormBuilder, private utilService: UtilService) {
     this.formGroupFrmBase64Encoder = this.formBuilder.group({
       textToEncode: ['', [Validators.required]],
@@ -77,5 +83,72 @@ export class Base64UtilityComponent {
     this.formGroupFrmBase64Decoder.reset();
     this.decodedResult = '';
     this.hasDecodedResult = false;
+  }
+
+  public onFileSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      // Check if it's an image file
+      if (!file.type.startsWith('image/')) {
+        this.utilService.showError('Please select an image file');
+        return;
+      }
+
+      // Check file size (limit to 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        this.utilService.showError('File size must be less than 5MB');
+        return;
+      }
+
+      this.selectedFile = file;
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagePreview = e.target.result;
+      };
+      reader.readAsDataURL(file);
+
+      // Convert to base64
+      this.convertImageToBase64(file);
+    }
+  }
+
+  private convertImageToBase64(file: File): void {
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.imageBase64Result = e.target.result;
+      this.hasImageResult = true;
+    };
+    reader.onerror = () => {
+      this.utilService.showError('Error reading file');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  public copyImageBase64(): void {
+    if (this.imageBase64Result) {
+      this.utilService.copyToClipboard(this.imageBase64Result);
+    }
+  }
+
+  public selectImageFile(): void {
+    const fileInput = document.getElementById('imageFileInput') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  }
+
+  public clearImage(): void {
+    this.selectedFile = null;
+    this.imagePreview = '';
+    this.imageBase64Result = '';
+    this.hasImageResult = false;
+
+    // Reset file input
+    const fileInput = document.getElementById('imageFileInput') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
   }
 }

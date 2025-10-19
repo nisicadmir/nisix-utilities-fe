@@ -90,6 +90,51 @@
           }
         </div>
       </mat-tab>
+
+      <!-- Image Encoder Tab -->
+      <mat-tab label="Image to Base64">
+        <div class="tab-content">
+          <div class="image-upload-section">
+            <div class="file-input-container">
+              <input type="file" id="imageFileInput" accept="image/*" (change)="onFileSelected($event)" style="display: none" />
+              <button mat-raised-button color="primary" (click)="selectImageFile()">
+                <mat-icon>cloud_upload</mat-icon>
+                Select Image
+              </button>
+              @if (selectedFile) {
+              <span class="file-info"> {{ selectedFile.name }} ({{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB) </span>
+              }
+            </div>
+
+            @if (imagePreview) {
+            <div class="image-preview-section">
+              <h3>Image Preview:</h3>
+              <div class="image-preview-container">
+                <img [src]="imagePreview" alt="Selected image" class="preview-image" />
+              </div>
+            </div>
+            } @if (hasImageResult) {
+            <div class="result-section">
+              <div class="results-header">
+                <h3>Base64 Result:</h3>
+                <div class="header-buttons">
+                  <button mat-icon-button (click)="copyImageBase64()" matTooltip="Copy Base64">
+                    <mat-icon>content_copy</mat-icon>
+                  </button>
+                  <button mat-stroked-button (click)="clearImage()">
+                    <mat-icon>clear</mat-icon>
+                    Clear
+                  </button>
+                </div>
+              </div>
+              <div class="result-content">
+                <textarea readonly [value]="imageBase64Result" rows="6" class="result-textarea"></textarea>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+      </mat-tab>
     </mat-tab-group>
   </div>
 </div>
