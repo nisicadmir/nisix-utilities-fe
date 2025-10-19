@@ -48,4 +48,16 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://www.nisix.net/assets/random-number-generator-seo.html</loc>
+    <lastmod>2025-10-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.nisix.net/assets/base64-utility-seo.html</loc>
+    <lastmod>2025-10-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
