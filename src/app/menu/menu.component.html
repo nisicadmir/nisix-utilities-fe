@@ -4,19 +4,19 @@
   </button>
 
   <div class="menu-items" [class.active]="isMenuOpen">
-    <a routerLink="/">Home</a>
-    <a routerLink="/time-converter">Time Converter</a>
-    <a routerLink="/password-generator">Password Generator</a>
-    <a routerLink="/hash-generator">Hash Generator</a>
-    <a routerLink="/text-counter">Text Counter</a>
-    <a routerLink="/qr-code-generator">QR Code Generator</a>
-    <a routerLink="/uuid-generator">UUID Generator</a>
-    <a routerLink="/circuit-game">Circuit Game</a>
-    <a routerLink="/snake-game">Snake Game</a>
-    <a routerLink="/battleship-game">Battleship Game (online)</a>
-    <a routerLink="/secret-message">One Time Encrypted Secret Message</a>
-    <a routerLink="/random-number-generator">Random Number Generator</a>
-    <a routerLink="/base64-utility">Base64 Utility</a>
+    <a routerLink="/" (click)="closeMenu()">Home</a>
+    <a routerLink="/time-converter" (click)="closeMenu()">Time Converter</a>
+    <a routerLink="/password-generator" (click)="closeMenu()">Password Generator</a>
+    <a routerLink="/hash-generator" (click)="closeMenu()">Hash Generator</a>
+    <a routerLink="/text-counter" (click)="closeMenu()">Text Counter</a>
+    <a routerLink="/qr-code-generator" (click)="closeMenu()">QR Code Generator</a>
+    <a routerLink="/uuid-generator" (click)="closeMenu()">UUID Generator</a>
+    <a routerLink="/circuit-game" (click)="closeMenu()">Circuit Game</a>
+    <a routerLink="/snake-game" (click)="closeMenu()">Snake Game</a>
+    <a routerLink="/battleship-game" (click)="closeMenu()">Battleship Game (online)</a>
+    <a routerLink="/secret-message" (click)="closeMenu()">One Time Encrypted Secret Message</a>
+    <a routerLink="/random-number-generator" (click)="closeMenu()">Random Number Generator</a>
+    <a routerLink="/base64-utility" (click)="closeMenu()">Base64 Utility</a>
   </div>
   <button mat-icon-button (click)="toggleTheme()">
     @if (isDarkTheme) {

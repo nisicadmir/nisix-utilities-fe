@@ -33,6 +33,10 @@ export class MenuComponent {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
+  closeMenu() {
+    this.isMenuOpen = false;
+  }
+
   toggleTheme() {
     this.themeService.toggleTheme();
   }

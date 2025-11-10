@@ -1,12 +1,11 @@
-import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MenuComponent } from '../menu/menu.component';
 
 @Component({
   selector: 'app-circuit-game',
   templateUrl: './circuit-game.component.html',
   styleUrls: ['./circuit-game.component.scss'],
-  imports: [MatButtonModule, MenuComponent],
+  imports: [MatButtonModule],
 })
 export class circuitGameComponent implements AfterViewInit {
   @ViewChild('gameCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
