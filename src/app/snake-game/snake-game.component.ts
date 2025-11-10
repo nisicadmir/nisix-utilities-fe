@@ -1,13 +1,12 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, HostListener } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MenuComponent } from '../menu/menu.component';
 import { ThemeService } from '../theme.service';
 
 @Component({
   selector: 'app-snake-game',
   templateUrl: './snake-game.component.html',
   styleUrls: ['./snake-game.component.scss'],
-  imports: [MatButtonModule, MenuComponent],
+  imports: [MatButtonModule],
   standalone: true,
 })
 export class SnakeGameComponent implements AfterViewInit {

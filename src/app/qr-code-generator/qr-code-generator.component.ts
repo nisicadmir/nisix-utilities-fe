@@ -1,14 +1,13 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MenuComponent } from '../menu/menu.component';
-import { UtilService } from '../util.service';
 import * as QRCode from 'qrcode';
+import { UtilService } from '../util.service';
 
 @Component({
   selector: 'app-qr-code-generator',
@@ -20,7 +19,6 @@ import * as QRCode from 'qrcode';
     MatIconModule,
     MatSelectModule,
     MatSnackBarModule,
-    MenuComponent,
   ],
   templateUrl: './qr-code-generator.component.html',
   styleUrl: './qr-code-generator.component.scss',

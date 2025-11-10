@@ -5,11 +5,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute } from '@angular/router';
 
-import { environment } from '../../environments/environment';
-import { MenuComponent } from '../menu/menu.component';
-import { NotificationService } from '../notification.service';
 import { LoaderService } from '../_modules/loader/loader.service';
 import { FirestoreService } from '../firestore.service';
+import { NotificationService } from '../notification.service';
 
 interface IBattleshipGamePositions {
   carrier: Array<{ x: number; y: number }>;
@@ -62,7 +60,7 @@ type ShipType = keyof IBattleshipGamePositions;
 
 @Component({
   selector: 'app-battleship-game-play',
-  imports: [MenuComponent, MatButtonModule, MatInputModule, CommonModule, FormsModule],
+  imports: [MatButtonModule, MatInputModule, CommonModule, FormsModule],
   templateUrl: './battleship-game-play.component.html',
   styleUrl: './battleship-game-play.component.scss',
 })

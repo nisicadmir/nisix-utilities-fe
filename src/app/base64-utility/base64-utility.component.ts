@@ -1,24 +1,15 @@
 import { Component } from '@angular/core';
-import { MenuComponent } from '../menu/menu.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { UtilService } from '../util.service';
 
 @Component({
   selector: 'app-base64-utility',
-  imports: [
-    MenuComponent,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTabsModule,
-  ],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatTabsModule],
   templateUrl: './base64-utility.component.html',
   styleUrl: './base64-utility.component.scss',
 })

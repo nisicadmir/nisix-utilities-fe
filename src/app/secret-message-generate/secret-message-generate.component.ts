@@ -1,19 +1,17 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { environment } from 'src/environments/environment';
-import { UtilService } from '../util.service';
 import { LoaderService } from '../_modules/loader/loader.service';
-import { MenuComponent } from '../menu/menu.component';
-import { FirestoreService } from '../firestore.service';
 import { CryptoService } from '../crypto.service';
+import { FirestoreService } from '../firestore.service';
+import { UtilService } from '../util.service';
 
 @Component({
   selector: 'app-secret-message-generate',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MenuComponent],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
   templateUrl: './secret-message-generate.component.html',
   styleUrl: './secret-message-generate.component.scss',
 })

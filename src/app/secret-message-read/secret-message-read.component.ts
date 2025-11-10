@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
-import { LoaderService } from '../_modules/loader/loader.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MenuComponent } from '../menu/menu.component';
-import { FirestoreService } from '../firestore.service';
+import { LoaderService } from '../_modules/loader/loader.service';
 import { CryptoService } from '../crypto.service';
+import { FirestoreService } from '../firestore.service';
 
 @Component({
   selector: 'app-secret-message-read',
-  imports: [MenuComponent],
+  imports: [],
   templateUrl: './secret-message-read.component.html',
   styleUrl: './secret-message-read.component.scss',
 })

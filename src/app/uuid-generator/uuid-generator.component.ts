@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { v1 as uuidv1 } from 'uuid';
-import { v4 as uuidv4 } from 'uuid';
-import { UtilService } from '../util.service';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuComponent } from '../menu/menu.component';
+import { v1 as uuidv1, v4 as uuidv4 } from 'uuid';
+import { UtilService } from '../util.service';
+
 @Component({
   selector: 'app-uuid-generator',
-  imports: [MatButtonModule, MatIconModule, MenuComponent],
+  imports: [MatButtonModule, MatIconModule],
   templateUrl: './uuid-generator.component.html',
   styleUrl: './uuid-generator.component.scss',
 })

@@ -6,21 +6,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import * as CryptoJS from 'crypto-js';
-import { MenuComponent } from '../menu/menu.component';
 import { ThemeService } from '../theme.service';
 import { UtilService } from '../util.service';
 
 @Component({
   selector: 'app-hash-generator',
-  imports: [
-    MenuComponent,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MatSelectModule,
-  ],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatSelectModule],
   templateUrl: './hash-generator.component.html',
   styleUrl: './hash-generator.component.scss',
 })

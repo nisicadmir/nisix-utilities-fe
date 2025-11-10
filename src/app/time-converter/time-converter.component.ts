@@ -1,15 +1,14 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
 import { JsonPipe } from '@angular/common';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatIconModule } from '@angular/material/icon';
-import { MenuComponent } from '../menu/menu.component';
 
-import { DateTime, Settings, Duration, DurationObjectUnits } from 'luxon';
+import { DateTime, Duration, DurationObjectUnits, Settings } from 'luxon';
 import { TIMEZONES } from '../timezones';
 import { UtilService } from '../util.service';
 @Component({
@@ -24,7 +23,6 @@ import { UtilService } from '../util.service';
     JsonPipe,
     MatSnackBarModule,
     MatIconModule,
-    MenuComponent,
   ],
   templateUrl: './time-converter.component.html',
   styleUrl: './time-converter.component.scss',

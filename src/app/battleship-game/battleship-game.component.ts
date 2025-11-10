@@ -6,11 +6,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { environment } from '../../environments/environment';
-import { UtilService } from '../util.service';
-import { Player } from '../models/player.model';
-import { MenuComponent } from '../menu/menu.component';
 import { LoaderService } from '../_modules/loader/loader.service';
 import { FirestoreService } from '../firestore.service';
+import { UtilService } from '../util.service';
 
 interface GameInvite {
   id: string;
@@ -18,7 +16,7 @@ interface GameInvite {
 
 @Component({
   selector: 'app-battleship-game',
-  imports: [MatButtonModule, CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, RouterModule, MenuComponent],
+  imports: [MatButtonModule, CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, RouterModule],
   templateUrl: './battleship-game.component.html',
   styleUrl: './battleship-game.component.scss',
 })

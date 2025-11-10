@@ -1,17 +1,15 @@
-import { Component } from '@angular/core';
 import { CommonModule, DecimalPipe, PercentPipe } from '@angular/common';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { MenuComponent } from '../menu/menu.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-text-counter',
   imports: [
     CommonModule,
-    MenuComponent,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
