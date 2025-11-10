@@ -10,7 +10,7 @@ import { UtilService } from '../util.service';
 import { Player } from '../models/player.model';
 import { MenuComponent } from '../menu/menu.component';
 import { LoaderService } from '../_modules/loader/loader.service';
-import { HttpService } from '../http.service';
+import { FirestoreService } from '../firestore.service';
 
 interface GameInvite {
   id: string;
@@ -35,13 +35,13 @@ export class BattleshipGameComponent {
     name2: ['', [Validators.required]],
   });
   constructor(
-    private httpService: HttpService,
+    private firestoreService: FirestoreService,
     private formBuilder: FormBuilder,
     private utilService: UtilService,
     private loaderService: LoaderService,
   ) {}
 
-  public createGame(): void {
+  public async createGame(): Promise<void> {
     const name1 = this.formGroup.value.name1;
     const name2 = this.formGroup.value.name2;
     if (name1 === name2) {
@@ -49,33 +49,25 @@ export class BattleshipGameComponent {
       return;
     }
     this.loaderService.show();
-    this.httpService
-      .post<{ player1: Player; battleshipGameId: string; gameInvite: GameInvite }>('battleship-game/create', {
-        name1: this.formGroup.value.name1,
-        name2: this.formGroup.value.name2,
-      })
-      .subscribe({
-        next: (response) => {
-          const player1 = response.player1;
-          const gameInvite = response.gameInvite;
+    try {
+      const response = await this.firestoreService.createBattleshipGame(name1!, name2!);
+      const player1 = response.player1;
+      const gameInvite = response.gameInvite;
 
-          this.playerId = player1.id;
-          this.playerName = player1.name;
-          this.playerPassword = player1.password;
+      this.playerId = player1.id;
+      this.playerName = player1.name;
+      this.playerPassword = player1.password;
 
-          this.battleshipGameId = response.battleshipGameId;
-          this.gameInviteId = gameInvite.id;
+      this.battleshipGameId = response.battleshipGameId;
+      this.gameInviteId = gameInvite.id;
 
-          this.isGameCreated = true;
-        },
-        error: (error) => {
-          console.error(error);
-          this.loaderService.hide();
-        },
-        complete: () => {
-          this.loaderService.hide();
-        },
-      });
+      this.isGameCreated = true;
+    } catch (error: any) {
+      console.error(error);
+      alert(error.message || 'Error creating game');
+    } finally {
+      this.loaderService.hide();
+    }
   }
 
   public copyInvite(): void {

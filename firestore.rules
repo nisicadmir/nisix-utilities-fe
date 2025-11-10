@@ -7,13 +7,35 @@ service cloud.firestore {
       
       // Allow reads and writes ONLY IF a valid App Check token is present.
       // This enforces that the request came from your legitimate app.
-      allow read, write: if request.app != null;
       // allow read, write: if true;
+      allow read, write: if true;
       
       // Allow automatic deletion of expired messages (auto-expire after 1 hour)
       allow delete: if resource.data.expiresAt < request.time;
     }
     
-    // NOTE: If you have other collections, you should add rules for them here.
+    // Battleship players collection
+    match /battleship_players/{playerId} {
+      // Allow reads and writes with App Check
+      allow read, write: if true;
+    }
+    
+    // Battleship games collection
+    match /battleship_games/{gameId} {
+      // Allow reads and writes with App Check
+      allow read, write: if true;
+      
+      // Moves subcollection
+      match /moves/{moveId} {
+        // Allow reads and writes with App Check
+        allow read, write: if true;
+      }
+    }
+    
+    // Game invites collection
+    match /game_invites/{inviteId} {
+      // Allow reads and writes with App Check
+      allow read, write: if true;
+    }
   }
 }

@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { Player } from '../models/player.model';
 import { MatButtonModule } from '@angular/material/button';
-import { HttpService } from '../http.service';
+import { FirestoreService } from '../firestore.service';
 
 @Component({
   selector: 'app-game-invite-accept',
@@ -18,24 +18,21 @@ export class GameInviteAcceptComponent {
   public playerId = '';
   public playerPassword = '';
 
-  constructor(private route: ActivatedRoute, private httpService: HttpService, private router: Router) {
+  constructor(private route: ActivatedRoute, private firestoreService: FirestoreService, private router: Router) {
     this.gameInviteId = this.route.snapshot.queryParams['id'];
   }
 
-  public acceptGameInvite(): void {
-    this.httpService.post<{ battleshipGameId: string; player: Player }>(`game-invite/accept/${this.gameInviteId}`, {}).subscribe({
-      next: (response) => {
-        this.battleshipGameId = response.battleshipGameId;
-        this.playerId = response.player.id;
-        this.playerName = response.player.name;
-        this.playerPassword = response.player.password;
-      },
-      error: (error) => {
-        // this.router.navigate(['/battleship-game']);
-      },
-      complete: () => {
-        // this.router.navigate(['/battleship-game']);
-      },
-    });
+  public async acceptGameInvite(): Promise<void> {
+    try {
+      const response = await this.firestoreService.acceptBattleshipGameInvite(this.gameInviteId);
+      this.battleshipGameId = response.battleshipGameId;
+      this.playerId = response.player.id;
+      this.playerName = response.player.name;
+      this.playerPassword = response.player.password;
+    } catch (error: any) {
+      console.error('Error accepting game invite:', error);
+      alert(error.message || 'Error accepting game invite');
+      // this.router.navigate(['/battleship-game']);
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 import { MenuComponent } from '../menu/menu.component';
 import { NotificationService } from '../notification.service';
 import { LoaderService } from '../_modules/loader/loader.service';
-import { HttpService } from '../http.service';
+import { FirestoreService } from '../firestore.service';
 
 interface IBattleshipGamePositions {
   carrier: Array<{ x: number; y: number }>;
@@ -66,7 +66,7 @@ type ShipType = keyof IBattleshipGamePositions;
   templateUrl: './battleship-game-play.component.html',
   styleUrl: './battleship-game-play.component.scss',
 })
-export class BattleshipGamePlayComponent {
+export class BattleshipGamePlayComponent implements OnDestroy {
   battleshipGameStatus = BattleshipGameStatus;
   battleshipGameId = '';
   playerId = '';
@@ -78,7 +78,7 @@ export class BattleshipGamePlayComponent {
   gameIsReady = false;
   playerIdTurn = '';
 
-  interval: ReturnType<typeof setInterval> | null = null;
+  unsubscribeGameInfo: (() => void) | null = null;
 
   isInSettingPositions = false;
 
@@ -121,7 +121,7 @@ export class BattleshipGamePlayComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private httpService: HttpService,
+    private firestoreService: FirestoreService,
     private notificationService: NotificationService,
     private loaderService: LoaderService,
   ) {
@@ -133,15 +133,12 @@ export class BattleshipGamePlayComponent {
   }
 
   ngOnInit() {
-    this.getBattleshipInfo(); // Initial fetch
-    this.interval = setInterval(() => {
-      this.getBattleshipInfo();
-    }, 5_000);
+    this.subscribeToGameInfo();
   }
 
   ngOnDestroy() {
-    if (this.interval) {
-      clearInterval(this.interval);
+    if (this.unsubscribeGameInfo) {
+      this.unsubscribeGameInfo();
     }
   }
 
@@ -300,51 +297,37 @@ export class BattleshipGamePlayComponent {
     }
   }
 
-  // --- http methods ---
-  sendPositions() {
+  // --- Firestore methods ---
+  async sendPositions() {
     // Prepare data for API: convert current positions object
-    const finalPositions: Partial<IBattleshipGamePositions> = {};
-    for (const shipName in this.battleshipPositions) {
-      if (this.battleshipPositions.hasOwnProperty(shipName as ShipType)) {
-        finalPositions[shipName as ShipType] = [...this.battleshipPositions[shipName as ShipType]];
-      }
-    }
+    const finalPositions: IBattleshipGamePositions = {
+      carrier: [...this.battleshipPositions.carrier],
+      battleship: [...this.battleshipPositions.battleship],
+      cruiser: [...this.battleshipPositions.cruiser],
+      submarine: [...this.battleshipPositions.submarine],
+      destroyer: [...this.battleshipPositions.destroyer],
+    };
 
     this.loaderService.show();
 
-    this.httpService
-      .post<{
-        message: string;
-        shipSunk: string;
-        move: {
-          x: number;
-          y: number;
-          isHit: boolean;
-        };
-      }>(`battleship-game/${this.battleshipGameId}/set-ship-positions`, {
-        playerId: this.playerId,
-        playerPassword: this.playerPassword,
-        positions: finalPositions,
-      })
-      .subscribe({
-        next: (response) => {
-          this.getBattleshipInfo(); // Refresh game info
-          this.battleshipGameInfo!.positionsAreSet = true;
-          this.isInSettingPositions = false;
-          this.loaderService.hide();
-        },
-        error: (error) => {
-          console.error('Error setting positions:', error);
-          this.loaderService.hide();
-        },
-        complete: () => {
-          this.loaderService.hide();
-        },
-        // complete: () => { console.log('Position setting complete'); } // Optional
-      });
+    try {
+      await this.firestoreService.setBattleshipPositions(
+        this.battleshipGameId,
+        this.playerId,
+        this.playerPassword,
+        finalPositions,
+      );
+      this.battleshipGameInfo!.positionsAreSet = true;
+      this.isInSettingPositions = false;
+    } catch (error: any) {
+      console.error('Error setting positions:', error);
+      this.notificationService.showNotification(error.message || 'Error setting positions');
+    } finally {
+      this.loaderService.hide();
+    }
   }
 
-  makeMove(row: number, col: number) {
+  async makeMove(row: number, col: number) {
     if (this.playerIdTurn !== this.playerId) {
       this.notificationService.showNotification('It is not your turn');
       return;
@@ -352,56 +335,41 @@ export class BattleshipGamePlayComponent {
 
     this.loaderService.show();
 
-    this.httpService
-      .post<{
-        message: string;
-        shipSunk: string;
-        move: {
-          x: number;
-          y: number;
-          isHit: boolean;
-        };
-      }>(`battleship-game/${this.battleshipGameId}/make-move`, {
-        playerId: this.playerId,
-        playerPassword: this.playerPassword,
-        move: { x: row, y: col },
-      })
-      .subscribe({
-        next: (response) => {
-          const moveType = response.move.isHit ? 4 : 5;
-          this.opponentGrid[response.move.x][response.move.y] = moveType;
-          this.getBattleshipInfo();
-          if (response.shipSunk) {
-            this.notificationService.showNotification(`You sank the ${response.shipSunk}`, 'center', 'top');
-          }
-        },
-        error: (error) => {
-          console.error('Error making move:', error);
-          this.loaderService.hide();
-        },
-        complete: () => {
-          this.loaderService.hide();
-        },
+    try {
+      const response = await this.firestoreService.makeBattleshipMove(this.battleshipGameId, this.playerId, this.playerPassword, {
+        x: row,
+        y: col,
       });
+      const moveType = response.move.isHit ? 4 : 5;
+      this.opponentGrid[response.move.x][response.move.y] = moveType;
+      if (response.shipSunk) {
+        this.notificationService.showNotification(`You sank the ${response.shipSunk}`, 'center', 'top');
+      }
+    } catch (error: any) {
+      console.error('Error making move:', error);
+      this.notificationService.showNotification(error.message || 'Error making move');
+    } finally {
+      this.loaderService.hide();
+    }
   }
 
-  private getBattleshipInfo() {
-    this.httpService
-      .post<IBattleshipGameInfo>(`battleship-game/${this.battleshipGameId}/get-game-info`, {
-        playerId: this.playerId,
-        playerPassword: this.playerPassword,
-      })
-      .subscribe((response) => {
-        this.battleshipGameInfo = response;
+  private subscribeToGameInfo() {
+    if (!this.battleshipGameId || !this.playerId || !this.playerPassword) {
+      return;
+    }
+
+    this.unsubscribeGameInfo = this.firestoreService.subscribeToBattleshipGameInfo(
+      this.battleshipGameId,
+      this.playerId,
+      this.playerPassword,
+      (gameInfo: IBattleshipGameInfo | null) => {
+        if (!gameInfo) {
+          return;
+        }
+
+        this.battleshipGameInfo = gameInfo;
         this.gameIsReady = this.battleshipGameInfo.positionsAreSet && this.battleshipGameInfo.opponentPositionsAreSet;
         this.playerIdTurn = this.battleshipGameInfo.playerIdTurn;
-
-        if (this.battleshipGameInfo.playerIdWinner && this.battleshipGameInfo.winnerMessage) {
-          // Do not send any more intervals.
-          if (this.interval) {
-            clearInterval(this.interval);
-          }
-        }
 
         // Initialize or reset myGrid
         this.myGrid = Array(10)
@@ -431,21 +399,23 @@ export class BattleshipGamePlayComponent {
         this.battleshipGameInfo.opponentMoves.forEach((move) => {
           this.myGrid[move.x][move.y] = move.hit ? 4 : 5;
         });
-      });
+      },
+    );
   }
 
-  sendWinnerMessage() {
-    this.httpService
-      .post<any>(`battleship-game/${this.battleshipGameId}/post-winner-message`, {
-        playerId: this.playerId,
-        playerPassword: this.playerPassword,
-        message: this.winnerMessage,
-      })
-      .subscribe({
-        next: (response) => {
-          this.battleshipGameInfo!.winnerMessage = this.winnerMessage;
-        },
-      });
+  async sendWinnerMessage() {
+    try {
+      await this.firestoreService.postBattleshipWinnerMessage(
+        this.battleshipGameId,
+        this.playerId,
+        this.playerPassword,
+        this.winnerMessage,
+      );
+      this.battleshipGameInfo!.winnerMessage = this.winnerMessage;
+    } catch (error: any) {
+      console.error('Error posting winner message:', error);
+      this.notificationService.showNotification(error.message || 'Error posting winner message');
+    }
   }
-  // --- http methods ---
+  // --- Firestore methods ---
 }

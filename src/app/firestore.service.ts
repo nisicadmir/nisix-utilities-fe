@@ -1,5 +1,19 @@
 import { Injectable } from '@angular/core';
-import { collection, addDoc, doc, getDoc, deleteDoc, serverTimestamp, query, where, getDocs } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  doc,
+  getDoc,
+  deleteDoc,
+  serverTimestamp,
+  query,
+  where,
+  getDocs,
+  updateDoc,
+  onSnapshot,
+  Unsubscribe,
+  writeBatch,
+} from 'firebase/firestore';
 import { db } from './firebase.config';
 
 export interface SecretMessage {
@@ -132,5 +146,584 @@ export class FirestoreService {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const length = Math.floor(Math.random() * 21) + 30; // 30-50 chars
     return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  }
+
+  /**
+   * Generate a random password
+   */
+  private generatePassword(): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const length = 32;
+    return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  }
+
+  // ==================== BATTLESHIP GAME METHODS ====================
+
+  /**
+   * Create a new battleship game
+   */
+  async createBattleshipGame(
+    name1: string,
+    name2: string,
+  ): Promise<{
+    battleshipGameId: string;
+    player1: { id: string; name: string; password: string };
+    gameInvite: { id: string };
+  }> {
+    try {
+      if (name1 === name2) {
+        throw new Error('Usernames cannot be the same.');
+      }
+
+      const password1 = this.generatePassword();
+      const password2 = this.generatePassword();
+
+      // Create players
+      const player1Ref = await addDoc(collection(db, 'battleship_players'), {
+        name: name1,
+        password: password1,
+        createdAt: serverTimestamp(),
+      });
+
+      const player2Ref = await addDoc(collection(db, 'battleship_players'), {
+        name: name2,
+        password: password2,
+        createdAt: serverTimestamp(),
+      });
+
+      // Create game
+      const gameRef = await addDoc(collection(db, 'battleship_games'), {
+        player1Id: player1Ref.id,
+        player2Id: player2Ref.id,
+        playerIdTurn: player1Ref.id,
+        status: 'pending',
+        player1PositionsSet: false,
+        player2PositionsSet: false,
+        player1Positions: {
+          carrier: [],
+          battleship: [],
+          cruiser: [],
+          submarine: [],
+          destroyer: [],
+        },
+        player2Positions: {
+          carrier: [],
+          battleship: [],
+          cruiser: [],
+          submarine: [],
+          destroyer: [],
+        },
+        playerIdWinner: null,
+        winnerMessage: null,
+        createdAt: serverTimestamp(),
+      });
+
+      // Create game invite
+      const inviteRef = await addDoc(collection(db, 'game_invites'), {
+        playerId: player2Ref.id,
+        gameId: gameRef.id,
+        gameType: 'battleship',
+        createdAt: serverTimestamp(),
+      });
+
+      return {
+        battleshipGameId: gameRef.id,
+        player1: {
+          id: player1Ref.id,
+          name: name1,
+          password: password1,
+        },
+        gameInvite: {
+          id: inviteRef.id,
+        },
+      };
+    } catch (error) {
+      console.error('Error creating battleship game:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Accept a game invite
+   */
+  async acceptBattleshipGameInvite(inviteId: string): Promise<{
+    battleshipGameId: string;
+    player: { id: string; name: string; password: string };
+  }> {
+    try {
+      const inviteRef = doc(db, 'game_invites', inviteId);
+      const inviteSnap = await getDoc(inviteRef);
+
+      if (!inviteSnap.exists()) {
+        throw new Error('Game invite not found');
+      }
+
+      const inviteData = inviteSnap.data();
+      const gameId = inviteData['gameId'];
+
+      const gameRef = doc(db, 'battleship_games', gameId);
+      const gameSnap = await getDoc(gameRef);
+
+      if (!gameSnap.exists()) {
+        throw new Error('Game not found');
+      }
+
+      const gameData = gameSnap.data();
+      if (gameData['status'] !== 'pending') {
+        throw new Error('Game is not pending');
+      }
+
+      const playerId = inviteData['playerId'];
+      const playerRef = doc(db, 'battleship_players', playerId);
+      const playerSnap = await getDoc(playerRef);
+
+      if (!playerSnap.exists()) {
+        throw new Error('Player not found');
+      }
+
+      const playerData = playerSnap.data();
+
+      // Update game status and delete invite
+      const batch = writeBatch(db);
+      batch.update(gameRef, { status: 'pending_positions' });
+      batch.delete(inviteRef);
+      await batch.commit();
+
+      return {
+        battleshipGameId: gameId,
+        player: {
+          id: playerId,
+          name: playerData['name'],
+          password: playerData['password'],
+        },
+      };
+    } catch (error) {
+      console.error('Error accepting game invite:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Set ship positions for a player
+   */
+  async setBattleshipPositions(
+    gameId: string,
+    playerId: string,
+    playerPassword: string,
+    positions: {
+      carrier: Array<{ x: number; y: number }>;
+      battleship: Array<{ x: number; y: number }>;
+      cruiser: Array<{ x: number; y: number }>;
+      submarine: Array<{ x: number; y: number }>;
+      destroyer: Array<{ x: number; y: number }>;
+    },
+  ): Promise<void> {
+    try {
+      // Validate player
+      const playerRef = doc(db, 'battleship_players', playerId);
+      const playerSnap = await getDoc(playerRef);
+
+      if (!playerSnap.exists() || playerSnap.data()['password'] !== playerPassword) {
+        throw new Error('Player not found or invalid password');
+      }
+
+      // Get game
+      const gameRef = doc(db, 'battleship_games', gameId);
+      const gameSnap = await getDoc(gameRef);
+
+      if (!gameSnap.exists()) {
+        throw new Error('Game not found');
+      }
+
+      const gameData = gameSnap.data();
+
+      if (gameData['status'] !== 'pending_positions') {
+        throw new Error('Game is not in pending positions state');
+      }
+
+      if (gameData['player1Id'] !== playerId && gameData['player2Id'] !== playerId) {
+        throw new Error('Player is not part of this game');
+      }
+
+      // Validate positions
+      if (positions.carrier.length !== 5) {
+        throw new Error('Carrier must be 5 cells long');
+      }
+      if (positions.battleship.length !== 4) {
+        throw new Error('Battleship must be 4 cells long');
+      }
+      if (positions.cruiser.length !== 3) {
+        throw new Error('Cruiser must be 3 cells long');
+      }
+      if (positions.submarine.length !== 3) {
+        throw new Error('Submarine must be 3 cells long');
+      }
+      if (positions.destroyer.length !== 2) {
+        throw new Error('Destroyer must be 2 cells long');
+      }
+
+      // Update positions
+      const isPlayer1 = gameData['player1Id'] === playerId;
+      const updateData: any = {};
+
+      if (isPlayer1) {
+        updateData['player1Positions'] = positions;
+        updateData['player1PositionsSet'] = true;
+      } else {
+        updateData['player2Positions'] = positions;
+        updateData['player2PositionsSet'] = true;
+      }
+
+      // Check if both players have set positions
+      const player1PositionsSet = isPlayer1 ? true : gameData['player1PositionsSet'];
+      const player2PositionsSet = isPlayer1 ? gameData['player2PositionsSet'] : true;
+
+      if (player1PositionsSet && player2PositionsSet) {
+        updateData['status'] = 'in_progress';
+      }
+
+      await updateDoc(gameRef, updateData);
+    } catch (error) {
+      console.error('Error setting positions:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Make a move in the battleship game
+   */
+  async makeBattleshipMove(
+    gameId: string,
+    playerId: string,
+    playerPassword: string,
+    move: { x: number; y: number },
+  ): Promise<{ message: string; shipSunk: string; move: { x: number; y: number; isHit: boolean } }> {
+    try {
+      // Validate player
+      const playerRef = doc(db, 'battleship_players', playerId);
+      const playerSnap = await getDoc(playerRef);
+
+      if (!playerSnap.exists() || playerSnap.data()['password'] !== playerPassword) {
+        throw new Error('Player not found or invalid password');
+      }
+
+      // Get game
+      const gameRef = doc(db, 'battleship_games', gameId);
+      const gameSnap = await getDoc(gameRef);
+
+      if (!gameSnap.exists()) {
+        throw new Error('Game not found');
+      }
+
+      const gameData = gameSnap.data();
+
+      if (gameData['status'] !== 'in_progress') {
+        throw new Error('Game is not in progress');
+      }
+
+      if (gameData['player1Id'] !== playerId && gameData['player2Id'] !== playerId) {
+        throw new Error('Player is not part of this game');
+      }
+
+      if (gameData['playerIdTurn'] !== playerId) {
+        throw new Error('It is not your turn');
+      }
+
+      // Check if move already exists
+      const movesQuery = query(
+        collection(db, 'battleship_games', gameId, 'moves'),
+        where('playerId', '==', playerId),
+        where('x', '==', move.x),
+        where('y', '==', move.y),
+      );
+      const existingMoves = await getDocs(movesQuery);
+
+      if (!existingMoves.empty) {
+        throw new Error('You have already shot at this location.');
+      }
+
+      // Determine opponent positions
+      const isPlayer1 = gameData['player1Id'] === playerId;
+      const opponentPositions = isPlayer1 ? gameData['player2Positions'] : gameData['player1Positions'];
+      const opponentId = isPlayer1 ? gameData['player2Id'] : gameData['player1Id'];
+
+      // Check if hit
+      const opponentPositionsXY: number[][] = [];
+      for (const key in opponentPositions) {
+        opponentPositions[key as keyof typeof opponentPositions].forEach((position: { x: number; y: number }) => {
+          opponentPositionsXY.push([position.x, position.y]);
+        });
+      }
+
+      const isHit = opponentPositionsXY.some((position) => position[0] === move.x && position[1] === move.y);
+
+      // Create move
+      await addDoc(collection(db, 'battleship_games', gameId, 'moves'), {
+        playerId: playerId,
+        x: move.x,
+        y: move.y,
+        hit: isHit,
+        createdAt: serverTimestamp(),
+      });
+
+      // Update turn if miss
+      if (!isHit) {
+        await updateDoc(gameRef, {
+          playerIdTurn: opponentId,
+        });
+      }
+
+      // Check for ship sunk
+      let shipSunk = '';
+      if (isHit) {
+        // Get all player moves
+        const allMovesQuery = query(collection(db, 'battleship_games', gameId, 'moves'), where('playerId', '==', playerId));
+        const allMovesSnap = await getDocs(allMovesQuery);
+        const allPlayerMoves = allMovesSnap.docs.map((doc) => ({
+          x: doc.data()['x'],
+          y: doc.data()['y'],
+          hit: doc.data()['hit'],
+        }));
+
+        // Check each ship
+        for (const shipType in opponentPositions) {
+          const shipPositions = opponentPositions[shipType as keyof typeof opponentPositions];
+          const allPositionsHit = shipPositions.every((position: { x: number; y: number }) =>
+            allPlayerMoves.some((m) => m.x === position.x && m.y === position.y),
+          );
+
+          if (
+            allPositionsHit &&
+            shipPositions.length > 0 &&
+            shipPositions.some((position: { x: number; y: number }) => position.x === move.x && position.y === move.y)
+          ) {
+            shipSunk = shipType;
+            break;
+          }
+        }
+
+        // Check for game end (all ships sunk)
+        if (shipSunk) {
+          const allMovesForSunkCheck = [...allPlayerMoves, { x: move.x, y: move.y, hit: isHit }];
+          let allShipsSunk = true;
+          for (const shipType in opponentPositions) {
+            const shipPositions = opponentPositions[shipType as keyof typeof opponentPositions];
+            const allPositionsHit = shipPositions.every((position: { x: number; y: number }) =>
+              allMovesForSunkCheck.some((m) => m.x === position.x && m.y === position.y),
+            );
+            if (!allPositionsHit || shipPositions.length === 0) {
+              allShipsSunk = false;
+              break;
+            }
+          }
+
+          if (allShipsSunk) {
+            await updateDoc(gameRef, {
+              status: 'finished',
+              playerIdWinner: playerId,
+            });
+          }
+        }
+      }
+
+      return {
+        message: 'Move added successfully',
+        shipSunk,
+        move: { x: move.x, y: move.y, isHit },
+      };
+    } catch (error) {
+      console.error('Error making move:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Subscribe to battleship game info updates (real-time)
+   */
+  subscribeToBattleshipGameInfo(
+    gameId: string,
+    playerId: string,
+    playerPassword: string,
+    callback: (gameInfo: any) => void,
+  ): () => void {
+    const gameRef = doc(db, 'battleship_games', gameId);
+    const movesRef = collection(db, 'battleship_games', gameId, 'moves');
+
+    let gameUnsubscribe: Unsubscribe;
+    let movesUnsubscribe: Unsubscribe;
+
+    const updateGameInfo = async () => {
+      const gameSnap = await getDoc(gameRef);
+      if (!gameSnap.exists()) {
+        callback(null);
+        return;
+      }
+
+      const gameData = gameSnap.data();
+
+      // Validate player
+      const playerRef = doc(db, 'battleship_players', playerId);
+      const playerSnap = await getDoc(playerRef);
+
+      if (!playerSnap.exists() || playerSnap.data()['password'] !== playerPassword) {
+        callback(null);
+        return;
+      }
+
+      if (gameData['player1Id'] !== playerId && gameData['player2Id'] !== playerId) {
+        callback(null);
+        return;
+      }
+
+      const opponentPlayerId = playerId === gameData['player1Id'] ? gameData['player2Id'] : gameData['player1Id'];
+      const opponentPlayerRef = doc(db, 'battleship_players', opponentPlayerId);
+      const opponentPlayerSnap = await getDoc(opponentPlayerRef);
+
+      if (!opponentPlayerSnap.exists()) {
+        callback(null);
+        return;
+      }
+
+      const opponentName = opponentPlayerSnap.data()['name'];
+
+      const positions = playerId === gameData['player1Id'] ? gameData['player1Positions'] : gameData['player2Positions'];
+      const positionsAreSet =
+        playerId === gameData['player1Id'] ? gameData['player1PositionsSet'] : gameData['player2PositionsSet'];
+      const opponentPositionsAreSet =
+        playerId === gameData['player1Id'] ? gameData['player2PositionsSet'] : gameData['player1PositionsSet'];
+
+      // Get moves
+      const movesQuery = query(collection(db, 'battleship_games', gameId, 'moves'));
+      const movesSnap = await getDocs(movesQuery);
+      const allMoves = movesSnap.docs.map((doc) => ({
+        playerId: doc.data()['playerId'],
+        x: doc.data()['x'],
+        y: doc.data()['y'],
+        hit: doc.data()['hit'],
+      }));
+
+      const moves = allMoves.filter((m) => m.playerId === playerId).map((m) => ({ x: m.x, y: m.y, hit: m.hit }));
+      const opponentMoves = allMoves.filter((m) => m.playerId === opponentPlayerId).map((m) => ({ x: m.x, y: m.y, hit: m.hit }));
+
+      // Calculate ships sank
+      const shipsSank: string[] = [];
+      const opponentShipsSank: string[] = [];
+
+      if (positionsAreSet) {
+        const playerPositions = playerId === gameData['player1Id'] ? gameData['player1Positions'] : gameData['player2Positions'];
+        const opponentPositions =
+          playerId === gameData['player1Id'] ? gameData['player2Positions'] : gameData['player1Positions'];
+
+        // Check player's ships (opponent is targeting)
+        for (const shipType in playerPositions) {
+          const shipPositions = playerPositions[shipType as keyof typeof playerPositions];
+          const allPositionsHit = shipPositions.every((position: { x: number; y: number }) =>
+            opponentMoves.some((move) => move.x === position.x && move.y === position.y),
+          );
+          if (allPositionsHit && shipPositions.length > 0) {
+            shipsSank.push(shipType);
+          }
+        }
+
+        // Check opponent's ships (player is targeting)
+        for (const shipType in opponentPositions) {
+          const shipPositions = opponentPositions[shipType as keyof typeof opponentPositions];
+          const allPositionsHit = shipPositions.every((position: { x: number; y: number }) =>
+            moves.some((move) => move.x === position.x && move.y === position.y),
+          );
+          if (allPositionsHit && shipPositions.length > 0) {
+            opponentShipsSank.push(shipType);
+          }
+        }
+      }
+
+      // Check for game end
+      if (shipsSank.length === 5 || opponentShipsSank.length === 5) {
+        const winnerId = shipsSank.length === 5 ? opponentPlayerId : playerId;
+        if (gameData['status'] !== 'finished') {
+          updateDoc(gameRef, {
+            status: 'finished',
+            playerIdWinner: winnerId,
+          });
+        }
+      }
+
+      const gameInfo = {
+        status: gameData['status'],
+        playerIdTurn: gameData['playerIdTurn'],
+        positionsAreSet,
+        opponentPositionsAreSet,
+        playerIdWinner: gameData['playerIdWinner'] || null,
+        winnerMessage: gameData['winnerMessage'] || null,
+        opponentName,
+        positions,
+        moves,
+        opponentMoves,
+        shipsSank,
+        opponentShipsSank,
+      };
+
+      callback(gameInfo);
+    };
+
+    // Listen to game document changes
+    gameUnsubscribe = onSnapshot(gameRef, () => {
+      updateGameInfo().catch((error) => {
+        console.error('Error updating game info:', error);
+      });
+    });
+
+    // Listen to moves subcollection changes
+    movesUnsubscribe = onSnapshot(movesRef, () => {
+      updateGameInfo().catch((error) => {
+        console.error('Error updating game info:', error);
+      });
+    });
+
+    // Return unsubscribe function
+    return () => {
+      gameUnsubscribe();
+      movesUnsubscribe();
+    };
+  }
+
+  /**
+   * Post winner message
+   */
+  async postBattleshipWinnerMessage(gameId: string, playerId: string, playerPassword: string, message: string): Promise<void> {
+    try {
+      // Validate player
+      const playerRef = doc(db, 'battleship_players', playerId);
+      const playerSnap = await getDoc(playerRef);
+
+      if (!playerSnap.exists() || playerSnap.data()['password'] !== playerPassword) {
+        throw new Error('Player not found or invalid password');
+      }
+
+      // Get game
+      const gameRef = doc(db, 'battleship_games', gameId);
+      const gameSnap = await getDoc(gameRef);
+
+      if (!gameSnap.exists()) {
+        throw new Error('Game not found');
+      }
+
+      const gameData = gameSnap.data();
+
+      if (gameData['player1Id'] !== playerId && gameData['player2Id'] !== playerId) {
+        throw new Error('Player is not part of this game');
+      }
+
+      if (gameData['playerIdWinner'] !== playerId) {
+        throw new Error('You are not the winner of this game');
+      }
+
+      await updateDoc(gameRef, {
+        winnerMessage: message,
+      });
+    } catch (error) {
+      console.error('Error posting winner message:', error);
+      throw error;
+    }
   }
 }
