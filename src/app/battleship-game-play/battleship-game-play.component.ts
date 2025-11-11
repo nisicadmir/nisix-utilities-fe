@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute } from '@angular/router';
 
 import { LoaderService } from '../_modules/loader/loader.service';
-import { FirestoreService } from '../firestore.service';
+import { FirestoreService } from '../_firestore/firestore.service';
 import { NotificationService } from '../notification.service';
 
 interface IBattleshipGamePositions {

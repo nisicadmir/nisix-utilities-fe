@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getToken, initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
-import { environment } from '../environments/environment';
+import { environment } from '../../environments/environment';
 
 // Initialize Firebase
 const app = initializeApp(environment.firebase);

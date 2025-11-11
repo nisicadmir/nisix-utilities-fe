@@ -7,6 +7,6 @@ import { environment } from './environments/environment';
 (window as any).recaptchaSiteKey = environment.recaptchaSiteKey;
 
 // Initialize Firebase and App Check early
-import './app/firebase.config';
+import './app/_firestore/firebase.config';
 
 bootstrapApplication(AppComponent, appConfig).catch((err) => console.error(err));

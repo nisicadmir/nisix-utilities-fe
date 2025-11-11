@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { LoaderService } from '../_modules/loader/loader.service';
-import { FirestoreService } from '../firestore.service';
+import { FirestoreService } from '../_firestore/firestore.service';
 import { UtilService } from '../util.service';
 
 interface GameInvite {

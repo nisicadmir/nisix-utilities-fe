@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { environment } from 'src/environments/environment';
 import { LoaderService } from '../_modules/loader/loader.service';
 import { CryptoService } from '../crypto.service';
-import { FirestoreService } from '../firestore.service';
+import { FirestoreService } from '../_firestore/firestore.service';
 import { UtilService } from '../util.service';
 
 @Component({

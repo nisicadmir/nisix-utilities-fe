@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { Player } from '../models/player.model';
 import { MatButtonModule } from '@angular/material/button';
-import { FirestoreService } from '../firestore.service';
+import { FirestoreService } from '../_firestore/firestore.service';
 
 @Component({
   selector: 'app-game-invite-accept',

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoaderService } from '../_modules/loader/loader.service';
 import { CryptoService } from '../crypto.service';
-import { FirestoreService } from '../firestore.service';
+import { FirestoreService } from '../_firestore/firestore.service';
 
 @Component({
   selector: 'app-secret-message-read',
