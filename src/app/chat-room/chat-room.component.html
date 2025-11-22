@@ -3,7 +3,6 @@
     <div class="header-section">
       <h1 class="page-title">Chat Room</h1>
       <div class="room-info">
-        <p class="room-id">Room ID: {{ roomId }}</p>
         <p class="participant-count">Participants: {{ participantCount }}/{{ maxParticipants }}</p>
         <p class="your-name">Your name: {{ participantName }}</p>
       </div>
@@ -12,15 +11,15 @@
     <div class="room-actions">
       <button mat-raised-button color="primary" (click)="shareRoom()">
         <mat-icon>share</mat-icon>
-        Share Room
+        <span class="button-text">Share Room</span>
       </button>
       <button mat-raised-button color="warn" (click)="deleteAllMessages()">
         <mat-icon>delete</mat-icon>
-        Delete All Messages
+        <span class="button-text">Delete All Messages</span>
       </button>
       <button mat-raised-button color="warn" (click)="closeRoom()">
         <mat-icon>close</mat-icon>
-        Close Room
+        <span class="button-text">Close Room</span>
       </button>
     </div>
 
@@ -53,7 +52,7 @@
       </mat-form-field>
       <button mat-raised-button color="primary" (click)="sendMessage()" [disabled]="!newMessage.trim()">
         <mat-icon>send</mat-icon>
-        Send
+        <span class="button-text">Send</span>
       </button>
     </div>
   </div>

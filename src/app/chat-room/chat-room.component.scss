@@ -46,8 +46,21 @@
     margin-bottom: 20px;
 
     button {
-      mat-icon {
-        margin-right: 4px;
+      // Hide button text on mobile and center icon
+      @media (max-width: 767px) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 48px;
+        padding: 0;
+
+        mat-icon {
+          margin: 0;
+        }
+
+        .button-text {
+          display: none;
+        }
       }
     }
   }
@@ -178,8 +191,21 @@
       height: 56px;
       margin-top: 0;
 
-      mat-icon {
-        margin-right: 4px;
+      // Center icon on mobile and hide text
+      @media (max-width: 767px) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 56px;
+        padding: 0;
+
+        mat-icon {
+          margin: 0;
+        }
+
+        .button-text {
+          display: none;
+        }
       }
     }
   }
