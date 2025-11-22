@@ -37,5 +37,23 @@ service cloud.firestore {
       // Allow reads and writes with App Check
       allow read, write: if true;
     }
+    
+    // Chat rooms collection
+    match /chat_rooms/{roomId} {
+      // Allow reads and writes
+      allow read, write: if true;
+      
+      // Allow automatic deletion of expired rooms (auto-expire after 1 hour)
+      allow delete: if resource.data.expiresAt < request.time;
+      
+      // Messages subcollection
+      match /messages/{messageId} {
+        // Allow reads and writes
+        allow read, write: if true;
+        
+        // Allow deletion of messages
+        allow delete: if true;
+      }
+    }
   }
 }

@@ -10,6 +10,7 @@ import {
   where,
   getDocs,
   updateDoc,
+  setDoc,
   onSnapshot,
   Unsubscribe,
   writeBatch,
@@ -23,6 +24,25 @@ export interface SecretMessage {
   createdAt: any;
   expiresAt: Date; // Auto-expire after 1 hour if not read
   readAt?: Date; // When the message was first read
+}
+
+export interface ChatRoom {
+  roomId: string;
+  createdAt: any;
+  expiresAt: Date;
+  status: 'active' | 'closed';
+  participants: Array<{
+    name: string;
+    joinedAt: any;
+  }>;
+  maxParticipants: number;
+}
+
+export interface ChatMessage {
+  id: string;
+  participantName: string;
+  message: string;
+  timestamp: any;
 }
 
 @Injectable({
@@ -723,6 +743,254 @@ export class FirestoreService {
       });
     } catch (error) {
       console.error('Error posting winner message:', error);
+      throw error;
+    }
+  }
+
+  // ==================== CHAT ROOM METHODS ====================
+
+  /**
+   * Generate a random room ID (>40 characters)
+   */
+  private generateRandomRoomId(): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const length = Math.floor(Math.random() * 11) + 41; // 41-51 chars
+    return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  }
+
+  /**
+   * Generate a random participant name (10 characters)
+   */
+  private generateRandomParticipantName(): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const length = 10;
+    return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  }
+
+  /**
+   * Create a new chat room
+   */
+  async createChatRoom(): Promise<{ roomId: string; participantName: string }> {
+    try {
+      const roomId = this.generateRandomRoomId();
+      const participantName = this.generateRandomParticipantName();
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+      const roomRef = doc(db, 'chat_rooms', roomId);
+
+      // Check if room ID already exists (very unlikely but handle it)
+      const existingRoom = await getDoc(roomRef);
+      if (existingRoom.exists()) {
+        // Retry with new ID
+        return this.createChatRoom();
+      }
+
+      await setDoc(roomRef, {
+        roomId,
+        createdAt: serverTimestamp(),
+        expiresAt,
+        status: 'active',
+        participants: [
+          {
+            name: participantName,
+            joinedAt: new Date(),
+          },
+        ],
+        maxParticipants: 10,
+      });
+
+      return { roomId, participantName };
+    } catch (error) {
+      console.error('Error creating chat room:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Join an existing chat room
+   */
+  async joinChatRoom(roomId: string): Promise<{ participantName: string }> {
+    try {
+      const roomRef = doc(db, 'chat_rooms', roomId);
+      const roomSnap = await getDoc(roomRef);
+
+      if (!roomSnap.exists()) {
+        throw new Error('Room not found');
+      }
+
+      const roomData = roomSnap.data();
+
+      // Check if room is closed
+      if (roomData['status'] === 'closed') {
+        throw new Error('Room is closed');
+      }
+
+      // Check if room expired
+      const expiresAt = roomData['expiresAt'].toDate();
+      if (expiresAt < new Date()) {
+        throw new Error('Room has expired');
+      }
+
+      // Check participant limit
+      const participants = roomData['participants'] || [];
+      if (participants.length >= roomData['maxParticipants']) {
+        throw new Error('Room is full');
+      }
+
+      // Generate participant name
+      const participantName = this.generateRandomParticipantName();
+
+      // Add participant
+      const updatedParticipants = [
+        ...participants,
+        {
+          name: participantName,
+          joinedAt: new Date(),
+        },
+      ];
+
+      await updateDoc(roomRef, {
+        participants: updatedParticipants,
+      });
+
+      return { participantName };
+    } catch (error) {
+      console.error('Error joining chat room:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Send a chat message
+   */
+  async sendChatMessage(roomId: string, participantName: string, message: string): Promise<void> {
+    try {
+      const roomRef = doc(db, 'chat_rooms', roomId);
+      const roomSnap = await getDoc(roomRef);
+
+      if (!roomSnap.exists()) {
+        throw new Error('Room not found');
+      }
+
+      const roomData = roomSnap.data();
+
+      // Check if room is closed
+      if (roomData['status'] === 'closed') {
+        throw new Error('Room is closed');
+      }
+
+      // Check if room expired
+      const expiresAt = roomData['expiresAt'].toDate();
+      if (expiresAt < new Date()) {
+        throw new Error('Room has expired');
+      }
+
+      // Verify participant is in room
+      const participants = roomData['participants'] || [];
+      const participantExists = participants.some((p: any) => p.name === participantName);
+      if (!participantExists) {
+        throw new Error('You are not a participant in this room');
+      }
+
+      // Add message to subcollection
+      await addDoc(collection(db, 'chat_rooms', roomId, 'messages'), {
+        participantName,
+        message,
+        timestamp: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error('Error sending chat message:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Subscribe to chat messages (real-time updates)
+   */
+  subscribeToChatMessages(roomId: string, callback: (messages: ChatMessage[]) => void): () => void {
+    const messagesRef = collection(db, 'chat_rooms', roomId, 'messages');
+    const messagesQuery = query(messagesRef);
+
+    const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
+      const messages: ChatMessage[] = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        participantName: doc.data()['participantName'],
+        message: doc.data()['message'],
+        timestamp: doc.data()['timestamp'],
+      }));
+
+      // Sort by timestamp
+      messages.sort((a, b) => {
+        const aTime = a.timestamp?.toMillis?.() || 0;
+        const bTime = b.timestamp?.toMillis?.() || 0;
+        return aTime - bTime;
+      });
+
+      callback(messages);
+    });
+
+    return unsubscribe;
+  }
+
+  /**
+   * Subscribe to chat room updates (real-time)
+   */
+  subscribeToChatRoom(roomId: string, callback: (room: ChatRoom | null) => void): () => void {
+    const roomRef = doc(db, 'chat_rooms', roomId);
+
+    const unsubscribe = onSnapshot(roomRef, (snapshot) => {
+      if (!snapshot.exists()) {
+        callback(null);
+        return;
+      }
+
+      const data = snapshot.data();
+      const room: ChatRoom = {
+        roomId: data['roomId'],
+        createdAt: data['createdAt'],
+        expiresAt: data['expiresAt'].toDate(),
+        status: data['status'],
+        participants: data['participants'] || [],
+        maxParticipants: data['maxParticipants'],
+      };
+
+      callback(room);
+    });
+
+    return unsubscribe;
+  }
+
+  /**
+   * Delete all chat messages
+   */
+  async deleteAllChatMessages(roomId: string): Promise<void> {
+    try {
+      const messagesRef = collection(db, 'chat_rooms', roomId, 'messages');
+      const messagesQuery = query(messagesRef);
+      const snapshot = await getDocs(messagesQuery);
+
+      const deletePromises = snapshot.docs.map((doc) => deleteDoc(doc.ref));
+      await Promise.all(deletePromises);
+    } catch (error) {
+      console.error('Error deleting all chat messages:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Close chat room (kicks everyone and deletes room)
+   */
+  async closeChatRoom(roomId: string): Promise<void> {
+    try {
+      const roomRef = doc(db, 'chat_rooms', roomId);
+
+      // Delete all messages first
+      await this.deleteAllChatMessages(roomId);
+
+      // Delete the room
+      await deleteDoc(roomRef);
+    } catch (error) {
+      console.error('Error closing chat room:', error);
       throw error;
     }
   }

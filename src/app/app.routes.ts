@@ -15,6 +15,8 @@ import { SecretMessageGenerateComponent } from './secret-message-generate/secret
 import { SecretMessageReadComponent } from './secret-message-read/secret-message-read.component';
 import { RandomNumberGeneratorComponent } from './random-number-generator/random-number-generator.component';
 import { Base64UtilityComponent } from './base64-utility/base64-utility.component';
+import { ChatRoomCreateComponent } from './chat-room-create/chat-room-create.component';
+import { ChatRoomComponent } from './chat-room/chat-room.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -33,5 +35,7 @@ export const routes: Routes = [
   { path: 'secret-message-read', component: SecretMessageReadComponent },
   { path: 'random-number-generator', component: RandomNumberGeneratorComponent },
   { path: 'base64-utility', component: Base64UtilityComponent },
+  { path: 'chat-room-create', component: ChatRoomCreateComponent },
+  { path: 'chat-room/:roomId', component: ChatRoomComponent },
   { path: '**', redirectTo: '' },
 ];

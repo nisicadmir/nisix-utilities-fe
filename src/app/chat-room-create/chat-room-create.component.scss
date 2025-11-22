@@ -1,0 +1,22 @@
+.chat-room-create-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 20px;
+
+  h1 {
+    margin-bottom: 16px;
+  }
+
+  p {
+    margin-bottom: 24px;
+    text-align: center;
+    max-width: 500px;
+  }
+
+  button {
+    min-width: 200px;
+  }
+}

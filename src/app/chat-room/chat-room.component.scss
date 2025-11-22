@@ -1,0 +1,263 @@
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.chat-room-content {
+  height: 100vh;
+  padding-top: 50px;
+  padding-bottom: 0 !important;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-room-container {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
+
+  .header-section {
+    margin-bottom: 20px;
+
+    .room-info {
+      margin-top: 16px;
+      text-align: center;
+
+      .room-id,
+      .participant-count,
+      .your-name {
+        margin: 8px 0;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .room-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+
+    button {
+      mat-icon {
+        margin-right: 4px;
+      }
+    }
+  }
+
+  .messages-container {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background-color: rgba(0, 0, 0, 0.02);
+
+    .messages-list {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+
+      .message-item {
+        margin-bottom: 16px;
+        height: auto;
+        padding: 0;
+        display: flex;
+        width: 100%;
+
+        &.message-sent {
+          justify-content: flex-start;
+
+          .message-content {
+            max-width: 70%;
+            background-color: #1976d2;
+            color: white;
+            border-radius: 18px 18px 18px 4px;
+            padding: 12px 16px;
+
+            .message-header {
+              .participant-name {
+                color: rgba(255, 255, 255, 0.9);
+              }
+
+              .timestamp {
+                color: rgba(255, 255, 255, 0.7);
+              }
+            }
+
+            .message-text {
+              color: white;
+            }
+          }
+        }
+
+        &.message-received {
+          justify-content: flex-end !important;
+
+          .message-content {
+            max-width: 70%;
+            background-color: #e0e0e0;
+            color: rgba(0, 0, 0, 0.87);
+            border-radius: 18px 18px 4px 18px;
+            padding: 12px 16px;
+
+            .message-header {
+              .participant-name {
+                color: rgba(0, 0, 0, 0.87);
+              }
+
+              .timestamp {
+                color: rgba(0, 0, 0, 0.54);
+              }
+            }
+
+            .message-text {
+              color: rgba(0, 0, 0, 0.87);
+            }
+          }
+        }
+
+        .message-content {
+          width: fit-content;
+          display: block;
+
+          .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+            gap: 8px;
+
+            .participant-name {
+              font-weight: 600;
+              font-size: 12px;
+            }
+
+            .timestamp {
+              font-size: 11px;
+              white-space: nowrap;
+            }
+          }
+
+          .message-text {
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            line-height: 1.4;
+          }
+        }
+      }
+
+      .no-messages {
+        text-align: center;
+        color: rgba(0, 0, 0, 0.54);
+        height: auto;
+        padding: 20px;
+      }
+    }
+  }
+
+  .message-input-container {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+
+    .message-input-field {
+      flex: 1;
+    }
+
+    button {
+      height: 56px;
+      margin-top: 0;
+
+      mat-icon {
+        margin-right: 4px;
+      }
+    }
+  }
+}
+
+// Dark theme support
+.dark-theme {
+  .chat-room-container {
+    .header-section {
+      .room-info {
+        p {
+          color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        .room-id,
+        .participant-count,
+        .your-name {
+          color: rgba(255, 255, 255, 0.7) !important;
+        }
+      }
+    }
+
+    .messages-container {
+      border-color: rgba(255, 255, 255, 0.12);
+      background-color: rgba(255, 255, 255, 0.02);
+
+      .messages-list {
+        .message-item {
+          &.message-sent {
+            .message-content {
+              background-color: #42a5f5;
+            }
+          }
+
+          &.message-received {
+            .message-content {
+              background-color: #424242;
+              color: rgba(255, 255, 255, 0.87);
+
+              .message-header {
+                .participant-name {
+                  color: rgba(255, 255, 255, 0.87);
+                }
+
+                .timestamp {
+                  color: rgba(255, 255, 255, 0.54);
+                }
+              }
+
+              .message-text {
+                color: rgba(255, 255, 255, 0.87);
+              }
+            }
+          }
+        }
+
+        .no-messages {
+          p {
+            color: rgba(255, 255, 255, 0.54) !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Also handle body.dark-theme for better specificity
+body.dark-theme {
+  .chat-room-container {
+    .header-section {
+      .room-info {
+        p {
+          color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        .room-id,
+        .participant-count,
+        .your-name {
+          color: rgba(255, 255, 255, 0.7) !important;
+        }
+      }
+    }
+  }
+}
