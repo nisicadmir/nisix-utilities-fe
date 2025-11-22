@@ -865,6 +865,63 @@ export class FirestoreService {
    */
   async sendChatMessage(roomId: string, participantName: string, message: string): Promise<void> {
     try {
+      // Rate limiting check
+      const rateLimitKey = `${roomId}_${participantName}`;
+      const now = Date.now();
+      const rateLimit = this.messageRateLimits.get(rateLimitKey);
+
+      if (rateLimit) {
+        if (now < rateLimit.resetTime) {
+          // Still in the rate limit window
+          if (rateLimit.count >= this.MAX_MESSAGES_PER_WINDOW) {
+            const secondsRemaining = Math.ceil((rateLimit.resetTime - now) / 1000);
+            throw new Error(`Rate limit exceeded. Please wait ${secondsRemaining} second(s) before sending another message.`);
+          }
+          rateLimit.count++;
+        } else {
+          // Reset the rate limit window
+          this.messageRateLimits.set(rateLimitKey, {
+            count: 1,
+            resetTime: now + this.RATE_LIMIT_WINDOW,
+          });
+        }
+      } else {
+        // First message from this participant in this room
+        this.messageRateLimits.set(rateLimitKey, {
+          count: 1,
+          resetTime: now + this.RATE_LIMIT_WINDOW,
+        });
+      }
+
+      // Clean up old rate limit entries periodically
+      if (Math.random() < 0.01) {
+        // 1% chance to clean up
+        this.cleanupRateLimits();
+      }
+
+      // Input validation
+      if (!message || typeof message !== 'string') {
+        throw new Error('Message is required');
+      }
+
+      const trimmedMessage = message.trim();
+
+      if (trimmedMessage.length < this.MIN_MESSAGE_LENGTH) {
+        throw new Error('Message cannot be empty');
+      }
+
+      if (trimmedMessage.length > this.MAX_MESSAGE_LENGTH) {
+        throw new Error(`Message cannot exceed ${this.MAX_MESSAGE_LENGTH} characters`);
+      }
+
+      // Validate participant name format
+      if (!participantName || typeof participantName !== 'string' || participantName.length !== 10) {
+        throw new Error('Invalid participant name');
+      }
+
+      // Sanitize message (remove potential XSS)
+      const sanitizedMessage = this.sanitizeMessage(trimmedMessage);
+
       const roomRef = doc(db, 'chat_rooms', roomId);
       const roomSnap = await getDoc(roomRef);
 
@@ -895,7 +952,7 @@ export class FirestoreService {
       // Add message to subcollection
       await addDoc(collection(db, 'chat_rooms', roomId, 'messages'), {
         participantName,
-        message,
+        message: sanitizedMessage,
         timestamp: serverTimestamp(),
       });
     } catch (error) {
@@ -992,6 +1049,36 @@ export class FirestoreService {
     } catch (error) {
       console.error('Error closing chat room:', error);
       throw error;
+    }
+  }
+
+  // Add constants at the top of the class
+  private readonly MAX_MESSAGE_LENGTH = 1000;
+  private readonly MIN_MESSAGE_LENGTH = 1;
+
+  // Add at the top of the class
+  private readonly RATE_LIMIT_WINDOW = 60000; // 1 minute in milliseconds
+  private readonly MAX_MESSAGES_PER_WINDOW = 10;
+  private messageRateLimits: Map<string, { count: number; resetTime: number }> = new Map();
+
+  // Add sanitization method
+  private sanitizeMessage(message: string): string {
+    // Remove HTML tags to prevent XSS
+    return message
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#x27;')
+      .replace(/\//g, '&#x2F;');
+  }
+
+  // Add cleanup method for rate limits
+  private cleanupRateLimits(): void {
+    const now = Date.now();
+    for (const [key, limit] of this.messageRateLimits.entries()) {
+      if (now >= limit.resetTime) {
+        this.messageRateLimits.delete(key);
+      }
     }
   }
 }
