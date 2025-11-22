@@ -31,6 +31,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
   private messagesUnsubscribe: (() => void) | null = null;
   private shouldScrollToBottom: boolean = false;
   private joinTimestamp: Date | null = null;
+  private pendingMessageIds: Set<string> = new Set();
 
   constructor(
     private route: ActivatedRoute,
@@ -138,11 +139,44 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
         });
       }
 
+      // Get pending optimistic messages
+      const pendingMessages = this.messages.filter((m) => this.pendingMessageIds.has(m.id));
+
+      // Check which pending messages have been confirmed (exist in Firestore messages)
+      const confirmedPendingIds = new Set<string>();
+      for (const pendingMsg of pendingMessages) {
+        const isConfirmed = filteredMessages.some(
+          (realMsg) =>
+            realMsg.participantName === pendingMsg.participantName &&
+            realMsg.message === pendingMsg.message &&
+            Math.abs(
+              (realMsg.timestamp?.toDate?.()?.getTime() || 0) - (pendingMsg.timestamp?.toDate?.()?.getTime() || Date.now()),
+            ) < 5000, // Within 5 seconds
+        );
+        if (isConfirmed) {
+          confirmedPendingIds.add(pendingMsg.id);
+        }
+      }
+
+      // Remove confirmed pending message IDs
+      confirmedPendingIds.forEach((id) => this.pendingMessageIds.delete(id));
+
+      // Merge: real messages + unconfirmed pending messages
+      const unconfirmedPending = pendingMessages.filter((m) => !confirmedPendingIds.has(m.id));
+      const mergedMessages = [...filteredMessages, ...unconfirmedPending];
+
+      // Sort by timestamp
+      mergedMessages.sort((a, b) => {
+        const aTime = a.timestamp?.toDate?.()?.getTime() || 0;
+        const bTime = b.timestamp?.toDate?.()?.getTime() || 0;
+        return aTime - bTime;
+      });
+
       const wasAtBottom = this.isScrolledToBottom();
       const previousMessagesCount = this.messages.length;
-      this.messages = filteredMessages;
+      this.messages = mergedMessages;
       // Scroll to bottom if user was already at bottom or if it's a new message
-      if (wasAtBottom || filteredMessages.length > previousMessagesCount) {
+      if (wasAtBottom || mergedMessages.length > previousMessagesCount) {
         this.shouldScrollToBottom = true;
       }
 
@@ -166,14 +200,36 @@ export class ChatRoomComponent implements OnInit, OnDestroy, AfterViewChecked {
       return;
     }
 
+    const messageText = this.newMessage.trim();
+    const tempId = `temp_${Date.now()}_${Math.random()}`;
+    this.pendingMessageIds.add(tempId);
+
+    // Create optimistic message
+    const optimisticMessage: ChatMessage = {
+      id: tempId,
+      participantName: this.participantName,
+      message: messageText,
+      timestamp: { toDate: () => new Date() } as any, // Temporary timestamp
+    };
+
+    // Add optimistic message immediately
+    this.messages = [...this.messages, optimisticMessage];
+    this.newMessage = '';
+    this.shouldScrollToBottom = true;
+    this.cdr.detectChanges();
+
     try {
-      await this.firestoreService.sendChatMessage(this.roomId, this.participantName, this.newMessage.trim());
-      this.newMessage = '';
-      // Scroll to bottom after sending message
-      this.shouldScrollToBottom = true;
+      await this.firestoreService.sendChatMessage(this.roomId, this.participantName, messageText);
+      // Message will be replaced by real-time listener, but mark as sent
+      this.pendingMessageIds.delete(tempId);
     } catch (error: any) {
       console.error('Error sending message:', error);
+      // Remove optimistic message on error
+      this.messages = this.messages.filter((msg) => msg.id !== tempId);
+      this.pendingMessageIds.delete(tempId);
+      this.newMessage = messageText; // Restore message text
       this.utilService.showError(error.message || 'Failed to send message');
+      this.cdr.detectChanges();
     }
   }
 
