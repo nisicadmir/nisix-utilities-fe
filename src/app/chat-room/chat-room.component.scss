@@ -16,8 +16,11 @@
 .chat-room-container {
   display: flex;
   flex-direction: column;
+  height: 90%;
+  max-height: 90%;
   overflow: hidden;
   flex: 1;
+  min-height: 0;
 
   .header-section {
     margin-bottom: 20px;
