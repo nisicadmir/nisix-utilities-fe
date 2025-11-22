@@ -40,38 +40,16 @@ service cloud.firestore {
     
     // Chat rooms collection
     match /chat_rooms/{roomId} {
-      // Only allow reading if room is active and not expired
-      allow read: if resource.data.status == 'active' 
-                  && resource.data.expiresAt > request.time;
+      // Allow reads and writes
+      allow read, write: if true;
       
-      // Allow creating rooms
-      allow create: if request.resource.data.status == 'active'
-                    && request.resource.data.maxParticipants == 10
-                    && request.resource.data.participants.size() == 1;
-      
-      // Allow updating only to add participants or change status
-      allow update: if request.resource.data.status == 'active'
-                    && request.resource.data.expiresAt > request.time
-                    && request.resource.data.participants.size() <= 10;
-      
-      // Allow deletion if expired or if closing room
-      allow delete: if resource.data.expiresAt < request.time 
-                    || request.resource.data.status == 'closed';
+      // Allow automatic deletion of expired rooms (auto-expire after 1 hour)
+      allow delete: if resource.data.expiresAt < request.time;
       
       // Messages subcollection
       match /messages/{messageId} {
-        // Only allow reading if parent room is active and not expired
-        allow read: if get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.status == 'active'
-                    && get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.expiresAt > request.time;
-        
-        // Only allow creating messages if room is active and message is valid
-        allow create: if get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.status == 'active'
-                      && get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.expiresAt > request.time
-                      && request.resource.data.message is string
-                      && request.resource.data.message.size() > 0
-                      && request.resource.data.message.size() <= 1000
-                      && request.resource.data.participantName is string
-                      && request.resource.data.participantName.size() == 10;
+        // Allow reads and writes
+        allow read, write: if true;
         
         // Allow deletion of messages
         allow delete: if true;
