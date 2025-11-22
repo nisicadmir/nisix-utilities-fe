@@ -40,18 +40,38 @@ service cloud.firestore {
     
     // Chat rooms collection
     match /chat_rooms/{roomId} {
-      // Allow reads and writes
-      allow read, write: if true;
+      // Allow getting a specific room (no listing)
+      allow get: if true;
+      allow list: if false;
       
-      // Allow automatic deletion of expired rooms (auto-expire after 1 hour)
-      allow delete: if resource.data.expiresAt < request.time;
+      // Allow creation with valid data
+      allow create: if request.resource.data.roomId == roomId
+                    && request.resource.data.status == 'active'
+                    && request.resource.data.participants.size() == 1
+                    && request.resource.data.maxParticipants is number
+                    && request.resource.data.expiresAt > request.time;
+
+      // Allow updating only to add participants (join)
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['participants'])
+                    && request.resource.data.participants.size() == resource.data.participants.size() + 1
+                    && request.resource.data.participants.size() <= resource.data.maxParticipants
+                    && resource.data.status == 'active'
+                    && resource.data.expiresAt > request.time;
+
+      // Allow deletion
+      allow delete: if true;
       
       // Messages subcollection
       match /messages/{messageId} {
-        // Allow reads and writes
-        allow read, write: if true;
+        allow read: if true;
         
-        // Allow deletion of messages
+        allow create: if get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.status == 'active'
+                      && get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.expiresAt > request.time
+                      && request.resource.data.message is string
+                      && request.resource.data.message.size() > 0
+                      && request.resource.data.message.size() <= 1000;
+                      
+        allow update: if false;
         allow delete: if true;
       }
     }
