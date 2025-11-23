@@ -2,61 +2,67 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.nisix.net/</loc>
-    <lastmod>2025-10-14</lastmod>
+    <lastmod>2025-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.nisix.net/assets/time-converter-seo.html</loc>
-    <lastmod>2025-10-14</lastmod>
+    <lastmod>2025-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.nisix.net/assets/password-generator-seo.html</loc>
-    <lastmod>2025-10-14</lastmod>
+    <lastmod>2025-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.nisix.net/assets/uuid-generator-seo.html</loc>
-    <lastmod>2025-10-14</lastmod>
+    <lastmod>2025-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.nisix.net/assets/secret-message-seo.html</loc>
-    <lastmod>2025-10-14</lastmod>
+    <lastmod>2025-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.nisix.net/assets/qr-code-generator-seo.html</loc>
-    <lastmod>2025-10-17</lastmod>
+    <lastmod>2025-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.nisix.net/assets/hash-generator-seo.html</loc>
-    <lastmod>2025-10-18</lastmod>
+    <lastmod>2025-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.nisix.net/assets/text-counter-seo.html</loc>
-    <lastmod>2025-10-18</lastmod>
+    <lastmod>2025-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.nisix.net/assets/random-number-generator-seo.html</loc>
-    <lastmod>2025-10-19</lastmod>
+    <lastmod>2025-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.nisix.net/assets/base64-utility-seo.html</loc>
-    <lastmod>2025-10-19</lastmod>
+    <lastmod>2025-11-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.nisix.net/assets/chat-room-seo.html</loc>
+    <lastmod>2025-11-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
