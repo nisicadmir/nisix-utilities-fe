@@ -37,6 +37,12 @@ service cloud.firestore {
       // Allow reads and writes with App Check
       allow read, write: if true;
     }
+
+    // Snake games collection
+    match /snake_games/{gameId} {
+      // Allow reads and writes for everyone for now
+      allow read, write: if true;
+    }
     
     // Chat rooms collection
     match /chat_rooms/{roomId} {

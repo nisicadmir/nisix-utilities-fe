@@ -747,6 +747,143 @@ export class FirestoreService {
     }
   }
 
+  // ==================== SNAKE GAME METHODS ====================
+
+  /**
+   * Create a new snake game
+   */
+  async createSnakeGame(playerName: string): Promise<{ gameId: string; playerId: string }> {
+    try {
+      const playerId = this.generateRandomKey();
+      const gameRef = await addDoc(collection(db, 'snake_games'), {
+        status: 'waiting',
+        createdAt: serverTimestamp(),
+        players: {
+          [playerId]: {
+            name: playerName,
+            score: 0,
+            joinedAt: new Date(),
+          },
+        },
+        highScore: 0,
+        highScorePlayerName: playerName,
+      });
+
+      return { gameId: gameRef.id, playerId };
+    } catch (error) {
+      console.error('Error creating snake game:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Join a snake game
+   */
+  async joinSnakeGame(gameId: string, playerName: string): Promise<{ playerId: string }> {
+    try {
+      const gameRef = doc(db, 'snake_games', gameId);
+      const gameSnap = await getDoc(gameRef);
+
+      if (!gameSnap.exists()) {
+        throw new Error('Game not found');
+      }
+
+      const gameData = gameSnap.data();
+      const players = gameData['players'] || {};
+
+      // Check if game is finished
+      if (gameData['status'] === 'finished') {
+        throw new Error('Game is finished');
+      }
+
+      const playerId = this.generateRandomKey();
+
+      // If 2nd player joining, start the game timer
+      let updateData: any = {
+        [`players.${playerId}`]: {
+          name: playerName,
+          score: 0,
+          joinedAt: new Date(),
+        },
+      };
+
+      if (Object.keys(players).length === 1) {
+        const startTime = new Date();
+        const endTime = new Date(startTime.getTime() + 3 * 60 * 1000); // 3 minutes
+        updateData['status'] = 'playing';
+        updateData['startTime'] = startTime;
+        updateData['endTime'] = endTime;
+      }
+
+      await updateDoc(gameRef, updateData);
+
+      return { playerId };
+    } catch (error) {
+      console.error('Error joining snake game:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update snake game score
+   */
+  async updateSnakeScore(gameId: string, playerId: string, score: number): Promise<void> {
+    try {
+      const gameRef = doc(db, 'snake_games', gameId);
+      const gameSnap = await getDoc(gameRef);
+      
+      if (!gameSnap.exists()) return;
+
+      const gameData = gameSnap.data();
+      
+      // Check if game is finished (time expired)
+      if (gameData['endTime'] && gameData['endTime'].toDate() < new Date()) {
+         if (gameData['status'] !== 'finished') {
+             await updateDoc(gameRef, { status: 'finished' });
+         }
+         return; // Don't update score if finished
+      }
+
+      const currentHighScore = gameData['highScore'] || 0;
+      const updates: any = {
+        [`players.${playerId}.score`]: score,
+      };
+
+      if (score > currentHighScore) {
+        updates['highScore'] = score;
+        updates['highScorePlayerName'] = gameData['players'][playerId].name;
+      }
+
+      await updateDoc(gameRef, updates);
+    } catch (error) {
+      console.error('Error updating snake score:', error);
+    }
+  }
+
+  /**
+   * Subscribe to snake game updates
+   */
+  subscribeToSnakeGame(gameId: string, callback: (game: any) => void): () => void {
+    const gameRef = doc(db, 'snake_games', gameId);
+    
+    return onSnapshot(gameRef, (doc) => {
+      if (doc.exists()) {
+        const data = doc.data();
+        // Convert timestamps
+        const game = {
+          ...data,
+          id: doc.id,
+          startTime: data['startTime']?.toDate(),
+          endTime: data['endTime']?.toDate(),
+          createdAt: data['createdAt']?.toDate(),
+        };
+        callback(game);
+      } else {
+        callback(null);
+      }
+    });
+  }
+
   // ==================== CHAT ROOM METHODS ====================
 
   /**

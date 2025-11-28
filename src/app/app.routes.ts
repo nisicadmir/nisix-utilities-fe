@@ -27,6 +27,7 @@ export const routes: Routes = [
   { path: 'qr-code-generator', component: QrCodeGeneratorComponent },
   { path: 'uuid-generator', component: UuidGeneratorComponent },
   { path: 'circuit-game', component: circuitGameComponent },
+  { path: 'snake-game/:id', component: SnakeGameComponent },
   { path: 'snake-game', component: SnakeGameComponent },
   { path: 'game-invite-accept', component: GameInviteAcceptComponent },
   { path: 'battleship-game', component: BattleshipGameComponent },
