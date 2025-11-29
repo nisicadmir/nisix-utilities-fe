@@ -46,7 +46,7 @@ export class SnakeGameComponent implements AfterViewInit, OnInit, OnDestroy {
   private currentGameSpeed = this.initialGameSpeed;
   private minGameSpeed = 5; // Maximum speed (faster)
   private speedIncreasePerFood = 5; // How much to decrease the interval per food eaten
-  private speedIncreaseThreshold = 2; // How many foods to eat before increasing speed
+  private speedIncreaseThreshold = 15; // How many foods to eat before increasing speed
 
   isGameStarted = false;
   score = 0;
