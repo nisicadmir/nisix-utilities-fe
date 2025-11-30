@@ -15,7 +15,7 @@
             rows="8"
             placeholder="Paste or type your text here to see character and word counts..."
             class="text-input"
-          >
+            >
           </textarea>
         </mat-form-field>
       </form>
@@ -56,31 +56,33 @@
       </div>
     </div>
 
-    <div class="stats-section" *ngIf="characterCount > 0">
-      <mat-card class="stats-card">
-        <mat-card-header>
-          <mat-card-title>
-            <mat-icon>analytics</mat-icon>
-            Text Statistics
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="stats-grid">
-            <div class="stat-item">
-              <span class="stat-label">Average word length:</span>
-              <span class="stat-value">{{ getAverageWordLength() | number : '1.1-1' }} characters</span>
+    @if (characterCount > 0) {
+      <div class="stats-section">
+        <mat-card class="stats-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>analytics</mat-icon>
+              Text Statistics
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <span class="stat-label">Average word length:</span>
+                <span class="stat-value">{{ getAverageWordLength() | number : '1.1-1' }} characters</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Reading time:</span>
+                <span class="stat-value">{{ getReadingTime() }} minutes</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Space ratio:</span>
+                <span class="stat-value">{{ getSpaceRatio() | percent : '1.1-1' }}</span>
+              </div>
             </div>
-            <div class="stat-item">
-              <span class="stat-label">Reading time:</span>
-              <span class="stat-value">{{ getReadingTime() }} minutes</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Space ratio:</span>
-              <span class="stat-value">{{ getSpaceRatio() | percent : '1.1-1' }}</span>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    }
   </div>
 </div>

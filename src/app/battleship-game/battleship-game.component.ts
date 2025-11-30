@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,7 +16,7 @@ interface GameInvite {
 
 @Component({
   selector: 'app-battleship-game',
-  imports: [MatButtonModule, CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, RouterModule],
+  imports: [MatButtonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, RouterModule],
   templateUrl: './battleship-game.component.html',
   styleUrl: './battleship-game.component.scss',
 })

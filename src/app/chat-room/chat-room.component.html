@@ -1,65 +1,69 @@
-<div class="content-container chat-room-content" *ngIf="room">
-  <div class="chat-room-container content-container-inner">
-    <div class="header-section">
-      <h1 class="page-title">Chat Room</h1>
-      <div class="room-info">
-        <p class="participant-count">Participants: {{ participantCount }}/{{ maxParticipants }}</p>
-        <p class="your-name">Your name: {{ participantName }}</p>
+@if (room) {
+  <div class="content-container chat-room-content">
+    <div class="chat-room-container content-container-inner">
+      <div class="header-section">
+        <h1 class="page-title">Chat Room</h1>
+        <div class="room-info">
+          <p class="participant-count">Participants: {{ participantCount }}/{{ maxParticipants }}</p>
+          <p class="your-name">Your name: {{ participantName }}</p>
+        </div>
       </div>
-    </div>
-
-    <div class="room-actions">
-      <button mat-raised-button color="primary" (click)="shareRoom()">
-        <mat-icon>share</mat-icon>
-        <span class="button-text">Share Room</span>
-      </button>
-      <button mat-raised-button color="warn" (click)="deleteAllMessages()">
-        <mat-icon>delete</mat-icon>
-        <span class="button-text">Delete All Messages</span>
-      </button>
-      <button mat-raised-button color="warn" (click)="closeRoom()">
-        <mat-icon>close</mat-icon>
-        <span class="button-text">Close Room</span>
-      </button>
-    </div>
-
-    <div class="messages-container" #messagesContainer>
-      <div class="messages-list">
-        <div
-          *ngFor="let message of messages"
-          class="message-item"
-          [class.message-sent]="isMyMessage(message.participantName)"
-          [class.message-received]="!isMyMessage(message.participantName)"
-        >
-          <div class="message-content">
-            <div class="message-header">
-              <span class="participant-name">{{ message.participantName }}</span>
-              <span class="timestamp">{{ formatTimestamp(message.timestamp) }}</span>
+      <div class="room-actions">
+        <button mat-raised-button color="primary" (click)="shareRoom()">
+          <mat-icon>share</mat-icon>
+          <span class="button-text">Share Room</span>
+        </button>
+        <button mat-raised-button color="warn" (click)="deleteAllMessages()">
+          <mat-icon>delete</mat-icon>
+          <span class="button-text">Delete All Messages</span>
+        </button>
+        <button mat-raised-button color="warn" (click)="closeRoom()">
+          <mat-icon>close</mat-icon>
+          <span class="button-text">Close Room</span>
+        </button>
+      </div>
+      <div class="messages-container" #messagesContainer>
+        <div class="messages-list">
+          @for (message of messages; track message) {
+            <div
+              class="message-item"
+              [class.message-sent]="isMyMessage(message.participantName)"
+              [class.message-received]="!isMyMessage(message.participantName)"
+              >
+              <div class="message-content">
+                <div class="message-header">
+                  <span class="participant-name">{{ message.participantName }}</span>
+                  <span class="timestamp">{{ formatTimestamp(message.timestamp) }}</span>
+                </div>
+                <div class="message-text">{{ message.message }}</div>
+              </div>
             </div>
-            <div class="message-text">{{ message.message }}</div>
-          </div>
-        </div>
-        <div *ngIf="messages.length === 0" class="no-messages">
-          <p>No messages yet. Start the conversation!</p>
+          }
+          @if (messages.length === 0) {
+            <div class="no-messages">
+              <p>No messages yet. Start the conversation!</p>
+            </div>
+          }
         </div>
       </div>
-    </div>
-
-    <div class="message-input-container">
-      <mat-form-field appearance="outline" class="message-input-field">
-        <mat-label>Type your message</mat-label>
-        <input matInput [(ngModel)]="newMessage" (keydown.enter)="sendMessage()" placeholder="Type your message..." />
-      </mat-form-field>
-      <button mat-raised-button color="primary" (click)="sendMessage()" [disabled]="!newMessage.trim()">
-        <mat-icon>send</mat-icon>
-        <span class="button-text">Send</span>
-      </button>
+      <div class="message-input-container">
+        <mat-form-field appearance="outline" class="message-input-field">
+          <mat-label>Type your message</mat-label>
+          <input matInput [(ngModel)]="newMessage" (keydown.enter)="sendMessage()" placeholder="Type your message..." />
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="sendMessage()" [disabled]="!newMessage.trim()">
+          <mat-icon>send</mat-icon>
+          <span class="button-text">Send</span>
+        </button>
+      </div>
     </div>
   </div>
-</div>
+}
 
-<div class="content-container" *ngIf="!room">
-  <div class="content-container-inner">
-    <p>Loading room...</p>
+@if (!room) {
+  <div class="content-container">
+    <div class="content-container-inner">
+      <p>Loading room...</p>
+    </div>
   </div>
-</div>
+}
