@@ -2,6 +2,7 @@ import { Component, HostListener, OnDestroy } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { ThemeService } from '../theme.service';
+import { MENU_ITEMS } from '../models/menu-item.model';
 
 @Component({
   selector: 'app-menu',
@@ -12,6 +13,7 @@ import { ThemeService } from '../theme.service';
 export class MenuComponent {
   isMenuOpen = false;
   isDarkTheme = false;
+  menuItems = MENU_ITEMS;
   constructor(private themeService: ThemeService) {}
 
   ngOnInit() {

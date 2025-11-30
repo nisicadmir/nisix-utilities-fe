@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { MENU_ITEMS } from '../models/menu-item.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -7,4 +8,6 @@ import { RouterModule } from '@angular/router';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent {}
+export class DashboardComponent {
+  menuItems = MENU_ITEMS;
+}

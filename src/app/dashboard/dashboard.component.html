@@ -38,43 +38,9 @@
       </a>
     </div>
   </div>
+  @for (item of menuItems; track item.route) {
   <h2>
-    <a routerLink="/time-converter">Time Converter</a>
+    <a [routerLink]="item.route">{{ item.label }}</a>
   </h2>
-  <h2>
-    <a routerLink="/password-generator">Password Generator</a>
-  </h2>
-  <h2>
-    <a routerLink="/hash-generator">Hash Generator</a>
-  </h2>
-  <h2>
-    <a routerLink="/text-counter">Text Counter</a>
-  </h2>
-  <h2>
-    <a routerLink="/qr-code-generator">QR Code Generator</a>
-  </h2>
-  <h2>
-    <a routerLink="/uuid-generator">UUID Generator</a>
-  </h2>
-  <h2>
-    <a routerLink="/circuit-game">Circuit Game</a>
-  </h2>
-  <h2>
-    <a routerLink="/snake-game">Snake Game</a>
-  </h2>
-  <h2>
-    <a routerLink="/battleship-game">Battleship Game (online)</a>
-  </h2>
-  <h2>
-    <a routerLink="/secret-message">One Time Encrypted Secret Message</a>
-  </h2>
-  <h2>
-    <a routerLink="/random-number-generator">Random Number Generator</a>
-  </h2>
-  <h2>
-    <a routerLink="/base64-utility">Base64 Utility</a>
-  </h2>
-  <h2>
-    <a routerLink="/chat-room-create">Chat Room</a>
-  </h2>
+  }
 </div>
