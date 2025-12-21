@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="robots" content="index,follow" />
+    <title>Privacy Policy • OneStory</title>
+    <style>
+      :root {
+        --bg: #0b1220;
+        --card: rgba(255, 255, 255, 0.06);
+        --card2: rgba(255, 255, 255, 0.08);
+        --text: #e8eefc;
+        --muted: rgba(232, 238, 252, 0.72);
+        --border: rgba(232, 238, 252, 0.14);
+        --accent: #3b82f6;
+        --accent2: #60a5fa;
+        --shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+        --radius: 16px;
+      }
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #f6f8ff;
+          --card: rgba(15, 23, 42, 0.04);
+          --card2: rgba(15, 23, 42, 0.06);
+          --text: #0f172a;
+          --muted: rgba(15, 23, 42, 0.72);
+          --border: rgba(15, 23, 42, 0.14);
+          --accent: #2563eb;
+          --accent2: #3b82f6;
+          --shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+          'Apple Color Emoji', 'Segoe UI Emoji';
+        color: var(--text);
+        background: radial-gradient(800px 400px at 20% 0%, rgba(96, 165, 250, 0.2), transparent 55%),
+          radial-gradient(900px 500px at 90% 15%, rgba(37, 99, 235, 0.16), transparent 60%),
+          radial-gradient(700px 400px at 50% 110%, rgba(59, 130, 246, 0.18), transparent 60%),
+          var(--bg);
+        line-height: 1.6;
+      }
+      a {
+        color: var(--accent2);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .wrap {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+      }
+      header {
+        margin-bottom: 20px;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        border-radius: 999px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(10px);
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        border-radius: 999px;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.18);
+      }
+      h1 {
+        font-size: clamp(30px, 4vw, 44px);
+        line-height: 1.15;
+        margin: 16px 0 10px;
+        letter-spacing: -0.02em;
+      }
+      .subtitle {
+        color: var(--muted);
+        margin: 0 0 24px;
+        max-width: 70ch;
+      }
+      .grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .card {
+        border: 1px solid var(--border);
+        background: var(--card);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 18px 18px;
+        backdrop-filter: blur(12px);
+      }
+      .card h2 {
+        margin: 2px 0 8px;
+        font-size: 18px;
+      }
+      .card p {
+        margin: 0;
+        color: var(--muted);
+      }
+      main {
+        margin-top: 18px;
+      }
+      section {
+        margin-top: 18px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 22px 18px;
+        backdrop-filter: blur(12px);
+      }
+      section h2 {
+        margin: 0 0 12px;
+        font-size: 20px;
+        letter-spacing: -0.01em;
+      }
+      ul {
+        margin: 10px 0 0 18px;
+        padding: 0;
+      }
+      li {
+        margin: 8px 0;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .meta span {
+        padding: 6px 10px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--card2);
+      }
+      footer {
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 14px;
+        text-align: center;
+      }
+      .kbd {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+          'Courier New', monospace;
+        font-size: 0.95em;
+        padding: 2px 6px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--card2);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="pill" aria-label="Site badge">
+          <span class="dot" aria-hidden="true"></span>
+          <span class="muted">OneStory • Privacy</span>
+        </div>
+        <h1>Privacy Policy</h1>
+        <p class="subtitle">
+          This page explains what information OneStory collects, how it’s used, and the choices you
+          have.
+        </p>
+        <div class="meta">
+          <span><strong>App:</strong> OneStory</span>
+          <span><strong>Effective date:</strong> 2025-12-21</span>
+          <span><strong>Page:</strong> /onestory/privacy</span>
+        </div>
+      </header>
+
+      <div class="grid" role="region" aria-label="At a glance">
+        <div class="card">
+          <h2>What we collect</h2>
+          <p>
+            OneStory does <strong>not</strong> ask for your name, email, or account. It fetches
+            story content from Firebase Firestore and stores a small “last read” record on your
+            device.
+          </p>
+        </div>
+        <div class="card">
+          <h2>What we don’t do</h2>
+          <p>
+            No ads SDK, no third‑party analytics SDK, and no selling of personal data. If this
+            changes, we’ll update this policy.
+          </p>
+        </div>
+      </div>
+
+      <main>
+        <section>
+          <h2>1) Summary</h2>
+          <ul>
+            <li>
+              <strong>Stories:</strong> delivered from our backend using Google Firebase Firestore.
+            </li>
+            <li>
+              <strong>Local progress:</strong> we store the last story you read (story ID, date,
+              timestamp) locally on your device to improve your experience.
+            </li>
+            <li>
+              <strong>App security:</strong> Firebase App Check may be used to help protect the
+              backend from abuse.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>2) Information we collect</h2>
+          <p class="muted">OneStory is designed to work without creating an account.</p>
+          <ul>
+            <li>
+              <strong>Story content requests:</strong> when the app loads stories, your device
+              connects to Firebase Firestore. Like most internet services, this may include standard
+              server logs and network metadata (for example, IP address and request timing) handled
+              by our service providers.
+            </li>
+            <li>
+              <strong>Local “last read” record (on-device):</strong> OneStory stores:
+              <ul>
+                <li><span class="kbd">lastStoryId</span> (the last story you opened)</li>
+                <li><span class="kbd">storyDate</span> (YYYY‑MM‑DD)</li>
+                <li><span class="kbd">lastStoryReadAt</span> (timestamp)</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>3) How we use information</h2>
+          <ul>
+            <li><strong>Provide the app:</strong> load and display the daily stories.</li>
+            <li>
+              <strong>Improve UX:</strong> remember the last story you read and show “read” state.
+            </li>
+            <li>
+              <strong>Protect services:</strong> reduce abusive traffic (e.g., via Firebase App
+              Check).
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>4) Sharing</h2>
+          <p class="muted">We do not sell your personal information.</p>
+          <ul>
+            <li>
+              <strong>Service providers:</strong> OneStory uses Google Firebase (Firestore and
+              related infrastructure) to deliver story content. Data processed by Firebase is
+              subject to Google’s terms and privacy practices.
+            </li>
+            <li>
+              <strong>Legal:</strong> we may disclose information if required by law or to protect
+              users and the service.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>5) Data retention</h2>
+          <ul>
+            <li>
+              <strong>On-device:</strong> the local “last read” record remains on your device until
+              you uninstall the app or clear its data.
+            </li>
+            <li>
+              <strong>Backend:</strong> story content is hosted in Firestore; retention follows
+              operational needs and provider policies.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>6) Security</h2>
+          <p class="muted">
+            We use reasonable safeguards to protect the service. No method of transmission or
+            storage is 100% secure, but we work to minimize risk.
+          </p>
+        </section>
+
+        <section>
+          <h2>7) Children’s privacy</h2>
+          <p class="muted">
+            OneStory is not intended for children under 13. We do not knowingly collect personal
+            information from children under 13.
+          </p>
+        </section>
+
+        <section>
+          <h2>8) Your choices</h2>
+          <ul>
+            <li>
+              <strong>Delete local data:</strong> uninstall the app or clear app storage to remove
+              the on-device “last read” record.
+            </li>
+            <li>
+              <strong>Contact us:</strong> you can request help or ask privacy questions using the
+              email below.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>9) Changes to this policy</h2>
+          <p class="muted">
+            We may update this policy from time to time. We will post the latest version on this
+            page and update the “Effective date” above.
+          </p>
+        </section>
+
+        <section>
+          <h2>10) Contact</h2>
+          <p class="muted">Email: <a href="mailto:privacy@nisix.net">privacy@nisix.net</a></p>
+          <p class="muted" style="margin-top: 8px">
+            If you prefer, you can also reference this page path:
+            <span class="kbd">/onestory/privacy</span>.
+          </p>
+        </section>
+      </main>
+
+      <footer>
+        © <span id="y"></span> OneStory • Published at
+        <span class="kbd">nisix.net/onestory/privacy</span>
+      </footer>
+    </div>
+    <script>
+      document.getElementById('y').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
