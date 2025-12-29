@@ -41,13 +41,12 @@
       }
       body {
         margin: 0;
-        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
-          'Apple Color Emoji', 'Segoe UI Emoji';
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, 'Apple Color Emoji',
+          'Segoe UI Emoji';
         color: var(--text);
         background: radial-gradient(800px 400px at 20% 0%, rgba(96, 165, 250, 0.2), transparent 55%),
           radial-gradient(900px 500px at 90% 15%, rgba(37, 99, 235, 0.16), transparent 60%),
-          radial-gradient(700px 400px at 50% 110%, rgba(59, 130, 246, 0.18), transparent 60%),
-          var(--bg);
+          radial-gradient(700px 400px at 50% 110%, rgba(59, 130, 246, 0.18), transparent 60%), var(--bg);
         line-height: 1.6;
       }
       a {
@@ -168,8 +167,7 @@
         text-align: center;
       }
       .kbd {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
-          'Courier New', monospace;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
         font-size: 0.95em;
         padding: 2px 6px;
         border-radius: 8px;
@@ -186,10 +184,7 @@
           <span class="muted">OneStory • Privacy</span>
         </div>
         <h1>Privacy Policy</h1>
-        <p class="subtitle">
-          This page explains what information OneStory collects, how it’s used, and the choices you
-          have.
-        </p>
+        <p class="subtitle">This page explains what information OneStory collects, how it’s used, and the choices you have.</p>
         <div class="meta">
           <span><strong>App:</strong> OneStory</span>
           <span><strong>Effective date:</strong> 2025-12-21</span>
@@ -201,16 +196,14 @@
         <div class="card">
           <h2>What we collect</h2>
           <p>
-            OneStory does <strong>not</strong> ask for your name, email, or account. It fetches
-            story content from Firebase Firestore and stores a small “last read” record on your
-            device.
+            OneStory does <strong>not</strong> ask for your name, email, or account. It fetches story content from Firebase
+            Firestore and stores a small “last read” record on your device.
           </p>
         </div>
         <div class="card">
           <h2>What we don’t do</h2>
           <p>
-            No ads SDK, no third‑party analytics SDK, and no selling of personal data. If this
-            changes, we’ll update this policy.
+            No ads SDK, no third‑party analytics SDK, and no selling of personal data. If this changes, we’ll update this policy.
           </p>
         </div>
       </div>
@@ -219,17 +212,12 @@
         <section>
           <h2>1) Summary</h2>
           <ul>
+            <li><strong>Stories:</strong> delivered from our backend using Google Firebase Firestore.</li>
             <li>
-              <strong>Stories:</strong> delivered from our backend using Google Firebase Firestore.
+              <strong>Local progress:</strong> we store the last story you read (story ID, date, timestamp) locally on your device
+              to improve your experience.
             </li>
-            <li>
-              <strong>Local progress:</strong> we store the last story you read (story ID, date,
-              timestamp) locally on your device to improve your experience.
-            </li>
-            <li>
-              <strong>App security:</strong> Firebase App Check may be used to help protect the
-              backend from abuse.
-            </li>
+            <li><strong>App security:</strong> Firebase App Check may be used to help protect the backend from abuse.</li>
           </ul>
         </section>
 
@@ -238,10 +226,9 @@
           <p class="muted">OneStory is designed to work without creating an account.</p>
           <ul>
             <li>
-              <strong>Story content requests:</strong> when the app loads stories, your device
-              connects to Firebase Firestore. Like most internet services, this may include standard
-              server logs and network metadata (for example, IP address and request timing) handled
-              by our service providers.
+              <strong>Story content requests:</strong> when the app loads stories, your device connects to Firebase Firestore.
+              Like most internet services, this may include standard server logs and network metadata (for example, IP address and
+              request timing) handled by our service providers.
             </li>
             <li>
               <strong>Local “last read” record (on-device):</strong> OneStory stores:
@@ -258,13 +245,8 @@
           <h2>3) How we use information</h2>
           <ul>
             <li><strong>Provide the app:</strong> load and display the daily stories.</li>
-            <li>
-              <strong>Improve UX:</strong> remember the last story you read and show “read” state.
-            </li>
-            <li>
-              <strong>Protect services:</strong> reduce abusive traffic (e.g., via Firebase App
-              Check).
-            </li>
+            <li><strong>Improve UX:</strong> remember the last story you read and show “read” state.</li>
+            <li><strong>Protect services:</strong> reduce abusive traffic (e.g., via Firebase App Check).</li>
           </ul>
         </section>
 
@@ -273,14 +255,10 @@
           <p class="muted">We do not sell your personal information.</p>
           <ul>
             <li>
-              <strong>Service providers:</strong> OneStory uses Google Firebase (Firestore and
-              related infrastructure) to deliver story content. Data processed by Firebase is
-              subject to Google’s terms and privacy practices.
+              <strong>Service providers:</strong> OneStory uses Google Firebase (Firestore and related infrastructure) to deliver
+              story content. Data processed by Firebase is subject to Google’s terms and privacy practices.
             </li>
-            <li>
-              <strong>Legal:</strong> we may disclose information if required by law or to protect
-              users and the service.
-            </li>
+            <li><strong>Legal:</strong> we may disclose information if required by law or to protect users and the service.</li>
           </ul>
         </section>
 
@@ -288,12 +266,12 @@
           <h2>5) Data retention</h2>
           <ul>
             <li>
-              <strong>On-device:</strong> the local “last read” record remains on your device until
-              you uninstall the app or clear its data.
+              <strong>On-device:</strong> the local “last read” record remains on your device until you uninstall the app or clear
+              its data.
             </li>
             <li>
-              <strong>Backend:</strong> story content is hosted in Firestore; retention follows
-              operational needs and provider policies.
+              <strong>Backend:</strong> story content is hosted in Firestore; retention follows operational needs and provider
+              policies.
             </li>
           </ul>
         </section>
@@ -301,16 +279,16 @@
         <section>
           <h2>6) Security</h2>
           <p class="muted">
-            We use reasonable safeguards to protect the service. No method of transmission or
-            storage is 100% secure, but we work to minimize risk.
+            We use reasonable safeguards to protect the service. No method of transmission or storage is 100% secure, but we work
+            to minimize risk.
           </p>
         </section>
 
         <section>
           <h2>7) Children’s privacy</h2>
           <p class="muted">
-            OneStory is not intended for children under 13. We do not knowingly collect personal
-            information from children under 13.
+            OneStory is not intended for children under 13. We do not knowingly collect personal information from children under
+            13.
           </p>
         </section>
 
@@ -318,31 +296,24 @@
           <h2>8) Your choices</h2>
           <ul>
             <li>
-              <strong>Delete local data:</strong> uninstall the app or clear app storage to remove
-              the on-device “last read” record.
+              <strong>Delete local data:</strong> uninstall the app or clear app storage to remove the on-device “last read”
+              record.
             </li>
-            <li>
-              <strong>Contact us:</strong> you can request help or ask privacy questions using the
-              email below.
-            </li>
+            <li><strong>Contact us:</strong> you can request help or ask privacy questions using the email below.</li>
           </ul>
         </section>
 
         <section>
           <h2>9) Changes to this policy</h2>
           <p class="muted">
-            We may update this policy from time to time. We will post the latest version on this
-            page and update the “Effective date” above.
+            We may update this policy from time to time. We will post the latest version on this page and update the “Effective
+            date” above.
           </p>
         </section>
 
         <section>
           <h2>10) Contact</h2>
-          <p class="muted">Email: <a href="mailto:privacy@nisix.net">privacy@nisix.net</a></p>
-          <p class="muted" style="margin-top: 8px">
-            If you prefer, you can also reference this page path:
-            <span class="kbd">/onestory/privacy</span>.
-          </p>
+          <p class="muted">Email: <a href="mailto:nisix92@gmail.com">nisix92@gmail.com</a></p>
         </section>
       </main>
 
