@@ -29,6 +29,7 @@
               "src/favicon_3.jpg",
               "src/assets",
               "src/oneapp",
+              "src/nextset",
               "src/robots.txt",
               "src/ads.txt"
             ],
@@ -90,7 +91,7 @@
             "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/favicon_2.png", "src/favicon_3.jpg", "src/assets", "serc/oneapp"],
+            "assets": ["src/favicon.ico", "src/favicon_2.png", "src/favicon_3.jpg", "src/assets", "src/oneapp", "src/nextset"],
             "styles": ["@angular/material/prebuilt-themes/indigo-pink.css", "src/styles.scss"],
             "scripts": []
           }
